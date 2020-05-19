@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+flake8 = "*"
+
+[packages]
+cython = "==0.29.14"
+kivy = {git = "git://github.com/kivy/kivy.git",ref = "master"}
+asynckivy = {editable = true,path = "./../asynckivy"}
+kivyx = {editable = true,path = "."}
+
+[requires]
+python_version = "3.8"
