@@ -11,6 +11,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
 
 import asynckivy as ak
+from kivyx.properties import AutoCloseProperty
 
 KV_CODE = '''
 <KXDrawerTab>:
@@ -106,7 +107,7 @@ class KXDrawer(RelativeLayout):
         'm' stands for 'middle'.
     '''
 
-    _coro = ak.AutoCloseProperty()
+    _coro = AutoCloseProperty()
 
     def __init__(self, **kwargs):
         self._is_moving_to_the_top = False

@@ -8,17 +8,19 @@ from kivy.clock import Clock
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from asynckivy import start as ak_start, animate as ak_animate
+from kivyx.properties import AutoCloseProperty
+
 
 class KXMagnet(Widget):
     duration = NumericProperty(1)
     transition = StringProperty('out_quad')
     anim_props = ListProperty(['pos', 'size', ])
+    _coro = AutoCloseProperty()
 
     def __init__(self, **kwargs):
         self._props_watching = {}
         self._trigger_start_anim = \
             Clock.create_trigger(self._start_anim, -1)
-        self._coro = None
         super().__init__(**kwargs)
 
     def on_kv_post(self, *args, **kwargs):
@@ -41,17 +43,13 @@ class KXMagnet(Widget):
         return super().add_widget(widget, *args, **kwargs)
 
     def _start_anim(self, *args):
-        if self._coro is not None:
-            self._coro.close()
         if self.children:
-            coro = ak_animate(
+            self._coro = ak_start(ak_animate(
                 self.children[0],
                 d=self.duration,
                 t=self.transition,
                 **{prop: getattr(self, prop) for prop in self.anim_props}
-            )
-            ak_start(coro)
-            self._coro = coro
+            ))
 
     def disappear(self):
         '''(experimental)
