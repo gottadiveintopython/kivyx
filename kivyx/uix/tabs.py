@@ -9,6 +9,13 @@ from kivyx.uix.boxlayout import KXBoxLayout
 
 
 class KXTabs(KXBoxLayout):
+    '''Basically KXBoxLayout + some graphical representation.
+    When the 'state' of a child becomes 'down', highlights it.
+
+    'style' must be compatible with 'orientation'.
+    If 'style' is 'top' or 'bottom', 'orientation' must be 'lr' or 'rl'.
+    If 'style' is 'left' or 'right', 'orientation' must be 'bt' or 'tb'.
+    '''
     group = ObjectProperty("KXTabs")
     style = OptionProperty('top', options=('top', 'bottom', 'left', 'right'))
     line_color = ColorProperty("#FFFFFF")
