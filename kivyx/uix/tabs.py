@@ -43,17 +43,6 @@ class KXTabs(KXBoxLayout):
     def on_line_width(self, __, width):
         self._inst_line.width = width
 
-    def unhighlight(self):
-        self._next_highlight = None
-
-    def highlight(self, widget):
-        widget = widget.__self__
-        if widget is self._current_highlight:
-            return
-        if widget not in self.children:
-            raise ValueError(f"{widget!r} is not a child of mine.")
-        self._next_highlight = widget
-
     def add_widget(self, child, *args, **kwargs):
         if isinstance(child, ToggleButtonBehavior):
             child.group = self.group
