@@ -87,14 +87,13 @@ class KXTabs(KXBoxLayout):
     def _update_points(self, *args):
         style = self.style[0]
         spacing = self.spacing
-        padding = self.padding
         cur = self._current_highlight
         inst_line = self._inst_line
         is_horizontal = self.is_horizontal
-        y1 = self.y + padding[3]
-        y2 = self.top - padding[1]
-        x1 = self.x + padding[0]
-        x2 = self.right - padding[2]
+        y1 = self.y
+        y2 = self.top
+        x1 = self.x
+        x2 = self.right
         if style == 'b':
             y1, y2 = y2, y1
         if style == 'l':
