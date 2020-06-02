@@ -16,18 +16,22 @@ class KXTabs(KXBoxLayout):
     _next_highlight = ObjectProperty(None, allownone=True)
 
     def __init__(self, **kwargs):
-        from kivy.graphics import InstructionGroup, Color, Line, Quad
-        self._inst_group = InstructionGroup()
+        from kivy.graphics import InstructionGroup, Color, Line
         self._inst_color = Color()
         self._inst_line = Line()
-        self._inst_group.add(self._inst_color)
-        self._inst_group.add(self._inst_line)
         self._current_highlight = None
         super().__init__(**kwargs)
-        self._trigger_update_points = Clock.create_trigger(self._update_points, 0)
+        inst_group = InstructionGroup()
+        inst_group.add(self._inst_color)
+        inst_group.add(self._inst_line)
+        self.canvas.before.add(inst_group)
+        self._trigger_update_points = trigger_update_points = \
+            Clock.create_trigger(self._update_points, 0)
         self._trigger_rebind = trigger_rebind = \
             Clock.create_trigger(self._rebind, 0)
         f = self.fbind
+        f('pos', trigger_update_points)
+        f('size', trigger_update_points)
         f('orientation', trigger_rebind)
         f('style', trigger_rebind)
         f('_next_highlight', trigger_rebind)
@@ -72,50 +76,52 @@ class KXTabs(KXBoxLayout):
         trigger = self._trigger_update_points
         current = self._current_highlight
         next = self._next_highlight
-        if current is not None:
-            self.canvas.before.remove(self._inst_group)
-            current.unbind(pos=trigger, size=trigger)
-            self._current_highlight = None
-        if next is None:
-            self.unbind(pos=trigger, size=trigger)
-            return
-        next.bind(pos=trigger, size=trigger)
-        self._current_highlight = next
-        self.canvas.before.add(self._inst_group)
         trigger()
+        if current is next:
+            return
+        if current is not None:
+            current.unbind(pos=trigger, size=trigger)
+        self._current_highlight = next
+        if next is not None:
+            next.bind(pos=trigger, size=trigger)
 
     def _update_points(self, *args):
         style = self.style[0]
         spacing = self.spacing
         padding = self.padding
         cur = self._current_highlight
-        if style in 'tb':
-            y1 = self.y + padding[3]
-            y2 = self.top - padding[1]
-            if style == 'b':
-                y1, y2 = y2, y1
+        inst_line = self._inst_line
+        is_horizontal = self.is_horizontal
+        y1 = self.y + padding[3]
+        y2 = self.top - padding[1]
+        x1 = self.x + padding[0]
+        x2 = self.right - padding[2]
+        if style == 'b':
+            y1, y2 = y2, y1
+        if style == 'l':
+            x1, x2 = x2, x1
+        if cur is None:
+            inst_line.points = (x1, y1, x2, y1, ) if \
+                is_horizontal else (x1, y1, x1, y2, )
+        elif style in 'tb':
             cur_x = cur.x
             cur_right = cur.right
-            self._inst_line.points = [
+            inst_line.points = (
                 self.x, y1,
                 cur_x - spacing, y1,
                 cur_x, y2,
                 cur_right, y2,
                 cur_right + spacing, y1,
                 self.right, y1,
-            ]
+            )
         else:
-            x1 = self.x + padding[0]
-            x2 = self.right - padding[2]
-            if style == 'l':
-                x1, x2 = x2, x1
             cur_y = cur.y
             cur_top = cur.top
-            self._inst_line.points = [
+            inst_line.points = (
                 x1, self.y,
                 x1, cur_y - spacing,
                 x2, cur_y,
                 x2, cur_top,
                 x1, cur_top + spacing,
                 x1, self.top,
-            ]
+            )
