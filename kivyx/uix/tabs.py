@@ -68,8 +68,7 @@ class KXTabs(KXBoxLayout):
         return super().remove_widget(child, *args, **kwargs)
 
     def _on_child_state(self, child, state):
-        if state == 'down':
-            self._next_highlight = child
+        self._next_highlight = child if state == 'down' else None
 
     def _rebind(self, *args):
         assert self.is_horizontal is (self.style[0] in 'tb')
