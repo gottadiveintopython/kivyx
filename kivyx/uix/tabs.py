@@ -43,6 +43,11 @@ class KXTabs(KXBoxLayout):
     def on_line_width(self, __, width):
         self._inst_line.width = width
 
+    def on_group(self, __, group):
+        for c in self.children:
+            if isinstance(c, ToggleButtonBehavior):
+                c.group = group
+
     def add_widget(self, child, *args, **kwargs):
         if isinstance(child, ToggleButtonBehavior):
             child.group = self.group
