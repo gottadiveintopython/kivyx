@@ -86,7 +86,7 @@ class KXTabs(KXBoxLayout):
             next.bind(pos=trigger, size=trigger)
 
     def _update_points(self, *args):
-        style = self.style[0]
+        style = self.style
         spacing = self.spacing
         cur = self._current_highlight
         inst_line = self._inst_line
@@ -95,14 +95,14 @@ class KXTabs(KXBoxLayout):
         y2 = self.top
         x1 = self.x
         x2 = self.right
-        if style == 'b':
+        if style == 'bottom':
             y1, y2 = y2, y1
-        if style == 'l':
+        if style == 'left':
             x1, x2 = x2, x1
         if cur is None:
             inst_line.points = (x1, y1, x2, y1, ) if \
                 is_horizontal else (x1, y1, x1, y2, )
-        elif style in 'tb':
+        elif is_horizontal:
             cur_x = cur.x
             cur_right = cur.right
             inst_line.points = (
