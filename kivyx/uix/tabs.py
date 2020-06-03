@@ -31,7 +31,7 @@ class KXTabs(KXBoxLayout):
         inst_group = InstructionGroup()
         inst_group.add(self._inst_color)
         inst_group.add(self._inst_line)
-        self.canvas.before.add(inst_group)
+        self.canvas.after.add(inst_group)
         self._trigger_update_points = trigger_update_points = \
             Clock.create_trigger(self._update_points, 0)
         self._trigger_rebind = trigger_rebind = \
