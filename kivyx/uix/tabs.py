@@ -91,36 +91,36 @@ class KXTabs(KXBoxLayout):
         cur = self._current_highlight
         inst_line = self._inst_line
         is_horizontal = self.is_horizontal
-        y1 = self.y
-        y2 = self.top
-        x1 = self.x
-        x2 = self.right
+        y1 = self_y = self.y
+        y2 = self_top = self.top
+        x1 = self_x = self.x
+        x2 = self_right = self.right
         if style == 'bottom':
             y1, y2 = y2, y1
         if style == 'left':
             x1, x2 = x2, x1
         if cur is None:
-            inst_line.points = (x1, y1, x2, y1, ) if \
-                is_horizontal else (x1, y1, x1, y2, )
+            inst_line.points = (self_x, y1, self_right, y1, ) if \
+                is_horizontal else (x1, self_y, x1, self_top, )
         elif is_horizontal:
             cur_x = cur.x
             cur_right = cur.right
             inst_line.points = (
-                self.x, y1,
-                cur_x - spacing, y1,
+                self_x, y1,
+                max(cur_x - spacing, self_x), y1,
                 cur_x, y2,
                 cur_right, y2,
-                cur_right + spacing, y1,
-                self.right, y1,
+                min(cur_right + spacing, self_right), y1,
+                self_right, y1,
             )
         else:
             cur_y = cur.y
             cur_top = cur.top
             inst_line.points = (
-                x1, self.y,
-                x1, cur_y - spacing,
+                x1, self_y,
+                x1, max(cur_y - spacing, self_y),
                 x2, cur_y,
                 x2, cur_top,
-                x1, cur_top + spacing,
-                x1, self.top,
+                x1, min(cur_top + spacing, self_top),
+                x1, self_top,
             )
