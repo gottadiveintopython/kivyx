@@ -71,18 +71,51 @@ KXBoxLayout:
         Switch:
             active: True
             id: line_stays_inside
+        Separator:
+            size_hint_y: None
+        Label:
+            text: 'line_width'
+            color: 0, 1, 0, 1
+        Slider:
+            id: line_width
+            min: 1
+            max: 6
+            step: 1
+            value: 2
+        Separator:
+            size_hint_y: None
+        Label:
+            text: 'padding'
+            color: 0, 1, 0, 1
+        Slider:
+            id: padding
+            min: 0
+            max: 30
+            step: 2
+            value: 10
+        Separator:
+            size_hint_y: None
+        Label:
+            text: 'spacing'
+            color: 0, 1, 0, 1
+        Slider:
+            id: spacing
+            min: 0
+            max: 30
+            step: 2
+            value: 10
     Separator:
         size_hint_x: None
     KXBoxLayout:
         id: tabs_parent
         KXTabs:
             id: tabs
-            spacing: 10
-            padding: 10
+            spacing: spacing.value
+            padding: padding.value
             orientation: 'tb'
             style: 'left'
             line_color: "#8888FF"
-            line_width: 3
+            line_width: max(line_width.value, 1)
             line_stays_inside: line_stays_inside.active
             Tab:
                 text: 'A'
