@@ -25,7 +25,6 @@ KV_CODE = '''
 
 KXBoxLayout:
     orientation: 'tb'
-    padding: LINE_WIDTH
     ScrollView:
         size_hint_y: None
         height: 80
@@ -33,7 +32,7 @@ KXBoxLayout:
             id: tabs
             orientation: 'lr'
             style: 'top'
-            line_width: LINE_WIDTH
+            line_width: 2
             line_color: '#AAAAFF'
             padding: 20, 0
             spacing: 20

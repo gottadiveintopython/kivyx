@@ -3,6 +3,7 @@ __all__ = ('KXTabs', )
 from kivy.clock import Clock
 from kivy.properties import (
     ColorProperty, NumericProperty, ObjectProperty, OptionProperty,
+    BooleanProperty,
 )
 from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 from kivyx.uix.boxlayout import KXBoxLayout
@@ -18,6 +19,7 @@ class KXTabs(KXBoxLayout):
     '''
     group = ObjectProperty("KXTabs")
     style = OptionProperty('top', options=('top', 'bottom', 'left', 'right'))
+    line_stays_inside = BooleanProperty(True)
     line_color = ColorProperty("#FFFFFF")
     line_width = NumericProperty(1)
     _next_highlight = ObjectProperty(None, allownone=True)
@@ -27,6 +29,7 @@ class KXTabs(KXBoxLayout):
         self._inst_color = Color()
         self._inst_line = Line()
         self._current_highlight = None
+        self._actual_update_points = self._update_points_ver_inside
         super().__init__(**kwargs)
         inst_group = InstructionGroup()
         inst_group.add(self._inst_color)
@@ -39,10 +42,16 @@ class KXTabs(KXBoxLayout):
         f = self.fbind
         f('pos', trigger_update_points)
         f('size', trigger_update_points)
+        f('line_width', trigger_update_points)
         f('orientation', trigger_rebind)
         f('style', trigger_rebind)
+        f('line_stays_inside', trigger_rebind)
         f('_next_highlight', trigger_rebind)
         trigger_rebind()
+
+    def on_line_stays_inside(self, __, line_stays_inside):
+        self._actual_update_points = self._update_points_ver_inside \
+            if line_stays_inside else self._update_points_ver_normal
 
     def on_line_color(self, __, color):
         self._inst_color.rgba = color
@@ -77,8 +86,6 @@ class KXTabs(KXBoxLayout):
         current = self._current_highlight
         next = self._next_highlight
         trigger()
-        if current is next:
-            return
         if current is not None:
             current.unbind(pos=trigger, size=trigger)
         self._current_highlight = next
@@ -86,6 +93,9 @@ class KXTabs(KXBoxLayout):
             next.bind(pos=trigger, size=trigger)
 
     def _update_points(self, *args):
+        self._actual_update_points()
+
+    def _update_points_ver_normal(self):
         style = self.style
         spacing = self.spacing
         cur = self._current_highlight
@@ -122,5 +132,50 @@ class KXTabs(KXBoxLayout):
                 x2, cur_y,
                 x2, cur_top,
                 x1, min(cur_top + spacing, self_top),
+                x1, self_top,
+            )
+
+    def _update_points_ver_inside(self):
+        style = self.style
+        spacing = self.spacing
+        cur = self._current_highlight
+        inst_line = self._inst_line
+        is_horizontal = self.is_horizontal
+        lw = self.line_width
+        self_y = self.y + lw
+        self_top = self.top - lw
+        self_x = self.x + lw
+        self_right = self.right - lw
+        y1 = self_y
+        y2 = self_top
+        x1 = self_x
+        x2 = self_right
+        if style == 'bottom':
+            y1, y2 = y2, y1
+        elif style == 'left':
+            x1, x2 = x2, x1
+        if cur is None:
+            inst_line.points = (self_x, y1, self_right, y1, ) if \
+                is_horizontal else (x1, self_y, x1, self_top, )
+        elif is_horizontal:
+            cur_x = cur.x + lw
+            cur_right = cur.right - lw
+            inst_line.points = (
+                self_x, y1,
+                max(cur_x - spacing, x1), y1,
+                cur_x, y2,
+                cur_right, y2,
+                min(cur_right + spacing, x2), y1,
+                self_right, y1,
+            )
+        else:
+            cur_y = cur.y + lw
+            cur_top = cur.top - lw
+            inst_line.points = (
+                x1, self_y,
+                x1, max(cur_y - spacing, y1),
+                x2, cur_y,
+                x2, cur_top,
+                x1, min(cur_top + spacing, y2),
                 x1, self_top,
             )

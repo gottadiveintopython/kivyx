@@ -29,6 +29,7 @@ GridLayout:
         padding: 20
         line_width: LINE_WIDTH
         line_color: '#AAAAFF'
+        line_stays_inside: False
         size_hint_y: None
         height: TAB_SIZE
         ImageTab:
@@ -44,6 +45,7 @@ GridLayout:
         spacing: 20
         line_width: LINE_WIDTH
         line_color: '#AAAAFF'
+        line_stays_inside: False
         size_hint_x: None
         width: TAB_SIZE
         ImageTab:
@@ -56,6 +58,7 @@ GridLayout:
         padding: 20
         line_width: LINE_WIDTH
         line_color: '#AAAAFF'
+        line_stays_inside: False
         size_hint_x: None
         width: TAB_SIZE
         ImageTab:
@@ -68,6 +71,7 @@ GridLayout:
         style: 'bottom'
         line_width: LINE_WIDTH
         line_color: '#AAAAFF'
+        line_stays_inside: False
         size_hint_y: None
         height: TAB_SIZE
         ImageTab:

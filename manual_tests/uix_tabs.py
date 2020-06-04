@@ -8,8 +8,6 @@ from kivy.factory import Factory
 from kivyx.uix.tabs import KXTabs
 
 KV_CODE = '''
-#:set LINE_WIDTH 5
-
 <Separator@Widget>:
     size: 1, 1
     canvas:
@@ -65,11 +63,18 @@ KXBoxLayout:
                     tabs.style = 'bottom'
             Label:
                 text: 'bottom'
+        Separator:
+            size_hint_y: None
+        Label:
+            text: 'line_stays_inside'
+            color: 0, 1, 0, 1
+        Switch:
+            active: True
+            id: line_stays_inside
     Separator:
         size_hint_x: None
     KXBoxLayout:
         id: tabs_parent
-        padding: LINE_WIDTH
         KXTabs:
             id: tabs
             spacing: 10
@@ -77,7 +82,8 @@ KXBoxLayout:
             orientation: 'tb'
             style: 'left'
             line_color: "#8888FF"
-            line_width: LINE_WIDTH
+            line_width: 3
+            line_stays_inside: line_stays_inside.active
             Tab:
                 text: 'A'
             Tab:
