@@ -43,6 +43,8 @@ class KXTabs(KXBoxLayout):
         f('pos', trigger_update_points)
         f('size', trigger_update_points)
         f('line_width', trigger_update_points)
+        f('spacing', trigger_update_points)
+        f('padding', trigger_update_points)
         f('orientation', trigger_rebind)
         f('style', trigger_rebind)
         f('line_stays_inside', trigger_rebind)
