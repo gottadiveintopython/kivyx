@@ -74,7 +74,7 @@ KXBoxLayout:
         Separator:
             size_hint_y: None
         Label:
-            text: 'line_width'
+            text: 'line_width : {}'.format(int(line_width.value))
             color: 0, 1, 0, 1
         Slider:
             id: line_width
@@ -85,24 +85,24 @@ KXBoxLayout:
         Separator:
             size_hint_y: None
         Label:
-            text: 'padding'
+            text: 'padding : {}'.format(int(padding.value))
             color: 0, 1, 0, 1
         Slider:
             id: padding
             min: 0
-            max: 30
-            step: 2
+            max: 60
+            step: 1
             value: 10
         Separator:
             size_hint_y: None
         Label:
-            text: 'spacing'
+            text: 'spacing : {}'.format(int(spacing.value))
             color: 0, 1, 0, 1
         Slider:
             id: spacing
             min: 0
-            max: 30
-            step: 2
+            max: 60
+            step: 1
             value: 10
     Separator:
         size_hint_x: None
@@ -111,7 +111,7 @@ KXBoxLayout:
         KXTabs:
             id: tabs
             spacing: spacing.value
-            padding: padding.value
+            padding: (padding.value, 0) if self.is_horizontal else (0, padding.value)
             orientation: 'tb'
             style: 'left'
             line_color: "#8888FF"
