@@ -1,10 +1,5 @@
 '''
-Aspect Ratio
-============
-
-子の大きさを指定された縦横比に強制するwidget。子は一つしか持てない。
-
-The idea came from Flutter.
+Inspired by Flutter.
 https://www.youtube.com/watch?v=XcnP3_mO_Ms
 '''
 
