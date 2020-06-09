@@ -31,7 +31,7 @@ class KXBoxLayout(Layout):
     '''
 
     is_horizontal = AliasProperty(
-        lambda self: self.orientation[0] in 'lr',
+        lambda self: self.orientation in {'lr', 'rl'},
         bind=('orientation', ), cache=True,
     )
     '''True if :attr:`orientation` is either of `lr` or `rl`. False
@@ -151,7 +151,7 @@ class KXBoxLayout(Layout):
                     (val[3][dim] for val in sizes),
                     (elem[4][dim] for elem in sizes), hint)
 
-        zipped_iter = zip(indices, hint, sizes) if (orientation[0] in 'rt') \
+        zipped_iter = zip(indices, hint, sizes) if (orientation in {'rl', 'tb'}) \
             else zip(reversed(indices), reversed(hint), reversed(sizes))
         if is_horizontal:
             x = padding_left + selfx

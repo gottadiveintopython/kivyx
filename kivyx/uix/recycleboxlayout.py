@@ -111,7 +111,7 @@ class KXRecycleBoxLayout(RecycleLayout, KXBoxLayout):
         padding = self.padding
         is_horizontal = self.is_horizontal
         dim = not is_horizontal
-        is_forward_direction = self.orientation[0] in 'lb'
+        is_forward_direction = self.orientation in {'lr', 'bt'}
         self._rv_positions = tuple(
             accumulate((
                 ((self.x + padding[0]) if is_horizontal else 
@@ -132,7 +132,7 @@ class KXRecycleBoxLayout(RecycleLayout, KXBoxLayout):
             if pos < v:
                 break
             idx += 1
-        return idx if (self.orientation[0] in 'lb') \
+        return idx if (self.orientation in {'lr', 'bt'}) \
             else (len(self.view_opts) - idx - 1)
 
     def compute_visible_views(self, data, viewport):
@@ -142,6 +142,6 @@ class KXRecycleBoxLayout(RecycleLayout, KXBoxLayout):
         x, y, w, h = viewport
         at_idx = self.get_view_index_at
         a, b = at_idx((x, y)), at_idx((x + w, y + h))
-        if self.orientation[0] in 'rt':
+        if self.orientation in {'rl', 'tb'}:
             a, b = b, a
         return list(range(a, b + 1))
