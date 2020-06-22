@@ -8,7 +8,9 @@ from kivy.clock import Clock
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty, StringProperty, ListProperty
 from asynckivy import start as ak_start, animate as ak_animate
+
 from kivyx.properties import AutoCloseProperty
+from kivyx.utils import save_widget_location, restore_widget_location
 
 
 class KXMagnet(Widget):
@@ -55,17 +57,8 @@ class KXMagnet(Widget):
         '''(experimental)
         Silently disappears without ruining the layout.
         '''
-        child = self.children[0]
-        self.remove_widget(child)
-        for name in _name_of_the_properties_need_to_be_copied:
-            setattr(child, name, getattr(self, name))
-        parent = self.parent
-        if parent:
-            index = parent.children.index(self)
-            parent.remove_widget(self)
-            parent.add_widget(child, index=index)
-
-
-_name_of_the_properties_need_to_be_copied = (
-    'size', 'pos', 'pos_hint', 'size_hint', 'size_hint_min', 'size_hint_max',
-)
+        location = save_widget_location(self)
+        self_parent = self.parent
+        if self_parent is not None:
+            self_parent.remove_widget(self)
+        restore_widget_location(self.children[0], location)
