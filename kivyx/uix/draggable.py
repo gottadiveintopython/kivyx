@@ -9,17 +9,20 @@ Inspired by
 This module is highly experimental.
 '''
 
-__all__ = ('KXDraggable', 'KXDroppableBehavior', )
+__all__ = ('KXDraggable', 'KXDraggableScreenManager', 'KXDroppableBehavior', )
 
 from kivy.properties import (
     ObjectProperty, NumericProperty, BooleanProperty, ListProperty,
     StringProperty,
 )
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
 from kivy.factory import Factory
+from kivy.uix.screenmanager import ScreenManager, NoTransition
 import asynckivy as ak
 
+from kivyx.utils import save_widget_location, restore_widget_location
 from kivyx.uix.behaviors.fakechildren import KXFakeChildrenBehavior
 from kivyx.uix.behaviors.dragreceiver import KXDragReceiver
 
@@ -158,6 +161,104 @@ class KXDraggable(KXDragReceiver, KXFakeChildrenBehavior, Widget):
             Window.add_widget(self)
             droppable.accept_drag(self)
             self.dispatch('on_drag_complete', droppable=droppable)
+        self.is_being_dragged = False
+
+    def on_drag_start(self):
+        pass
+
+    def on_drag_complete(self, droppable):
+        pass
+
+    def on_drag_cancel(self, droppable):
+        pass
+
+
+class KXDraggableScreenManager(KXDragReceiver, ScreenManager):
+    '''Provides the same functionality as KXDraggable does.'''
+
+    __events__ = ('on_drag_start', 'on_drag_complete', 'on_drag_cancel', )
+
+    drag_cls = StringProperty()
+    '''Same as drag_n_drop's '''
+
+    is_being_dragged = BooleanProperty(False)
+    '''(read-only)'''
+
+    duration_of_cancel_anim = NumericProperty(.1)
+
+    def __init__(self, **kwargs):
+        f = self.fbind
+        f('on_drag_is_about_to_start',
+          KXDraggableScreenManager.__on_drag_is_about_to_start)
+        f('on_drag_touch_down',
+          KXDraggableScreenManager.__on_drag_touch_down)
+        kwargs.setdefault('transition', NoTransition())
+        super().__init__(**kwargs)
+        Clock.schedule_once(self._switch_to_default_screen, -1)
+
+    def _switch_to_default_screen(self, *args):
+        if self.has_screen('default'):
+            self.current = 'default'
+
+    def __on_drag_is_about_to_start(self, touch):
+        return self.is_being_dragged
+
+    def __on_drag_touch_down(self, touch):
+        self.is_being_dragged = True
+        self.dispatch('on_drag_start')
+        ak.start(self._handle_drag(touch))
+
+    async def _handle_drag(self, touch):
+        from kivy.core.window import Window
+
+        offset_x = touch.ox - self.x
+        offset_y = touch.oy - self.y
+        touch_ud = touch.ud
+
+        #
+        if self.has_screen('below_finger'):
+            self.current = 'below_finger'
+        original_location = save_widget_location(self)
+        opos_win = self.to_window(*touch.opos)
+        self.parent.remove_widget(self)
+        self.size_hint = (None, None, )
+        self.pos_hint = {}
+        self.pos = (opos_win[0] - offset_x, opos_win[1] - offset_y, )
+        del opos_win
+        Window.add_widget(self)
+
+        # remains_behind
+        remains_behind = self.get_screen('remains_behind')
+        restore_widget_location(remains_behind, original_location)
+        del original_location
+
+        # mark the touch so that KXDroppableBehavior can react
+        touch_ud['kivyx_drag_cls'] = self.drag_cls
+
+        async for __ in self.rest_of_drag_touch_moves(touch):
+            pos = touch.pos
+            self.pos = (pos[0] - offset_x, pos[1] - offset_y)
+        del pos
+
+        droppable = touch_ud.get('kivyx_droppable', None)
+        touch_ud['kivyx_droppable'] = None
+        if droppable is None or not droppable.will_accept_drag(self):
+            self.dispatch('on_drag_cancel', droppable=droppable)
+            await ak.animate(
+                self, d=self.duration_of_cancel_anim,
+                pos=remains_behind.to_window(*remains_behind.pos),
+                size=remains_behind.size,
+            )
+            Window.remove_widget(self)
+            location = save_widget_location(remains_behind)
+            remains_behind.parent.remove_widget(remains_behind)
+            restore_widget_location(self, location)
+            del location
+        else:
+            remains_behind.parent.remove_widget(remains_behind)
+            droppable.accept_drag(self)
+            self.dispatch('on_drag_complete', droppable=droppable)
+        self.current = 'default'
         self.is_being_dragged = False
 
     def on_drag_start(self):
