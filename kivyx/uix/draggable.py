@@ -283,10 +283,10 @@ class KXDroppableBehavior:
                 touch_ud.setdefault('kivyx_droppable', self)
         return r
 
-    def will_accept_drag(self, draggable:KXDraggable) -> bool:
+    def will_accept_drag(self, draggable) -> bool:
         return True
 
-    def accept_drag(self, draggable:KXDraggable):
+    def accept_drag(self, draggable):
         parent = draggable.parent
         if parent is not None:
             parent.remove_widget(draggable)
