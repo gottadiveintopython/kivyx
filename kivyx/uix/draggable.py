@@ -151,13 +151,15 @@ class KXDraggable(KXDragReceiver, KXFakeChildrenBehavior, Widget):
         Window.remove_widget(widget_below_finger)
         if widget_remains_behind is not None:
             self.real_remove_widget(widget_remains_behind)
-        self.real_add_widget(self.widget_default)
-        if not cancels_drag:
+        if cancels_drag:
+            self.real_add_widget(self.widget_default)
+        else:
             self.parent.remove_widget(self)
             self.pos_hint = {}
             self.pos = widget_below_finger.pos
             self.size_hint = (None, None)
             self.size = widget_below_finger.size
+            self.real_add_widget(self.widget_default)
             Window.add_widget(self)
             droppable.accept_drag(self)
             self.dispatch('on_drag_complete', droppable=droppable)
