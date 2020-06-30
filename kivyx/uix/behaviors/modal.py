@@ -32,7 +32,7 @@ class KXModalBehavior:
     attach_to = ObjectProperty(None)
     '''Same as the ModalView's '''
 
-    overlay_color = ColorProperty(ModalView.overlay_color.defaultvalue)
+    overlay_color = ColorProperty([0., 0., 0., .8, ])
     '''Same as the ModalView's '''
 
     _search_window = ModalView._search_window
