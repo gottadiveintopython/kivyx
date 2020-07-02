@@ -1,4 +1,25 @@
-'''The diffirences between this and the official one.
+'''The diffirences from `kivy.uix.modalview.ModalView`.
+
+- This one is a behavior-type class, so you can use any widgets as a base except Scatter.
+- Doesn't have 'background_image' or 'background_color', so if you want those, implement it by yourself.
+- Can be opened multiple times. (ModalView can be opened only once).
+- Can be used in an async-manner.
+
+    Builder.load_string('''
+    <InputDialog>:
+        ...
+    ''')
+    class InputDialog(KXModalBehavior, KXBoxLayout):
+        ...
+
+    async def async_func():
+        dialog = InputDialog(desc='Input your name')
+        user_name = await dialog.async_show()
+        print(f'Hello {user_name}')
+
+- on_dismiss doesn't determine whether the widget actually will be dismissed or not.
+- dismiss() doesn't have 'force' and 'animation' parameters.
+- open() doesn't have 'animation' parameter.
 '''
 
 __all__ = ('KXModalBehavior', )
@@ -24,6 +45,8 @@ Builder.load_string('''
 
 
 class KXModalBehavior:
+    '''See module documentation.'''
+
     __events__ = ('on_pre_open', 'on_open', 'on_pre_dismiss', 'on_dismiss', )
 
     auto_dismiss = BooleanProperty(True)
@@ -33,7 +56,7 @@ class KXModalBehavior:
     '''Same as the ModalView's '''
 
     overlay_color = ColorProperty([0., 0., 0., .8, ])
-    '''Same as the ModalView's '''
+    '''Same as the ModalView's except the default value is a little darker,'''
 
     _search_window = ModalView._search_window
     _handle_keyboard = ModalView._handle_keyboard
