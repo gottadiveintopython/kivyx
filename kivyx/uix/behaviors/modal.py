@@ -5,10 +5,10 @@
 - Can be opened multiple times. (ModalView can be opened only once).
 - Can be used in an async-manner.
 
-    Builder.load_string('''
+    Builder.load_string("""
     <InputDialog>:
         ...
-    ''')
+    """)
     class InputDialog(KXModalBehavior, KXBoxLayout):
         ...
 
