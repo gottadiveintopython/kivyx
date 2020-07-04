@@ -193,8 +193,9 @@ class KXDrawer(RelativeLayout):
             self.dispatch('on_close')
 
     def open(self, *args, **kwargs):
-        '''Opens a drawer. This method doesn't use the arguments at all, so
-        you can bind it to events without putting a lambda function.
+        '''Opens the drawer. This method can take any argument but doesn't
+        use it at all, so you can bind the method to any events without
+        putting an additional function.
 
             drawer = KXDrawer()
             button = Button()
@@ -203,8 +204,9 @@ class KXDrawer(RelativeLayout):
         self._being_asked_to_open.set()
 
     def close(self, *args, **kwargs):
-        '''Closes a drawer. This method doesn't use the arguments at all, so
-        you can bind it to events without putting a lambda function.
+        '''Closes a drawer. This method can take any argument but doesn't
+        use it at all, so you can bind the method to any events without
+        putting an additional function.
 
             drawer = KXDrawer()
             button = Button()
