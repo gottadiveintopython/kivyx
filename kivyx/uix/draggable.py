@@ -328,6 +328,7 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
     allows_drag = BooleanProperty(True)
     '''Same as KXDragReceiver's '''
 
+    # some methods are completely the same as KXDraggable's, so use it.
     __on_pos = KXDraggable._KXDraggable__on_pos
     __on_size = KXDraggable._KXDraggable__on_size
     __on_widget_default = KXDraggable._KXDraggable__on_widget_default
