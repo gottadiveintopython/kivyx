@@ -39,7 +39,7 @@ DroppableArea:
         text:
             (
             "You can press the button if it already being dragged. (do multi touch)\\n"
-            "You can press the button if 'allows_drag' is False.\\n"
+            "You can press the button if 'allows_drag' is OFF.\\n"
             )
 '''
 
