@@ -32,7 +32,7 @@ KV_CODE = '''
         input_filter: root.input_filter
         multiline: False
         size_hint_min_y: self.font_size * 1.6
-        on_text_validate: root.dismiss_with_value(self.text)
+        on_text_validate: root.leave(value=self.text)
 
 <YesNoDialog>:
     orientation: 'tb'
@@ -47,11 +47,11 @@ KV_CODE = '''
         Button:
             text: 'Yes'
             size_hint_min_y: self.font_size * 1.6
-            on_release: root.dismiss_with_value('yes')
+            on_release: root.leave(value='yes')
         Button:
             text: 'No'
             size_hint_min_y: self.font_size * 1.6
-            on_release: root.dismiss_with_value('no')
+            on_release: root.leave(value='no')
 
 <BmiResult>:
     orientation: 'tb'

@@ -85,16 +85,24 @@ class KXModalBehavior:
 
         return return_value
 
-    def dismiss_with_value(self, return_value=None):
+    def leave(self, value):
+        '''Leaves arbitrary value. The value will be the return-value of
+        'await async_show()'
+
+            dialog = MyDialog()
+            assert await dialog.async_show() == 'A'
+            ...
+            dialog.leave(value='A')
+        '''
         if self.parent is None:
             return
-        self._dismiss_event.set(return_value)
+        self._dismiss_event.set(value)
 
     def open(self, *args, **kwargs):
         ak.start(self.async_show())
 
     def dismiss(self, *args, **kwargs):
-        self.dismiss_with_value()
+        self.leave(value=None)
 
     def __on_touch_down(self, touch):
         ak.start(self._handle_touch(touch))
