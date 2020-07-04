@@ -73,7 +73,6 @@ class KXDrawerTab(ButtonBehavior, Label):
     __ = None
 
 
-
 class KXDrawer(RelativeLayout):
     '''A nifty drawer.
 
@@ -112,6 +111,8 @@ class KXDrawer(RelativeLayout):
     def __init__(self, **kwargs):
         self._is_moving_to_the_top = False
         self._trigger_reset = trigger = Clock.create_trigger(self.reset, 0)
+        self._being_asked_to_open = ak.Event()
+        self._being_asked_to_close = ak.Event()
         super().__init__(**kwargs)
         self.fbind('anchor', trigger)
         trigger()
@@ -155,8 +156,14 @@ class KXDrawer(RelativeLayout):
 
         tab.icon_angle = icon_angle_c
         ph[pos_key_c] = ph_value
+
+        being_asked_to_close = self._being_asked_to_close
+        being_asked_to_open = self._being_asked_to_open
         while True:
-            await ak.event(tab, 'on_press')
+            await ak.or_(
+                ak.event(tab, 'on_press'),
+                being_asked_to_open.wait(),
+            )
             self.dispatch('on_pre_open')
             if self.top_when_opened:
                 self._is_moving_to_the_top = True
@@ -167,18 +174,45 @@ class KXDrawer(RelativeLayout):
             await ak.animate(
                 self, d=self.duration,
                 **{pos_key_o: _get_pos_value_in_local_coordinates()})
+            being_asked_to_close.clear()
             await ak.animate(tab, d=self.duration, icon_angle=icon_angle_o)
             ph[pos_key_o] = ph_value
             self.dispatch('on_open')
-            await ak.event(tab, 'on_press')
+            await ak.or_(
+                ak.event(tab, 'on_press'),
+                being_asked_to_close.wait(),
+            )
             self.dispatch('on_pre_close')
             del ph[pos_key_o]
             await ak.animate(
                 self, d=self.duration,
                 **{pos_key_c: _get_pos_value_in_local_coordinates()})
+            being_asked_to_open.clear()
             await ak.animate(tab, d=self.duration, icon_angle=icon_angle_c)
             ph[pos_key_c] = ph_value
             self.dispatch('on_close')
+
+    def open(self, *args, **kwargs):
+        '''Opens the drawer. This method can take any number of arguments
+        but doesn't use those at all, so you can bind the method to any event
+        without putting an additional function.
+
+            drawer = KXDrawer()
+            button = Button()
+            button.bind(on_press=drawer.open)
+        '''
+        self._being_asked_to_open.set()
+
+    def close(self, *args, **kwargs):
+        '''Closes the drawer. This method can take any number of arguments
+        but doesn't use those at all, so you can bind the method to any event
+        without putting an additional function.
+
+            drawer = KXDrawer()
+            button = Button()
+            button.bind(on_press=drawer.close)
+        '''
+        self._being_asked_to_close.set()
 
     def on_pre_open(self):
         pass
