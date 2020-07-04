@@ -328,6 +328,11 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
     allows_drag = BooleanProperty(True)
     '''Same as KXDragReceiver's '''
 
+    __on_pos = KXDraggable._KXDraggable__on_pos
+    __on_size = KXDraggable._KXDraggable__on_size
+    __on_widget_default = KXDraggable._KXDraggable__on_widget_default
+    # real_add_widget = KXDraggable.real_add_widget  # not allowed!!
+
     def __init__(self, **kwargs):
         f = self.fbind
         f('pos', KXModestDraggable.__on_pos)
@@ -345,24 +350,6 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
         self.is_being_dragged = True
         self.dispatch('on_drag_start')
         ak.start(self._handle_touch(touch))
-
-    def __on_pos(self, pos):
-        children = self.children
-        if not children:
-            return
-        children[0].pos = pos
-
-    def __on_size(self, size):
-        children = self.children
-        if not children:
-            return
-        children[0].size = size
-
-    def __on_widget_default(self, widget):
-        if not self.is_being_dragged:
-            self.real_clear_widgets()
-            if widget is not None:
-                self.real_add_widget(widget)
 
     def real_add_widget(self, widget, *args, **kwargs):
         widget.pos = self.pos
