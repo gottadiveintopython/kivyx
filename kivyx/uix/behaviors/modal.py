@@ -73,23 +73,32 @@ class KXModalBehavior:
             Logger.warning('KXModalBehavior: cannot open view, no window found.')
             return
 
-        self.dispatch('on_pre_open')
-        self._dismiss_event = dismiss_event = ak.Event()
-        self.opacity = 0
-        uid_touch = self.fbind('on_touch_down', KXModalBehavior.__on_touch_down)
-        window.add_widget(self)
-        await ak.animate(self, opacity=1, d=.2)
-        uid_keyboard = window.fbind('on_keyboard', self._handle_keyboard)
-        self.dispatch('on_open')
-        return_value = await dismiss_event.wait()
-        self.dispatch('on_pre_dismiss')
-        window.unbind_uid('on_keyboard', uid_keyboard)
-        await ak.animate(self, opacity=0, d=.2)
-        window.remove_widget(self)
-        self.unbind_uid('on_touch_down', uid_touch)
-        self.dispatch('on_dismiss')
-
-        return return_value
+        uid_touch = None
+        uid_keyboard = None
+        try:
+            self.dispatch('on_pre_open')
+            self._dismiss_event = dismiss_event = ak.Event()
+            self.opacity = 0
+            uid_touch = self.fbind('on_touch_down', KXModalBehavior.__on_touch_down)
+            window.add_widget(self)
+            await ak.animate(self, opacity=1, d=.2)
+            uid_keyboard = window.fbind('on_keyboard', self._handle_keyboard)
+            self.dispatch('on_open')
+            return_value = await dismiss_event.wait()
+            self.dispatch('on_pre_dismiss')
+            window.unbind_uid('on_keyboard', uid_keyboard)
+            await ak.animate(self, opacity=0, d=.2)
+            window.remove_widget(self)
+            self.unbind_uid('on_touch_down', uid_touch)
+            self.dispatch('on_dismiss')
+            return return_value
+        finally:
+            if uid_touch is not None:
+                self.unbind_uid('on_touch_down', uid_touch)
+            if uid_keyboard is not None:
+                window.unbind_uid('on_keyboard', uid_keyboard)
+            if self.parent is not None:
+                window.remove_widget(self)
 
     def leave(self, value):
         '''Leaves arbitrary value. The value will be the return-value of
