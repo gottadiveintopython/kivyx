@@ -1,7 +1,9 @@
-'''The diffirences from `kivy.uix.modalview.ModalView`.
+'''The differences from `kivy.uix.modalview.ModalView`.
 
-- This one is a behavior-type class, so you can use any widgets as a base except Scatter.
-- Doesn't have 'background_image' or 'background_color', so if you want those, implement it by yourself.
+- This one is a behavior-type class, so you can use any widgets as a base
+  except Scatter and ScrollView. (RelativeLayout is fine.)
+- Doesn't have 'background_image' or 'background_color', so if you want those,
+  implement it by yourself.
 - Can be opened multiple times. (ModalView can be opened only once).
 - Can be used in an async-manner.
 
@@ -17,9 +19,13 @@
         user_name = await dialog.async_show()
         print(f'Hello {user_name}')
 
-- on_dismiss doesn't determine whether the widget actually will be dismissed or not.
+- on_dismiss doesn't determine whether the widget actually will be dismissed
+  or not.
 - dismiss() doesn't have 'force' and 'animation' parameters.
 - open() doesn't have 'animation' parameter.
+
+#:TODO Support Scatter and ScrollView by putting another widget only
+#      for the background.
 '''
 
 __all__ = ('KXModalBehavior', )
