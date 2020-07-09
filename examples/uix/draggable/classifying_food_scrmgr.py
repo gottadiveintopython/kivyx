@@ -19,6 +19,7 @@ KV_CODE = '''
             rectangle: [*self.pos, *self.size, ]
 <DraggableItem>:
     drag_cls: 'item'
+    drag_trigger: 'immediate'
     Screen:
         name: 'default'
         canvas.before:
