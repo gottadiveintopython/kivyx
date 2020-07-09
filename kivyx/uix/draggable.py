@@ -240,6 +240,7 @@ class KXDraggableScreenManager(KXDragReceiver, ScreenManager):
         # mark the touch so that KXDroppableBehavior can react
         touch_ud['kivyx_drag_cls'] = self.drag_cls
 
+        pos = None
         async for __ in self.rest_of_drag_touch_moves(touch):
             pos = touch.pos
             self.pos = (pos[0] - offset_x, pos[1] - offset_y)
