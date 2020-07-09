@@ -26,7 +26,7 @@ __all__ = ('KXDragReceiver', )
 
 from contextlib import contextmanager
 
-from kivy.properties import NumericProperty, OptionProperty
+from kivy.properties import NumericProperty, OptionProperty, BooleanProperty
 from kivy.config import Config
 from kivy.factory import Factory
 import asynckivy as ak
@@ -121,7 +121,7 @@ class ClassicTrigger:
         recognized_as_drag = False
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=True):
+                widget, touch, eats_touch=widget.eats_touch):
             dx = abs(touch.x - ox)
             dy = abs(touch.y - oy)
             if dx > drag_distance or dy > drag_distance:
@@ -133,7 +133,7 @@ class ClassicTrigger:
             widget.dispatch('on_drag_touch_down', touch)
             widget.dispatch('on_drag_touch_move', touch)
             async for __ in ak.rest_of_touch_moves(
-                    widget, touch, eats_touch=True):
+                    widget, touch, eats_touch=widget.eats_touch):
                 widget.dispatch('on_drag_touch_move', touch)
             widget.dispatch('on_drag_touch_up', touch)
         else:
@@ -172,7 +172,7 @@ class LongPressTrigger:
         if touch.time_update != touch.time_start:
             widget.dispatch('on_drag_touch_move', touch)
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=True):
+                widget, touch, eats_touch=widget.eats_touch):
             widget.dispatch('on_drag_touch_move', touch)
         widget.dispatch('on_drag_touch_up', touch)
 
@@ -183,7 +183,7 @@ class LongPressTrigger:
         drag_distance = widget.drag_distance
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=True):
+                widget, touch, eats_touch=widget.eats_touch):
             dx = abs(touch.x - ox)
             dy = abs(touch.y - oy)
             if dy > drag_distance or dx > drag_distance:
@@ -210,7 +210,7 @@ class ImmediateTrigger:
         widget = ctx['widget']
         widget.dispatch('on_drag_touch_down', touch)
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=True):
+                widget, touch, eats_touch=widget.eats_touch):
             widget.dispatch('on_drag_touch_move', touch)
         widget.dispatch('on_drag_touch_up', touch)
 
@@ -249,6 +249,11 @@ class KXDragReceiver:
     'none'
         Touch will never be recognized as a dragging gesture,
         i.e. disables dragging gesture.
+    '''
+
+    eats_touch = BooleanProperty(False)
+    '''If True, when a touch is recognized as dragging gesture, it will never
+    be dispatched further.
     '''
 
     __events__ = (
