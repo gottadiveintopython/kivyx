@@ -248,7 +248,7 @@ class KXDragReceiver:
 
     'none'
         Touch will never be recognized as a dragging gesture,
-        i.e. disables dragging gesture.
+        i.e. disable drag.
     '''
 
     eats_touch = BooleanProperty(False)
