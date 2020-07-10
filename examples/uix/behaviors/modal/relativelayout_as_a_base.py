@@ -8,7 +8,6 @@ KV_CODE = '''
 #:import Factory kivy.factory.Factory
 
 <MyModalView@KXModalBehavior+RelativeLayout>:
-    auto_dismiss: False
     size_hint: .5, .5
     canvas.before:
         Color:
@@ -34,10 +33,16 @@ FloatLayout:
         on_release: Factory.MyModalView(auto_dismiss=False).open()
     Button:
         size_hint: None, None
+        size: 200, 50
+        pos_hint: {'right': 1, 'y': 0, }
+        text: 'open dialog (auto dismiss)'
+        on_release: Factory.MyModalView(auto_dismiss=True).open()
+    Button:
+        size_hint: None, None
         width: self.texture_size[0] + 10
         height: self.texture_size[1] + 10
         pos_hint: {'right': 1, 'top': 1, }
-        text: "You can't press me\\nwhile a dialog is open"
+        text: "You can't press me\\nwhile dialog is open"
 '''
 
 

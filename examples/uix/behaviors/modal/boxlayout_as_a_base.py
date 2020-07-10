@@ -49,7 +49,7 @@ FloatLayout:
         width: self.texture_size[0] + 10
         height: self.texture_size[1] + 10
         pos_hint: {'right': 1, 'top': 1, }
-        text: "You can't press me\\nwhile a dialog is open"
+        text: "You can't press me\\nwhile dialog is open"
 '''
 
 
