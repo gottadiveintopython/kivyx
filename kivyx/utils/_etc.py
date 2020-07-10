@@ -1,5 +1,8 @@
-__all__ = ('strip_proxy_ref', 'fade_transition', )
+__all__ = (
+    'strip_proxy_ref', 'fade_transition', 'register_assets_just_for_testing',
+)
 
+from functools import lru_cache
 from contextlib import asynccontextmanager
 from typing import Union
 from kivy.uix.widget import Widget
@@ -33,3 +36,13 @@ async def fade_transition(widget, *widgets, **kwargs):
         widget.opacity = 1.
         for uid in bind_uids:
             widget.unbind_uid('opacity', uid)
+
+
+@lru_cache(maxsize=1)  # want to ensure the function to be called only once
+def register_assets_just_for_testing():
+    from pathlib import Path
+    from kivy.resources import resource_add_path
+    import kivyx
+    root = Path(kivyx.__file__).parents[1] / 'assets'
+    assert root.is_dir()
+    resource_add_path(str(root))
