@@ -1,3 +1,5 @@
+import gc
+from kivy.clock import Clock
 from kivy.app import runTouchApp
 from kivy.lang import Builder
 from kivyx.uix.drawer import KXDrawer
@@ -12,8 +14,6 @@ class MyDrawer(KXDrawer):
 
 
 root = Builder.load_string(r'''
-#:import gc gc
-
 BoxLayout:
     orientation: 'vertical'
     FloatLayout:
@@ -28,7 +28,6 @@ BoxLayout:
         size_hint_y: .1
         on_press:
             root.remove_widget(parent_of_drawer)
-            gc.collect()
             button_a.disabled = True
             button_b.disabled = True
     Button:
@@ -37,8 +36,8 @@ BoxLayout:
         size_hint_y: .1
         on_press:
             parent_of_drawer.remove_widget(drawer)
-            gc.collect()
             button_a.disabled = True
             button_b.disabled = True
 ''')
+Clock.schedule_interval(lambda __: gc.collect(), 2)
 runTouchApp(root)

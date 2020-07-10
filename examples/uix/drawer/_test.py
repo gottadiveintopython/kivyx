@@ -98,9 +98,6 @@ BoxLayout:
         orientation: 'vertical'
         spacing: dp(4)
         Button:
-            text: 'disappear()'
-            on_press: drawer.disappear()
-        Button:
             text: 'open()'
             on_press: drawer.open()
         Button:
