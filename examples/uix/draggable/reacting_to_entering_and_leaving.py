@@ -23,6 +23,7 @@ KV_CODE = '''
 
 <Draggable@KXDraggable>:
     widget_default: default
+    drag_trigger: 'immediate'
     Label:
         id: default
         text: root.drag_cls

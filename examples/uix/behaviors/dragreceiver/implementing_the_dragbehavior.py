@@ -30,6 +30,7 @@ class DragBehavior(KXDragReceiver):
     _ctx = None
 
     def __init__(self, **kwargs):
+        kwargs.setdefault('eats_touch', True)
         super().__init__(**kwargs)
         self.fbind(
             'on_drag_is_about_to_start',
@@ -45,6 +46,7 @@ class DragBehavior(KXDragReceiver):
         return (x < ox <= x + w) and (y < oy <= y + h)
 
     def on_drag_touch_down(self, touch):
+        self.drag_trigger = 'none'
         self._ctx = {
             'offset_x': touch.ox - self.x,
             'offset_y': touch.oy - self.y,
@@ -58,6 +60,7 @@ class DragBehavior(KXDragReceiver):
         )
 
     def on_drag_touch_up(self, touch):
+        self.drag_trigger = 'classic'
         self._ctx = None
 
 
@@ -69,9 +72,9 @@ KV_CODE = '''
 <DraggableWidget>:
     size: 200, 100
     orientation: 'tb'
-    drag_rectangle: [*draggable.pos, *draggable.size, ]
+    drag_rectangle: [*draggable_area.pos, *draggable_area.size, ]
     Button:
-        id: draggable
+        id: draggable_area
         text: 'draggable area'
     Button:
         text: 'non-draggable area'

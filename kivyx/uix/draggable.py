@@ -16,7 +16,7 @@ __all__ = (
 
 from kivy.properties import (
     ObjectProperty, NumericProperty, BooleanProperty, ListProperty,
-    StringProperty,
+    StringProperty, OptionProperty,
 )
 from kivy.clock import Clock
 from kivy.lang import Builder
@@ -240,6 +240,7 @@ class KXDraggableScreenManager(KXDragReceiver, ScreenManager):
         # mark the touch so that KXDroppableBehavior can react
         touch_ud['kivyx_drag_cls'] = self.drag_cls
 
+        pos = None
         async for __ in self.rest_of_drag_touch_moves(touch):
             pos = touch.pos
             self.pos = (pos[0] - offset_x, pos[1] - offset_y)
@@ -302,10 +303,18 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
     '''The differences from KXDraggable.
 
     - Faster.
-    - Doesn't have `on_drag_is_about_to_start` event.
-    - Immediately treats touches as drag if it happens inside the widget.
+    - Supports only two types of drag triggers. ('none' and 'immediate')
     '''
-    __events__ = ('on_drag_start', 'on_drag_complete', 'on_drag_cancel', )
+    __events__ = (
+        'on_drag_is_about_to_start',
+        'on_drag_start', 'on_drag_complete', 'on_drag_cancel',
+    )
+
+    drag_trigger = OptionProperty('immediate', options=('immediate', 'none'))
+    '''See `KXDragReceiver`'s documentation. '''
+
+    eats_touch = BooleanProperty(False)
+    '''Same as `KXDragReceiver`'s '''
 
     drag_cls = StringProperty()
     '''Same as KXDraggable's '''
@@ -325,9 +334,6 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
     duration_of_cancel_anim = NumericProperty(.1)
     '''Same as KXDraggable's '''
 
-    allows_drag = BooleanProperty(True)
-    '''Same as KXDragReceiver's '''
-
     # some methods are completely the same as KXDraggable's, so use it.
     __on_pos = KXDraggable._KXDraggable__on_pos
     __on_size = KXDraggable._KXDraggable__on_size
@@ -336,17 +342,23 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
 
     def __init__(self, **kwargs):
         f = self.fbind
+        f('on_drag_is_about_to_start', KXModestDraggable.__on_drag_is_about_to_start)
         f('pos', KXModestDraggable.__on_pos)
         f('size', KXModestDraggable.__on_size)
         f('widget_default', KXModestDraggable.__on_widget_default)
         super().__init__(**kwargs)
 
+    def __on_drag_is_about_to_start(self, touch):
+        return (
+            self.drag_trigger == 'none' or 
+            self.is_being_dragged or
+            self.widget_default is None or
+            touch.is_mouse_scrolling or
+            (not self.collide_point(*touch.opos))
+        )
+
     def on_touch_down(self, touch):
-        if (not self.allows_drag) or \
-                self.is_being_dragged or \
-                (not self.widget_default) or \
-                touch.is_mouse_scrolling or \
-                (not self.collide_point(*touch.opos)):
+        if self.dispatch('on_drag_is_about_to_start', touch):
             return super().on_touch_down(touch)
         self.is_being_dragged = True
         self.dispatch('on_drag_start')
@@ -395,7 +407,8 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
         # mark the touch so that KXDroppableBehavior can react
         touch_ud['kivyx_drag_cls'] = self.drag_cls
 
-        async for __ in ak.rest_of_touch_moves(self, touch):
+        async for __ in ak.rest_of_touch_moves(
+                self, touch, eats_touch=self.eats_touch):
             touch_pos_win = self_to_window(*touch.pos)
             widget_below_finger.pos = (
                 touch_pos_win[0] - offset_x,
@@ -427,6 +440,9 @@ class KXModestDraggable(KXFakeChildrenBehavior, Widget):
             droppable.accept_drag(self)
             self.dispatch('on_drag_complete', droppable=droppable)
         self.is_being_dragged = False
+
+    def on_drag_is_about_to_start(self, touch):
+        pass
 
     def on_drag_start(self):
         pass

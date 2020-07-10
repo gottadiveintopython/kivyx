@@ -16,7 +16,7 @@ KV_CODE = '''
     widget_default: default
     Button:
         id: default
-        text: 'Press me!'
+        text: 'being dragged' if root.is_being_dragged else 'not being dragged'
 DroppableArea:
     KXBoxLayout:
         orientation: 'tb'
@@ -32,7 +32,7 @@ DroppableArea:
     DraggableButton:
         size_hint: None, None
         size: 200, 200
-        allows_drag: allows_drag.active
+        drag_trigger: 'immediate' if allows_drag.active else 'none'
     Label:
         pos_hint: {'x': 0, 'top': 1, }
         size_hint: 1, .5
