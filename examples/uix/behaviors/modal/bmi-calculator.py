@@ -1,4 +1,6 @@
-from kivy.properties import StringProperty, ObjectProperty, OptionProperty, NumericProperty
+from kivy.properties import (
+    StringProperty, ObjectProperty, OptionProperty, NumericProperty,
+)
 from kivy.app import runTouchApp
 from kivy.lang import Builder
 from kivy.factory import Factory
@@ -8,6 +10,8 @@ from kivyx.utils import fade_transition
 from kivyx.uix.boxlayout import KXBoxLayout
 from kivyx.uix.behaviors.modal import KXModalBehavior
 
+from kivyx.utils import register_assets_just_for_testing
+register_assets_just_for_testing()
 
 KV_CODE = '''
 <Label, TextInput>:
@@ -61,9 +65,9 @@ KV_CODE = '''
         size_hint_y: None
         height: self.texture_size[1]
         text: 'You are {}. (BMI {:.02f})'.format(root.body_style, root.bmi)
-    AsyncImage:
+    Image:
         allow_streach: True
-        source: root.image_urls[root.body_style]
+        source: 'assets_just_for_testing/image/' + root.images[root.body_style]
 
 FloatLayout:
     Label:
@@ -87,10 +91,10 @@ class YesNoDialog(KXModalBehavior, KXBoxLayout):
 class BmiResult(KXBoxLayout):
     bmi = NumericProperty()
     body_style = OptionProperty('healthy', options=('skinny', 'healthy', 'fat'))
-    image_urls = {
-        'fat': r'https://1.bp.blogspot.com/--hZ93Vdgp3I/UZmCOGVRAGI/AAAAAAAATeI/eYPr-aXa4_c/s400/metabolic_boy.png',
-        'skinny': r'https://4.bp.blogspot.com/-cP37vYUckFQ/VpjCtsNtmQI/AAAAAAAA3G8/b-8KACxcoA0/s450/yase08_woman.png',
-        'healthy': r'https://3.bp.blogspot.com/-MlHCIUGNIAk/V9vCEeZoE3I/AAAAAAAA97I/6hFRpzgInC42sWxxkHqCLZ1blJf2lTqwgCLcB/s800/character_heart_genki.png',
+    images = {
+        'fat': r'metabolic_boy.png',
+        'skinny': r'yase08_woman.png',
+        'healthy': r'character_heart_genki.png',
     }
 
     def on_bmi(self, __, bmi):
