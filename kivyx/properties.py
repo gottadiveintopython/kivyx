@@ -1,4 +1,4 @@
-__all__ =('AutoCloseProperty', )
+__all__ =('AutoCloseProperty', 'FreezableAutoCloseProperty', )
 
 
 class AutoCloseProperty:
@@ -43,5 +43,41 @@ class AutoCloseProperty:
     def __delete__(self, obj):
         value = obj.__dict__.get(self.name)
         if value is not None:
+            value.close()
+        del obj.__dict__[self.name]
+
+
+class FreezableAutoCloseProperty:
+    '''(internal)'''
+
+    def __set_name__(self, klass, name):
+        self.name = name
+
+    def __get__(self, obj, klass=None):
+        if obj is None:
+            return self
+        value = obj.__dict__.get(self.name)
+        return None if value == 'frozen' else value
+
+    def __set__(self, obj, new_value):
+        old_value = obj.__dict__.get(self.name)
+        if old_value == 'frozen':
+            if new_value is not None:
+                raise ValueError(
+                    "The property is frozen, setting a value is not allowed "
+                    "except None.")
+            return
+        if old_value is new_value:
+            return
+        if old_value is not None:
+            old_value.close()
+        obj.__dict__[self.name] = new_value
+
+    def __delete__(self, obj):
+        value = obj.__dict__.get(self.name)
+        if value is not None:
+            if value == 'frozen':
+                raise AttributeError(
+                    "The property is frozen, deletion is not allowed.")
             value.close()
         del obj.__dict__[self.name]
