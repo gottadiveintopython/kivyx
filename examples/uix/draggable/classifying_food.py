@@ -5,34 +5,30 @@ from kivy.factory import Factory
 import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
-from kivyx.uix.draggable import KXDroppableBehavior, KXDraggable
+from kivyx.uix.draggable import KXDroppableBehavior, KXDraggableBehavior
 
 
 KV_CODE = '''
 <DroppableArea>:
-    drag_classes: ['item', ]
+    drag_classes: ['food', ]
     canvas.before:
         Color:
             rgba: self.line_color
         Line:
             width: 2
             rectangle: [*self.pos, *self.size, ]
-<DraggableItem>:
-    drag_cls: 'item'
+<DraggableLabel>:
+    drag_cls: 'food'
     drag_trigger: 'immediate'
-    widget_default: default
-    Label:
-        id: default
-        font_size: 30
-        text: root.name
-        opacity: .4 if root.is_being_dragged else 1.
-        canvas.before:
-            Color:
-                rgba: 1, 1, 1, 1
-            Line:
-                dash_length: 4
-                dash_offset: 4
-                rectangle: [*self.pos, *self.size, ]
+    font_size: 30
+    opacity: .4 if root.is_being_dragged else 1.
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Line:
+            dash_length: 4
+            dash_offset: 4
+            rectangle: [*self.pos, *self.size, ]
 
 KXBoxLayout:
     orientation: 'tb'
@@ -58,14 +54,13 @@ KXBoxLayout:
 '''
 
 
-class DraggableItem(KXDraggable):
-    name = StringProperty()
+class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
     def on_drag_cancel(self, droppable):
         if droppable is None:
             return
-        print(f"Incorrect! {self.name} is not {droppable.color_cls}")
+        print(f"Incorrect! {self.text} is not {droppable.color_cls}")
 
     def on_drag_complete(self, droppable):
         print("Correct")
@@ -82,6 +77,7 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
         draggable.parent.remove_widget(draggable)
         draggable.pos_hint = {'x': 0, 'y': 0, }
         draggable.size_hint = (1, 1, )
+        draggable.drag_trigger = 'none'
         self.add_widget(draggable)
         ak.start(self._dispose_item(draggable))
 
@@ -95,7 +91,7 @@ class SampleApp(App):
         from random import shuffle
         root = Builder.load_string(KV_CODE)
         items = [
-            DraggableItem(name=name, color_cls=color_cls)
+            DraggableLabel(text=name, color_cls=color_cls)
             for color_cls, names in {
                 'red': ('apple', 'strawberry', 'tomato', ),
                 'yellow': ('lemon', 'banana', 'mango', ),
