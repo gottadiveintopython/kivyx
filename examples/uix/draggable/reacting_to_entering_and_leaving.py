@@ -7,7 +7,7 @@ import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
 from kivyx.uix.divider import KXDivider
-from kivyx.uix.draggable import KXDraggable, KXDroppableBehavior
+from kivyx.uix.draggable import KXDraggableBehavior, KXDroppableBehavior
 
 KV_CODE = '''
 <Droppable>:
@@ -21,14 +21,11 @@ KV_CODE = '''
             pos: self.pos
             size: self.size
 
-<Draggable@KXDraggable>:
-    widget_default: default
+<Draggable@KXDraggableBehavior+Label>:
     drag_trigger: 'immediate'
-    Label:
-        id: default
-        text: root.drag_cls
-        font_size: 50
-        opacity: .3 if root.is_being_dragged else 1.
+    text: root.drag_cls
+    font_size: 50
+    opacity: .3 if root.is_being_dragged else 1.
 
 KXBoxLayout:
     orientation: 'tb'

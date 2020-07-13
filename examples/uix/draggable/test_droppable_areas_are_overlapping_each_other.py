@@ -3,7 +3,7 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.factory import Factory
 
-from kivyx.uix.draggable import KXDroppableBehavior, KXDraggable
+from kivyx.uix.draggable import KXDroppableBehavior, KXDraggableBehavior
 
 
 KV_CODE = '''
@@ -16,6 +16,13 @@ KV_CODE = '''
             pos: self.pos
             size: self.size
 
+<DraggableLabel@KXDraggableBehavior+Label>:
+    drag_cls: 'test'
+    drag_trigger: 'immediate'
+    text: 'A'
+    font_size: 100
+    opacity: .3 if root.is_being_dragged else 1.
+
 DroppableArea:
     background_color: "#000000"
     DroppableArea:
@@ -26,18 +33,10 @@ DroppableArea:
         background_color: "#551111"
         size_hint: .7, .5
         pos_hint: {'center': (.4, .6, ), }
-    KXDraggable:
-        id: draggable
-        drag_cls: 'test'
+    DraggableLabel:
         size_hint: None, None
         size: 100, 100
         pos_hint: {'x': 0, 'y': 0, }
-        widget_default: default
-        Label:
-            id: default
-            font_size: 100
-            text: 'A'
-            opacity: .3 if draggable.is_being_dragged else 1.
 '''
 
 
