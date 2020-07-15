@@ -35,7 +35,7 @@ BoxLayout:
         Button:
             text: 'add a widget to the left side'
             on_press:
-                magnet = KXMagnet()
+                magnet = KXMagnet(do_anim=False)
                 magnet.add_widget(Image(source='data/logo/kivy-icon-256.png'))
                 left_pane.add_widget(magnet)
         Button:
