@@ -10,7 +10,6 @@ from kivy.properties import NumericProperty, StringProperty, ListProperty
 from asynckivy import start as ak_start, animate as ak_animate
 
 from kivyx.properties import AutoCloseProperty
-from kivyx.utils import save_widget_location, restore_widget_location
 
 
 class KXMagnet(Widget):
@@ -52,13 +51,3 @@ class KXMagnet(Widget):
                 t=self.transition,
                 **{prop: getattr(self, prop) for prop in self.anim_props}
             ))
-
-    def disappear(self):
-        '''(experimental)
-        Silently disappears without ruining the layout.
-        '''
-        location = save_widget_location(self)
-        self_parent = self.parent
-        if self_parent is not None:
-            self_parent.remove_widget(self)
-        restore_widget_location(self.children[0], location)
