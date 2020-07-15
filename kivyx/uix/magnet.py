@@ -16,7 +16,7 @@ from kivyx.utils import save_widget_location, restore_widget_location
 class KXMagnet(Widget):
     duration = NumericProperty(1)
     transition = StringProperty('out_quad')
-    anim_props = ListProperty(['pos', 'size', ])
+    anim_props = ListProperty(['x', 'y', 'width', 'height', ])
     _coro = AutoCloseProperty()
 
     def __init__(self, **kwargs):
