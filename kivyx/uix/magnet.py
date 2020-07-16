@@ -6,17 +6,19 @@ __all__ = ('KXMagnet', )
 
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, StringProperty, ListProperty
+from kivy.properties import (
+    NumericProperty, StringProperty, ListProperty, BooleanProperty,
+)
 from asynckivy import start as ak_start, animate as ak_animate
 
 from kivyx.properties import AutoCloseProperty
-from kivyx.utils import save_widget_location, restore_widget_location
 
 
 class KXMagnet(Widget):
+    do_anim = BooleanProperty(True)
     duration = NumericProperty(1)
     transition = StringProperty('out_quad')
-    anim_props = ListProperty(['pos', 'size', ])
+    anim_props = ListProperty(['x', 'y', 'width', 'height', ])
     _coro = AutoCloseProperty()
 
     def __init__(self, **kwargs):
@@ -40,25 +42,20 @@ class KXMagnet(Widget):
     def add_widget(self, widget, *args, **kwargs):
         if self.children:
             raise ValueError('KXMagnet can have only one child')
-        widget.size = self.size
-        widget.pos = self.pos
+        for prop in self.anim_props:
+            setattr(widget, prop, getattr(self, prop))
         return super().add_widget(widget, *args, **kwargs)
 
     def _start_anim(self, *args):
         if self.children:
+            if not self.do_anim:
+                self._coro = None
+                for prop in self.anim_props:
+                    setattr(self.children[0], prop, getattr(self, prop))
+                return
             self._coro = ak_start(ak_animate(
                 self.children[0],
                 d=self.duration,
                 t=self.transition,
                 **{prop: getattr(self, prop) for prop in self.anim_props}
             ))
-
-    def disappear(self):
-        '''(experimental)
-        Silently disappears without ruining the layout.
-        '''
-        location = save_widget_location(self)
-        self_parent = self.parent
-        if self_parent is not None:
-            self_parent.remove_widget(self)
-        restore_widget_location(self.children[0], location)
