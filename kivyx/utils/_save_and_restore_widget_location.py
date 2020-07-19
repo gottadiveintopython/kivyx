@@ -13,11 +13,14 @@ _prop_names = (
     'size_hint_max_x', 'size_hint_max_y',
 )
 
-def save_widget_location(widget:Union[WeakProxy, Widget]) -> dict:
+def save_widget_location(
+        widget:Union[WeakProxy, Widget], *, ignore_parent=False) -> dict:
     '''(experimental)'''
     w = widget.__self__
     location = {name: getattr(w, name) for name in _prop_names}
     location['pos_hint'] = w.pos_hint.copy()
+    if ignore_parent:
+        return location
     parent = w.parent
     if parent is not None:
         location['weak_parent'] = ref(parent)
@@ -25,7 +28,9 @@ def save_widget_location(widget:Union[WeakProxy, Widget]) -> dict:
     return location
 
 
-def restore_widget_location(widget:Union[WeakProxy, Widget], location:dict):
+def restore_widget_location(
+        widget:Union[WeakProxy, Widget], location:dict,
+        *, ignore_parent=False):
     '''(experimental)'''
     w = widget.__self__
     location = location.copy()
@@ -36,7 +41,7 @@ def restore_widget_location(widget:Union[WeakProxy, Widget], location:dict):
         setattr(w, prop_name, value)
     w.pos_hint = pos_hint.copy()
 
-    if weak_parent is None:
+    if ignore_parent or weak_parent is None:
         return
     parent = weak_parent()
     if parent is None:
