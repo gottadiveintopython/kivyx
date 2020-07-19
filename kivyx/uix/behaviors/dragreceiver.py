@@ -164,13 +164,14 @@ class LongPressTrigger:
 
         await ak.sleep(widget.drag_timeout / 1000.)
         ctx['coro_cancel'].close()
-        if widget.dispatch('on_drag_is_about_to_start', touch):
-            ak.start(_simulate_normal_touch(ctx))
-            return
-
-        widget.dispatch('on_drag_touch_down', touch)
-        if touch.time_update != touch.time_start:
-            widget.dispatch('on_drag_touch_move', touch)
+        with touch_context(touch):
+            touch.apply_transform_2d(widget.parent.to_widget)
+            if widget.dispatch('on_drag_is_about_to_start', touch):
+                ak.start(_simulate_normal_touch(ctx))
+                return
+            widget.dispatch('on_drag_touch_down', touch)
+            if touch.time_update != touch.time_start:
+                widget.dispatch('on_drag_touch_move', touch)
         async for __ in ak.rest_of_touch_moves(
                 widget, touch, eats_touch=widget.eats_touch):
             widget.dispatch('on_drag_touch_move', touch)
