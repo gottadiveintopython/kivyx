@@ -5,7 +5,7 @@ from kivy.factory import Factory
 import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
-from kivyx.uix.draggable import KXDroppableBehavior, KXDraggableBehavior
+from kivyx.uix.behaviors.draggable import KXDroppableBehavior, KXDraggableBehavior
 
 
 KV_CODE = '''
@@ -73,12 +73,12 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     def will_accept_drag(self, draggable):
         return draggable.color_cls == self.color_cls
 
-    def accept_drag(self, draggable):
+    def accept_drag(self, draggable, index):
         draggable.parent.remove_widget(draggable)
         draggable.pos_hint = {'x': 0, 'y': 0, }
         draggable.size_hint = (1, 1, )
         draggable.drag_trigger = 'none'
-        self.add_widget(draggable)
+        self.add_widget(draggable, index=index)
         ak.start(self._dispose_item(draggable))
 
     async def _dispose_item(self, draggable):

@@ -6,7 +6,7 @@ from kivy.app import runTouchApp
 from kivy.lang import Builder
 from kivy.factory import Factory
 
-from kivyx.uix.draggable import KXDroppableBehavior, KXDraggableBehavior
+from kivyx.uix.behaviors.draggable import KXDroppableBehavior, KXDraggableBehavior
 
 KV_CODE = '''
 #:import sm kivy.uix.screenmanager

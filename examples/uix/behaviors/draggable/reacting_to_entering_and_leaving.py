@@ -7,7 +7,7 @@ import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
 from kivyx.uix.divider import KXDivider
-from kivyx.uix.draggable import KXDraggableBehavior, KXDroppableBehavior
+from kivyx.uix.behaviors.draggable import KXDraggableBehavior, KXDroppableBehavior
 
 KV_CODE = '''
 <Droppable>:
@@ -65,7 +65,7 @@ class Droppable(KXDroppableBehavior, Label):
         super().__init__(**kwargs)
         self._ud_key = 'Droppable.' + str(self.uid)
 
-    def accept_drag(self, draggable):
+    def accept_drag(self, draggable, index):
         draggable.parent.remove_widget(draggable)
 
     def on_touch_move(self, touch):
