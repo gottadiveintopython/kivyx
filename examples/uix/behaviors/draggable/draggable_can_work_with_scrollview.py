@@ -3,7 +3,7 @@ from kivy.app import runTouchApp
 from kivy.lang import Builder
 from kivy.factory import Factory
 import kivyx.uix.magnet
-import kivyx.uix.draggable
+import kivyx.uix.behaviors.draggable
 
 KV_CODE = '''
 #:import Label kivy.uix.label.Label

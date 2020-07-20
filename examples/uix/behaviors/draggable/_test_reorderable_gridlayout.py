@@ -5,7 +5,7 @@ from kivy.factory import Factory
 from kivy.app import runTouchApp
 
 import kivyx.uix.magnet
-import kivyx.uix.draggable
+import kivyx.uix.behaviors.draggable
 
 if not hasattr(Factory.GridLayout, 'orientation'):
     Logger.warning(
@@ -14,7 +14,7 @@ if not hasattr(Factory.GridLayout, 'orientation'):
         "(See https://github.com/kivy/kivy/pull/6741)")
 
 KV_CODE = '''
-#:import Spacer kivyx.uix.draggable.KXReorderablesDefaultSpacer
+#:import Spacer kivyx.uix.behaviors.draggable.KXReorderablesDefaultSpacer
 
 <ReorderableGridLayout@KXReorderableBehavior+GridLayout>:
 <DraggableItem@KXDraggableBehavior+KXMagnet>:

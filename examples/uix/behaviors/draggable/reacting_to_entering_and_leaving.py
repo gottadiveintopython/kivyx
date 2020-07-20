@@ -7,7 +7,7 @@ import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
 from kivyx.uix.divider import KXDivider
-from kivyx.uix.draggable import KXDraggableBehavior, KXDroppableBehavior
+from kivyx.uix.behaviors.draggable import KXDraggableBehavior, KXDroppableBehavior
 
 KV_CODE = '''
 <Droppable>:
