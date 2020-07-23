@@ -30,7 +30,7 @@ class DragBehavior(KXDragReceiver):
     _ctx = None
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('eats_touch', True)
+        kwargs.setdefault('eat_touch', True)
         super().__init__(**kwargs)
         self.fbind(
             'on_drag_is_about_to_start',

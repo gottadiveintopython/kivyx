@@ -121,7 +121,7 @@ class ClassicTrigger:
         recognized_as_drag = False
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=widget.eats_touch):
+                widget, touch, eat_touch=widget.eat_touch):
             dx = abs(touch.x - ox)
             dy = abs(touch.y - oy)
             if dx > drag_distance or dy > drag_distance:
@@ -133,7 +133,7 @@ class ClassicTrigger:
             widget.dispatch('on_drag_touch_down', touch)
             widget.dispatch('on_drag_touch_move', touch)
             async for __ in ak.rest_of_touch_moves(
-                    widget, touch, eats_touch=widget.eats_touch):
+                    widget, touch, eat_touch=widget.eat_touch):
                 widget.dispatch('on_drag_touch_move', touch)
             widget.dispatch('on_drag_touch_up', touch)
         else:
@@ -173,7 +173,7 @@ class LongPressTrigger:
             if touch.time_update != touch.time_start:
                 widget.dispatch('on_drag_touch_move', touch)
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=widget.eats_touch):
+                widget, touch, eat_touch=widget.eat_touch):
             widget.dispatch('on_drag_touch_move', touch)
         widget.dispatch('on_drag_touch_up', touch)
 
@@ -184,7 +184,7 @@ class LongPressTrigger:
         drag_distance = widget.drag_distance
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=widget.eats_touch):
+                widget, touch, eat_touch=widget.eat_touch):
             dx = abs(touch.x - ox)
             dy = abs(touch.y - oy)
             if dy > drag_distance or dx > drag_distance:
@@ -211,7 +211,7 @@ class ImmediateTrigger:
         widget = ctx['widget']
         widget.dispatch('on_drag_touch_down', touch)
         async for __ in ak.rest_of_touch_moves(
-                widget, touch, eats_touch=widget.eats_touch):
+                widget, touch, eat_touch=widget.eat_touch):
             widget.dispatch('on_drag_touch_move', touch)
         widget.dispatch('on_drag_touch_up', touch)
 
@@ -252,7 +252,7 @@ class KXDragReceiver:
         i.e. disable drag.
     '''
 
-    eats_touch = BooleanProperty(False)
+    eat_touch = BooleanProperty(False)
     '''If True, when a touch is recognized as dragging gesture, it will never
     be dispatched further.
     '''
