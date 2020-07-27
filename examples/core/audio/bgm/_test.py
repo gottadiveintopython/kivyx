@@ -4,11 +4,11 @@ from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.app import runTouchApp
 from kivy.core.audio import SoundLoader
-from kivyx.utils import register_assets_just_for_testing
+from kivyx.utils import register_assets_just_for_tests_and_examples
 from kivyx.core.audio import Bgm
 
 
-register_assets_just_for_testing()
+register_assets_just_for_tests_and_examples()
 
 KV_CODE = '''
 <Button>:
@@ -123,5 +123,5 @@ class BgmPlayer(Factory.BoxLayout):
 
 
 root = BgmPlayer(bgm=Bgm(
-    SoundLoader.load(r'assets_just_for_testing/sound/n51.mp3')))
+    SoundLoader.load(r'sound/n51.mp3')))
 runTouchApp(root)

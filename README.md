@@ -8,4 +8,4 @@ pip install git+https://github.com/gottadiveintopython/asynckivy.git@master#egg=
 
 ## LICENSE
 
-Everything in this repository can be used under MIT license except the stuff inside `assets` directory. Those are not mine.
+Everything in this repository can be used under MIT license except the stuff inside `assets_just_for_tests_and_examples` directory. Those are not mine.

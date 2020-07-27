@@ -1,5 +1,6 @@
 __all__ = (
-    'strip_proxy_ref', 'fade_transition', 'register_assets_just_for_testing',
+    'strip_proxy_ref', 'fade_transition',
+    'register_assets_just_for_tests_and_examples',
 )
 
 from functools import lru_cache
@@ -39,10 +40,11 @@ async def fade_transition(widget, *widgets, **kwargs):
 
 
 @lru_cache(maxsize=1)  # want to ensure the function to be called only once
-def register_assets_just_for_testing():
+def register_assets_just_for_tests_and_examples():
     from pathlib import Path
     from kivy.resources import resource_add_path
     import kivyx
-    root = Path(kivyx.__file__).parents[1] / 'assets'
+    root = Path(kivyx.__file__).parents[1] / \
+        'assets_just_for_tests_and_examples'
     assert root.is_dir()
     resource_add_path(str(root))
