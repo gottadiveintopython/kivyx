@@ -1,0 +1,36 @@
+# no image:
+#   price: 0
+#   image: no_image_logo.png
+blueberry:
+  price: 500
+  image: fruit_blueberry.png
+cacao:
+  price: 800
+  image: fruit_cacao_kakao.png
+dragon fruit:
+  price: 1200
+  image: fruit_dragonfruit.png
+kiwi:
+  price: 130
+  image: fruit_kiwi_yellow.png
+lemon:
+  price: 200
+  image: fruit_lemon_tategiri.png
+mangosteen:
+  price: 300
+  image: fruit_mangosteen.png
+apple:
+  price: 150
+  image: fruit_ringo.png
+orange:
+  price: 100
+  image: fruit_slice10_orange.png
+soldum:
+  price: 400
+  image: fruit_soldum.png
+corn:
+  price: 50
+  image: vegetable_toumorokoshi_corn_wagiri.png
+aloe:
+  price: 400
+  image: plant_aloe_kaniku.png
