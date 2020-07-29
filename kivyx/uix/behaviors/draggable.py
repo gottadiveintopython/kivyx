@@ -48,7 +48,13 @@ class KXDraggableBehavior(KXDragReceiver):
     is_being_dragged = BooleanProperty(False)
     '''(read-only)'''
 
+    @property
+    def original_location(self) -> Optional[dict]:
+        '''the original location before the widget gets dragged'''
+        return self._original_location
+
     def __init__(self, **kwargs):
+        self._original_location = None
         f = self.fbind
         f('on_drag_is_about_to_start',
           KXDraggableBehavior.__on_drag_is_about_to_start)

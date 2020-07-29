@@ -65,7 +65,7 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
         if self.has_screen('childWhenDragging'):
             restore_widget_location(
                 self.get_screen('childWhenDragging'),
-                self._original_location,
+                self.original_location,
             )
 
     def on_drag_cancel(self, droppable):
