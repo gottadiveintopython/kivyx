@@ -104,6 +104,7 @@ class KXDraggableBehavior(KXDragReceiver):
             )
             restore_widget_location(self, original_location)
             self.dispatch('on_drag_cancel', droppable=droppable)
+            await ak.sleep(-1)
         else:
             self.size_hint = original_size_hint
             self.pos_hint = original_pos_hint
