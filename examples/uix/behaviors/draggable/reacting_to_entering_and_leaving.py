@@ -65,7 +65,7 @@ class Droppable(KXDroppableBehavior, Label):
         super().__init__(**kwargs)
         self._ud_key = 'Droppable.' + str(self.uid)
 
-    def accept_drag(self, draggable, index):
+    def accept_drag(self, draggable, **kwargs):
         draggable.parent.remove_widget(draggable)
 
     def on_touch_move(self, touch):

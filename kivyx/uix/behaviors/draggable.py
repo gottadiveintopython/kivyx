@@ -106,7 +106,7 @@ class KXDraggableBehavior(KXDragReceiver):
         else:
             droppable.accept_drag(
                 self,
-                index=touch_ud.get('kivyx_droppable_index', 0),
+                desired_index=touch_ud.get('kivyx_droppable_index', 0),
                 original_location=original_location,
             )
             self.dispatch('on_drag_complete', droppable=droppable)
@@ -138,12 +138,12 @@ class KXDroppableBehavior:
     def will_accept_drag(self, draggable) -> bool:
         return True
 
-    def accept_drag(self, draggable, index, *, original_location):
+    def accept_drag(self, draggable, *, desired_index, original_location):
         draggable.parent.remove_widget(draggable)
         draggable.size_hint_x = original_location['size_hint_x']
         draggable.size_hint_y = original_location['size_hint_y']
         draggable.pos_hint = original_location['pos_hint']
-        self.add_widget(draggable, index=index)
+        self.add_widget(draggable, index=desired_index)
 
 
 class KXReorderablesDefaultSpacer(Factory.Widget):
