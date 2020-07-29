@@ -75,8 +75,6 @@ class KXDraggableBehavior(KXDragReceiver):
 
         # move self under the Window
         original_pos_win = self_to_window(*self.pos)
-        original_size_hint = self.size_hint[:]
-        original_pos_hint = self.pos_hint
         self.parent.remove_widget(self)
         self.size_hint = (None, None, )
         self.pos_hint = {}
@@ -106,10 +104,11 @@ class KXDraggableBehavior(KXDragReceiver):
             self.dispatch('on_drag_cancel', droppable=droppable)
             await ak.sleep(-1)
         else:
-            self.size_hint = original_size_hint
-            self.pos_hint = original_pos_hint
             droppable.accept_drag(
-                self, touch_ud.get('kivyx_droppable_index', 0))
+                self,
+                index=touch_ud.get('kivyx_droppable_index', 0),
+                original_location=original_location,
+            )
             self.dispatch('on_drag_complete', droppable=droppable)
         self.is_being_dragged = False
         self._original_location = None
@@ -139,10 +138,11 @@ class KXDroppableBehavior:
     def will_accept_drag(self, draggable) -> bool:
         return True
 
-    def accept_drag(self, draggable, index):
-        parent = draggable.parent
-        if parent is not None:
-            parent.remove_widget(draggable)
+    def accept_drag(self, draggable, index, *, original_location):
+        draggable.parent.remove_widget(draggable)
+        draggable.size_hint_x = original_location['size_hint_x']
+        draggable.size_hint_y = original_location['size_hint_y']
+        draggable.pos_hint = original_location['pos_hint']
         self.add_widget(draggable, index=index)
 
 
@@ -167,14 +167,8 @@ class KXReorderableBehavior:
         self._inactive_spacers = None
         super().__init__(**kwargs)
 
-    def will_accept_drag(self, draggable) -> bool:
-        return True
-
-    def accept_drag(self, draggable, index):
-        parent = draggable.parent
-        if parent is not None:
-            parent.remove_widget(draggable)
-        self.add_widget(draggable, index=index)
+    will_accept_drag = KXDroppableBehavior.will_accept_drag
+    accept_drag = KXDroppableBehavior.accept_drag
 
     def on_kv_post(self, *args, **kwargs):
         self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
