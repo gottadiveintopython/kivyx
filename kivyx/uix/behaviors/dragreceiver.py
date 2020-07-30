@@ -65,7 +65,14 @@ async def _simulate_normal_touch(ctx):
 
     last_update = touch.time_update
     has_moved = last_update != touch.time_start
+
+    # FIXME: This is the way to know if a touch has already ended or not.
+    #        However, this is not the way to know if on_touch_up was already
+    #        fired or not. If time_end == -1, we can safely assume that
+    #        on_touch_up is not fired yet. But if time_end != -1, there still
+    #        is a chance of on_touch_up being not fired yet.
     has_ended = touch.time_end != -1
+
     if not (has_moved or has_ended):
         # no following touch events, no further simulation needed.
         return
