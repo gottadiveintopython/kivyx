@@ -226,7 +226,6 @@ class KXReorderableBehavior:
         self._active_spacers.append(spacer)
         collide_point = self.collide_point
         get_drop_insertion_index_move = self.get_drop_insertion_index_move
-        children_index = self.children.index
         remove_widget = self.remove_widget
         add_widget = self.add_widget
 
@@ -245,7 +244,7 @@ class KXReorderableBehavior:
                 else:
                     del touch.ud[self.__ud_key]
                     return
-            index = children_index(spacer)
+            index = self.children.index(spacer)
             ud_setdefault = touch.ud.setdefault
             ud_setdefault('kivyx_droppable', self)
             ud_setdefault('kivyx_droppable_index', index)
