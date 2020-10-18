@@ -66,11 +66,13 @@ class KXTextEditingWatcher(Label):
             bind_id = window.fbind('on_textedit', self._on_textediting)
 
             self.pos_hint = pos_hint = {'x': 0, }
-            self.text = ' '
+            self.text = ''
+            filter = lambda window, text, *args: text
             while True:
                 pos_hint['y'] = 1
-                await ak.event(window, 'on_textedit')
+                await ak.event(window, 'on_textedit', filter=filter)
                 del pos_hint['y']
+                await ak.sleep(0)
                 await ak.animate(self, top=window.height, d=.3)
                 pos_hint['top'] = 1
                 self._last_update = current_time()
