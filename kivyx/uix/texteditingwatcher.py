@@ -61,17 +61,15 @@ class KXTextEditingWatcher(Label):
 
     async def _watch_textediting(self):
         window = self._search_window()
+        bind_id = window.fbind('on_textedit', self._on_textediting)
         try:
-            window.add_widget(self)
-            bind_id = window.fbind('on_textedit', self._on_textediting)
-
             self.pos_hint = pos_hint = {'x': 0, }
             self.text = ''
             filter = lambda window, text, *args: text
             while True:
-                pos_hint['y'] = 1
                 await ak.event(window, 'on_textedit', filter=filter)
-                del pos_hint['y']
+                self.y = window.height
+                window.add_widget(self)
                 await ak.sleep(0)
                 await ak.animate(self, top=window.height, d=.3)
                 pos_hint['top'] = 1
@@ -80,6 +78,7 @@ class KXTextEditingWatcher(Label):
                     await ak.sleep(max(self.timeout - dt + .1, .1))
                 del pos_hint['top']
                 await ak.animate(self, y=window.height, d=.3)
+                window.remove_widget(self)
         finally:
             window.remove_widget(self)
             window.unbind_uid('on_textedit', bind_id)
