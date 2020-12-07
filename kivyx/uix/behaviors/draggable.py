@@ -161,11 +161,10 @@ class KXReorderableBehavior:
     '''Same as drag_n_drop's '''
 
     spacer_widgets = ListProperty([])
-    '''A list of spacer widgets. The number of these will be the
+    '''A list of spacer widgets. The number of them will be the
     maximum number of simultaneous drags KXReorderableBehavior can handle.
 
-    Keep in mind that you can change this property only when there is no
-    ongoing drag.
+    This property can be changed only when there is no ongoing drag.
     '''
 
     def __init__(self, **kwargs):

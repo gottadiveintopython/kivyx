@@ -1,5 +1,5 @@
 '''
-Equivalent to
+Inspired by
 https://github.com/kivy-garden/garden.magnet
 '''
 __all__ = ('KXMagnet', 'KXMagnet2', )

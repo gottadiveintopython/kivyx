@@ -8,10 +8,14 @@ pip install git+https://github.com/gottadiveintopython/asynckivy.git@master#egg=
 
 ## LICENSE
 
-Everything in this repository can be used under MIT license except the stuff inside `assets_just_for_tests_and_examples` directory. Those are not mine.
+Everything in the repository can be used under MIT license except the stuffs inside `assets_just_for_tests_and_examples` directory. They are not mine.
 
-## Potential API Break in the future
+## TODO(api break)
 
-A list of breaking changes that might be applied when the major version is changed.
+- rename `KXMagnet2` to `KXMagnet`, and remove the original `KXMagnet`.
+- remove `kivyx.utils.fade_transition` since `asynckivy` already has it.
 
-- rename `KXMagnet2` to `KXMagnet`, and remove the original.
+## TODO
+
+- flagを用いてtouchを二重に処理してしまわないようにする
+- KXDrawerの実装から`ak.or_()`を除く

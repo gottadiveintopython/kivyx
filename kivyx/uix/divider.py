@@ -23,6 +23,8 @@ Builder.load_string('''
 
 
 class KXDivider(Widget):
+    '''The parent of this widget must be KXBoxLayout.'''
+
     line_width = NumericProperty(1)
     line_color = ColorProperty("#FFFFFF")
 
