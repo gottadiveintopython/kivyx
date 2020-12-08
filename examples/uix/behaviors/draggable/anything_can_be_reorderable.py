@@ -16,7 +16,7 @@ KV_CODE = '''
     do_anim: not self.is_being_dragged
     text: ''
     drag_trigger: 'immediate'
-    duration: .2
+    anim_duration: .2
     drag_cls: 'test'
     canvas.after:
         Color:

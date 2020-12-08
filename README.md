@@ -12,8 +12,6 @@ Everything in the repository can be used under MIT license except the stuffs ins
 
 ## TODO(api break)
 
-- rename `KXMagnet2` to `KXMagnet`, and remove the original `KXMagnet`.
-
 ## TODO
 
 - flagを用いてtouchを二重に処理してしまわないようにする

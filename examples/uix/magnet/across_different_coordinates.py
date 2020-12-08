@@ -3,7 +3,7 @@ from kivy.lang import Builder
 
 root = Builder.load_string(r'''
 #:import Image kivy.uix.image.Image
-#:import KXMagnet2 kivyx.uix.magnet.KXMagnet2
+#:import KXMagnet kivyx.uix.magnet.KXMagnet
 
 BoxLayout:
     orientation: 'vertical'
@@ -39,13 +39,13 @@ BoxLayout:
         Button:
             text: 'add a widget to the left side'
             on_press:
-                magnet = KXMagnet2()
+                magnet = KXMagnet()
                 magnet.add_widget(Image(source='data/logo/kivy-icon-256.png'))
                 left_pane.add_widget(magnet)
         Button:
             text: 'add a widget to the right side'
             on_press:
-                magnet = KXMagnet2()
+                magnet = KXMagnet()
                 magnet.add_widget(Image(source='data/logo/kivy-icon-256.png', color=(1, 1, 0, 1, )))
                 right_pane.add_widget(magnet)
 ''')

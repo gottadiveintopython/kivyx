@@ -20,7 +20,7 @@ KV_CODE = '''
 <DraggableItem@KXDraggableBehavior+KXMagnet>:
     do_anim: not self.is_being_dragged
     text: ''
-    duration: .3
+    anim_duration: .3
     drag_cls: 'test'
     drag_trigger: 'immediate'
     opacity: .5 if self.is_being_dragged else 1.
