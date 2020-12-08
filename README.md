@@ -13,7 +13,6 @@ Everything in the repository can be used under MIT license except the stuffs ins
 ## TODO(api break)
 
 - rename `KXMagnet2` to `KXMagnet`, and remove the original `KXMagnet`.
-- remove `kivyx.utils.fade_transition` since `asynckivy` already has it.
 
 ## TODO
 
