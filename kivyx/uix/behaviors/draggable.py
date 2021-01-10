@@ -316,13 +316,14 @@ class KXReorderableBehavior:
     def __init__(self, **kwargs):
         self._active_spacers = []
         self._inactive_spacers = None
+        self.bind(on_kv_post=self._on_kv_post)
         super().__init__(**kwargs)
+        self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
 
     will_accept_drag = KXDroppableBehavior.will_accept_drag
     accept_drag = KXDroppableBehavior.accept_drag
 
-    def on_kv_post(self, *args, **kwargs):
-        self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
+    def _on_kv_post(self, *args, **kwargs):
         if self._inactive_spacers is None:
             self.spacer_widgets = [KXReorderablesDefaultSpacer(), ]
 
@@ -333,8 +334,7 @@ class KXReorderableBehavior:
                 " drag.")
         self._inactive_spacers = [w.__self__ for w in spacer_widgets]
 
-    def get_widget_under_drag(self, x, y) \
-             -> Tuple[Optional[Widget], Optional[int]]:
+    def get_widget_under_drag(self, x, y) -> Tuple[Widget, int]:
         """Returns a tuple of the widget in children that is under the
         given position and its index. Returns (None, None) if there is no
         widget under that position.
@@ -389,10 +389,9 @@ class KXReorderableBehavior:
                 else:
                     del touch.ud[self.__ud_key]
                     return
-            index = self.children.index(spacer)
             ud_setdefault = touch.ud.setdefault
             ud_setdefault('kivyx_droppable', self)
-            ud_setdefault('kivyx_droppable_index', index)
+            ud_setdefault('kivyx_droppable_index', self.children.index(spacer))
         finally:
             self.remove_widget(spacer)
             self._inactive_spacers.append(spacer)
