@@ -15,7 +15,7 @@ KV_CODE = '''
 <MyDraggableItem@KXDraggableBehavior+KXMagnet>:
     do_anim: not self.is_being_dragged
     text: ''
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     anim_duration: .2
     drag_cls: 'test'
     canvas.after:

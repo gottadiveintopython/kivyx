@@ -1,23 +1,20 @@
 __all__ = ('save_widget_location', 'restore_widget_location', )
 
 from weakref import ref
-from kivy.uix.widget import Widget
-from kivy.weakproxy import WeakProxy
-from typing import Union
 
 
-_prop_names = (
+_shallow_copyable_property_names = (
     'x', 'y', 'width', 'height',
     'size_hint_x', 'size_hint_y',
     'size_hint_min_x', 'size_hint_min_y',
     'size_hint_max_x', 'size_hint_max_y',
 )
 
-def save_widget_location(
-        widget:Union[WeakProxy, Widget], *, ignore_parent=False) -> dict:
+def save_widget_location(widget, *, ignore_parent=False) -> dict:
     '''(experimental)'''
     w = widget.__self__
-    location = {name: getattr(w, name) for name in _prop_names}
+    location = {
+        name: getattr(w, name) for name in _shallow_copyable_property_names}
     location['pos_hint'] = w.pos_hint.copy()
     if ignore_parent:
         return location
@@ -28,9 +25,7 @@ def save_widget_location(
     return location
 
 
-def restore_widget_location(
-        widget:Union[WeakProxy, Widget], location:dict,
-        *, ignore_parent=False):
+def restore_widget_location(widget, location:dict, *, ignore_parent=False):
     '''(experimental)'''
     w = widget.__self__
     location = location.copy()

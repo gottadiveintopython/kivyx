@@ -7,11 +7,6 @@ from kivy.app import runTouchApp
 import kivyx.uix.magnet
 import kivyx.uix.behaviors.draggable
 
-if not hasattr(Factory.GridLayout, 'orientation'):
-    Logger.warning(
-        "no tag: GridLayout does not have 'orientation' property, "
-        "so 'orientation' on the left panel will be ignored. "
-        "(See https://github.com/kivy/kivy/pull/6741)")
 
 KV_CODE = '''
 #:import Spacer kivyx.uix.behaviors.draggable.KXReorderablesDefaultSpacer
@@ -22,7 +17,7 @@ KV_CODE = '''
     text: ''
     anim_duration: .3
     drag_cls: 'test'
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     opacity: .5 if self.is_being_dragged else 1.
     size_hint_min: 50, 50
     pos_hint: {'center_x': .5, 'center_y': .5, }

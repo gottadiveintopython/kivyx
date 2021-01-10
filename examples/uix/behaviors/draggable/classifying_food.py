@@ -19,7 +19,7 @@ KV_CODE = '''
             rectangle: [*self.pos, *self.size, ]
 <DraggableLabel>:
     drag_cls: 'food'
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     font_size: 30
     opacity: .4 if root.is_being_dragged else 1.
     canvas.before:
@@ -57,7 +57,7 @@ KXBoxLayout:
 class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
-    def on_drag_cancel(self, droppable):
+    def on_drag_fail(self, droppable):
         if droppable is None:
             return
         print(f"Incorrect! {self.text} is not {droppable.color_cls}")
@@ -77,7 +77,7 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
         draggable.parent.remove_widget(draggable)
         draggable.pos_hint = {'x': 0, 'y': 0, }
         draggable.size_hint = (1, 1, )
-        draggable.drag_trigger = 'none'
+        draggable.drag_enabled = False
         self.add_widget(draggable)
         ak.start(self._dispose_item(draggable))
 
