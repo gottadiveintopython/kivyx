@@ -21,7 +21,7 @@ KV_CODE = '''
 
 <FlutterStyleDraggable>:
     drag_cls: 'test'
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     transition: sm.NoTransition()
     # current: 'feedback' if self.is_being_dragged else 'child'
     Screen:
@@ -53,6 +53,7 @@ GridLayout:
 
 class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
     def on_kv_post(self, *args, **kwargs):
+        super().on_kv_post(*args, **kwargs)
         self.current = 'child'
         self.fbind('is_being_dragged',
                    FlutterStyleDraggable.__on_is_being_dragged)
@@ -65,7 +66,7 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
         if self.has_screen('childWhenDragging'):
             restore_widget_location(
                 self.get_screen('childWhenDragging'),
-                self.original_location,
+                self.dragged_from,
             )
 
     def on_drag_cancel(self, droppable):

@@ -18,7 +18,7 @@ KV_CODE = '''
 
 <DraggableLabel@KXDraggableBehavior+Label>:
     drag_cls: 'test'
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     text: 'A'
     font_size: 100
     opacity: .3 if root.is_being_dragged else 1.

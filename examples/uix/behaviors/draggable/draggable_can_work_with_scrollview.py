@@ -12,7 +12,6 @@ KV_CODE = '''
     do_anim: not self.is_being_dragged
     anim_duration: .1
     drag_cls: 'test'
-    drag_trigger: 'long_press'
     opacity: .5 if self.is_being_dragged else 1.
     size_hint_min_y: sp(50)
     text: ''

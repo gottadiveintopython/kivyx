@@ -22,7 +22,7 @@ KV_CODE = '''
     text: ''
     anim_duration: .3
     drag_cls: 'test'
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     opacity: .5 if self.is_being_dragged else 1.
     size_hint_min: 50, 50
     pos_hint: {'center_x': .5, 'center_y': .5, }

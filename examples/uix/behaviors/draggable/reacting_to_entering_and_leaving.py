@@ -22,7 +22,7 @@ KV_CODE = '''
             size: self.size
 
 <Draggable@KXDraggableBehavior+Label>:
-    drag_trigger: 'immediate'
+    drag_timeout: 0
     text: root.drag_cls
     font_size: 50
     opacity: .3 if root.is_being_dragged else 1.
