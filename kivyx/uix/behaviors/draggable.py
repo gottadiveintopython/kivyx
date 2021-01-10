@@ -173,18 +173,16 @@ class KXDraggableBehavior:
             # NOTE: I don't know the difference from 'get_root_window()'
             window = self.get_parent_window()
             touch_ud = touch.ud
+            original_pos_win = self.to_window(*self.pos)
+            self._dragged_from = dragged_from = save_widget_location(self)
 
             if do_transform:
-                original_pos_win = self.pos
                 touch.push()
                 touch.apply_transform_2d(self.parent.to_widget)
             offset_x = touch.ox - self.x
             offset_y = touch.oy - self.y
-            self._dragged_from = dragged_from = save_widget_location(self)
             if do_transform:
                 touch.pop()
-            else:
-                original_pos_win = self.to_window(*self.pos)
 
             # move self under the Window
             self.parent.remove_widget(self)
