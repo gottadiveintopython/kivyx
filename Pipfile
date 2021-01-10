@@ -10,9 +10,8 @@ pysnooper = "*"
 pyyaml = "*"
 
 [packages]
-cython = "==0.29.14"
-kivy = {git = "git://github.com/kivy/kivy.git",ref = "master"}
-asynckivy = {editable = true,path = "./../asynckivy"}
+kivy = {extras = ["base"],version = "*"}
+asynckivy = "*"
 kivyx = {editable = true,path = "."}
 
 [requires]

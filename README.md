@@ -1,9 +1,11 @@
 # Kivyx : An experiment of Kivy widgets
 
+The entire repository is experimental state. The API changes without notice.
+
 ## Dependencies
 
 ```
-pip install git+https://github.com/gottadiveintopython/asynckivy.git@master#egg=asynckivy
+pip install asynckivy
 ```
 
 ## LICENSE
