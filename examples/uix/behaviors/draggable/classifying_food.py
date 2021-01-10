@@ -57,7 +57,7 @@ KXBoxLayout:
 class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
-    def on_drag_cancel(self, droppable):
+    def on_drag_fail(self, droppable):
         if droppable is None:
             return
         print(f"Incorrect! {self.text} is not {droppable.color_cls}")

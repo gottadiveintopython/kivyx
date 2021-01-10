@@ -69,12 +69,12 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
                 self.dragged_from,
             )
 
-    def on_drag_cancel(self, droppable):
+    def on_drag_fail(self, droppable):
         if self.has_screen('childWhenDragging'):
             w = self.get_screen('childWhenDragging')
             if w.parent is not None:
                 w.parent.remove_widget(w)
-    on_drag_complete = on_drag_cancel
+    on_drag_complete = on_drag_fail
 
 
 class Cell(KXDroppableBehavior, Factory.FloatLayout):

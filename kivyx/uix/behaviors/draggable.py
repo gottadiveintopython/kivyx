@@ -89,7 +89,7 @@ Builder.load_string('''
 
 
 class KXDraggableBehavior:
-    __events__ = ('on_drag_start', 'on_drag_complete', 'on_drag_cancel', )
+    __events__ = ('on_drag_start', 'on_drag_complete', 'on_drag_fail', )
 
     drag_cls = StringProperty()
     '''Same as drag_n_drop's '''
@@ -212,7 +212,7 @@ class KXDraggableBehavior:
                     y=original_pos_win[1],
                 )
                 restore_widget_location(self, dragged_from)
-                self.dispatch('on_drag_cancel', droppable=droppable)
+                self.dispatch('on_drag_fail', droppable=droppable)
                 await ak.sleep(-1)
             else:
                 droppable.accept_drag(
@@ -266,10 +266,10 @@ class KXDraggableBehavior:
     def on_drag_start(self):
         pass
 
-    def on_drag_complete(self, droppable):
+    def on_drag_complete(self, droppable: Widget):
         pass
 
-    def on_drag_cancel(self, droppable):
+    def on_drag_fail(self, droppable: Optional[Widget]):
         pass
 
 
@@ -296,7 +296,7 @@ class KXDroppableBehavior:
         self.add_widget(draggable, index=desired_index)
 
 
-class KXReorderablesDefaultSpacer(Factory.Widget):
+class KXReorderablesDefaultSpacer(Widget):
     color = ColorProperty("#33333399")
 
 
