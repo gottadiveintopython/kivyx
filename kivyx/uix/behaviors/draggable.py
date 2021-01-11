@@ -188,7 +188,10 @@ class KXDraggableBehavior:
             self.parent.remove_widget(self)
             self.size_hint = (None, None, )
             self.pos_hint = {}
-            self.pos = original_pos_win
+            self.pos = (
+                original_pos_win[0] + touch.x - touch.ox,
+                original_pos_win[1] + touch.y - touch.oy,
+            )
             window.add_widget(self)
 
             # mark the touch so that the other widgets can react to the drag
