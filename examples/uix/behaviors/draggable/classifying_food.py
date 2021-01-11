@@ -62,7 +62,7 @@ class DraggableLabel(KXDraggableBehavior, Factory.Label):
             return
         print(f"Incorrect! {self.text} is not {droppable.color_cls}")
 
-    def on_drag_complete(self, droppable):
+    def on_drag_success(self, droppable):
         print("Correct")
 
 

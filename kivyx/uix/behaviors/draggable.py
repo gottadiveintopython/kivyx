@@ -89,7 +89,7 @@ Builder.load_string('''
 
 
 class KXDraggableBehavior:
-    __events__ = ('on_drag_start', 'on_drag_complete', 'on_drag_fail', )
+    __events__ = ('on_drag_start', 'on_drag_success', 'on_drag_fail', )
 
     drag_cls = StringProperty()
     '''Same as drag_n_drop's '''
@@ -220,7 +220,7 @@ class KXDraggableBehavior:
                     desired_index=touch_ud.get('kivyx_droppable_index', 0),
                     drag_from=dragged_from,
                 )
-                self.dispatch('on_drag_complete', droppable=droppable)
+                self.dispatch('on_drag_success', droppable=droppable)
         finally:
             self.is_being_dragged = False
             self._dragged_from = None
@@ -266,7 +266,7 @@ class KXDraggableBehavior:
     def on_drag_start(self):
         pass
 
-    def on_drag_complete(self, droppable: Widget):
+    def on_drag_success(self, droppable: Widget):
         pass
 
     def on_drag_fail(self, droppable: Optional[Widget]):
