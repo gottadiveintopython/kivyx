@@ -43,7 +43,6 @@ from kivy.properties import (
     BooleanProperty, ListProperty, StringProperty, ColorProperty,
     NumericProperty, OptionProperty,
 )
-from kivy.lang import Builder
 from kivy.factory import Factory
 from kivy.uix.widget import Widget
 from asyncgui.exceptions import InvalidStateError
@@ -75,17 +74,6 @@ def temp_grab_current(touch):
         yield
     finally:
         touch.grab_current = original
-
-
-Builder.load_string('''
-<KXReorderablesDefaultSpacer>:
-    canvas:
-        Color:
-            rgba: self.color
-        Rectangle:
-            size: self.size
-            pos: self.pos
-''')
 
 
 @dataclass
@@ -374,10 +362,6 @@ class KXDroppableBehavior:
         self.add_widget(draggable, index=ctx.drag_to_index)
 
 
-class KXReorderablesDefaultSpacer(Widget):
-    color = ColorProperty("#33333399")
-
-
 class KXReorderableBehavior:
     drag_classes = ListProperty([])
     '''Same as drag_n_drop's '''
@@ -388,6 +372,24 @@ class KXReorderableBehavior:
 
     This property can be changed only when there is no ongoing drag.
     '''
+
+    @classmethod
+    def create_spacer(cls, **kwargs):
+        from kivy.utils import rgba
+        from kivy.graphics import Color, Rectangle
+        spacer = Widget(size_hint_min=('50dp', '50dp'))
+        with spacer.canvas:
+            color = kwargs.get('color', None)
+            if color is None:
+                color_inst = Color(.2, .2, .2, .7)
+            else:
+                color_inst = Color(*rgba(color))
+            rect_inst = Rectangle(size=spacer.size)
+        spacer.bind(
+            pos=lambda __, value: setattr(rect_inst, 'pos', value),
+            size=lambda __, value: setattr(rect_inst, 'size', value),
+        )
+        return spacer
 
     def __init__(self, **kwargs):
         self._active_spacers = []
@@ -401,7 +403,7 @@ class KXReorderableBehavior:
 
     def _on_kv_post(self, *args, **kwargs):
         if self._inactive_spacers is None:
-            self.spacer_widgets = [KXReorderablesDefaultSpacer(), ]
+            self.spacer_widgets.append(self.create_spacer())
 
     def on_spacer_widgets(self, __, spacer_widgets):
         if self._active_spacers:

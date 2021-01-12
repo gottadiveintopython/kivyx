@@ -9,8 +9,6 @@ import kivyx.uix.behaviors.draggable
 
 
 KV_CODE = '''
-#:import Spacer kivyx.uix.behaviors.draggable.KXReorderablesDefaultSpacer
-
 <ReorderableGridLayout@KXReorderableBehavior+GridLayout>:
 <DraggableItem@KXDraggableBehavior+KXMagnet>:
     do_anim: not self.is_being_dragged
@@ -132,11 +130,8 @@ BoxLayout:
         cols: int(n_cols.value) or None
         rows: int(n_rows.value) or None
         spacer_widgets:
-            [
-            Spacer(size_hint_min=(50, 50, ), color="#0000FF44"),
-            Spacer(size_hint_min=(50, 50, ), color="#00FF0022"),
-            Spacer(size_hint_min=(50, 50, ), color="#FF000044"),
-            ]
+            [self.create_spacer(color=color)
+            for color in "#000044 #002200 #440000".split()]
 '''
 root = Builder.load_string(KV_CODE)
 gl = root.ids.gl
