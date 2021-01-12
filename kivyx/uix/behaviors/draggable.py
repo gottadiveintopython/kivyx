@@ -46,6 +46,7 @@ from kivy.properties import (
 from kivy.lang import Builder
 from kivy.factory import Factory
 from kivy.uix.widget import Widget
+from asyncgui.exceptions import InvalidStateError
 import asynckivy as ak
 
 from kivyx.utils import save_widget_location, restore_widget_location
@@ -56,10 +57,6 @@ _scroll_timeout = _scroll_distance = 0
 if Config:
     _scroll_timeout = Config.getint('widgets', 'scroll_timeout')
     _scroll_distance = Config.get('widgets', 'scroll_distance') + 'sp'
-
-
-class DraggableException(Exception):
-    pass
 
 
 @contextmanager
@@ -408,7 +405,7 @@ class KXReorderableBehavior:
 
     def on_spacer_widgets(self, __, spacer_widgets):
         if self._active_spacers:
-            raise DraggableException(
+            raise InvalidStateError(
                 "Do not change the 'spacer_widgets' when there is an ongoing"
                 " drag.")
         self._inactive_spacers = [w.__self__ for w in spacer_widgets]
