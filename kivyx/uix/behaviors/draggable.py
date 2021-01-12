@@ -355,6 +355,7 @@ class KXDroppableBehavior:
         return True
 
     def accept_drag(self, draggable, ctx):
+        drag_from = ctx.drag_from
         draggable.parent.remove_widget(draggable)
         draggable.size_hint_x = drag_from['size_hint_x']
         draggable.size_hint_y = drag_from['size_hint_y']
