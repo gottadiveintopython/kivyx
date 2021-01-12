@@ -5,7 +5,9 @@ from kivy.factory import Factory
 import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
-from kivyx.uix.behaviors.draggable import KXDroppableBehavior, KXDraggableBehavior
+from kivyx.uix.behaviors.draggable import (
+    KXDroppableBehavior, KXDraggableBehavior,
+)
 
 
 KV_CODE = '''
@@ -57,33 +59,28 @@ KXBoxLayout:
 class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
-    def on_drag_fail(self, droppable):
-        if droppable is None:
-            return
-        print(f"Incorrect! {self.text} is not {droppable.color_cls}")
+    def on_drag_fail(self, ctx):
+        r = super().on_drag_fail(ctx)
+        if ctx.drag_to is not None:
+            print(f"Incorrect! {self.text} is not {ctx.drag_to.color_cls}")
+        return r
 
-    def on_drag_success(self, droppable):
+    async def on_drag_success(self, ctx):
         print("Correct")
-
+        self.center = self.to_window(*ctx.drag_to.center)
+        await ak.animate(self, opacity=0, d=.5)
+        self.parent.remove_widget(self)
+        
 
 class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     line_color = ColorProperty()
     color_cls = StringProperty()
 
-    def will_accept_drag(self, draggable):
+    def will_accept_drag(self, draggable, ctx):
         return draggable.color_cls == self.color_cls
 
-    def accept_drag(self, draggable, **kwargs):
-        draggable.parent.remove_widget(draggable)
-        draggable.pos_hint = {'x': 0, 'y': 0, }
-        draggable.size_hint = (1, 1, )
-        draggable.drag_enabled = False
-        self.add_widget(draggable)
-        ak.start(self._dispose_item(draggable))
-
-    async def _dispose_item(self, draggable):
-        await ak.animate(draggable, opacity=0, d=.5)
-        self.remove_widget(draggable)
+    def accept_drag(self, draggable, ctx):
+        pass
 
 
 class SampleApp(App):
