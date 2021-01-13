@@ -43,6 +43,7 @@ from kivy.properties import (
     BooleanProperty, ListProperty, StringProperty, ColorProperty,
     NumericProperty, OptionProperty,
 )
+from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.uix.widget import Widget
 from asyncgui.exceptions import InvalidStateError
@@ -395,14 +396,14 @@ class KXReorderableBehavior:
     def __init__(self, **kwargs):
         self._active_spacers = []
         self._inactive_spacers = None
-        self.bind(on_kv_post=self._on_kv_post)
+        Clock.schedule_once(self._init_spacers)
         super().__init__(**kwargs)
         self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
 
     will_accept_drag = KXDroppableBehavior.will_accept_drag
     accept_drag = KXDroppableBehavior.accept_drag
 
-    def _on_kv_post(self, *args, **kwargs):
+    def _init_spacers(self, dt):
         if self._inactive_spacers is None:
             self.spacer_widgets.append(self.create_spacer())
 
