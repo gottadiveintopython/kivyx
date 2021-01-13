@@ -397,10 +397,11 @@ class KXReorderableBehavior:
         get_drop_insertion_index_move = self.get_drop_insertion_index_move
         remove_widget = self.remove_widget
         add_widget = self.add_widget
+        touch_ud = touch.ud
 
         try:
             restore_widget_location(
-                spacer, touch.ud['kivyx_drag_from'],
+                spacer, touch_ud['kivyx_drag_from'],
                 ignore_parent=True)
             add_widget(spacer)
             async for __ in ak.rest_of_touch_moves(self, touch):
@@ -411,11 +412,11 @@ class KXReorderableBehavior:
                         remove_widget(spacer)
                         add_widget(spacer, index=new_idx)
                 else:
-                    del touch.ud[self.__ud_key]
+                    del touch_ud[self.__ud_key]
                     return
-            ud_setdefault = touch.ud.setdefault
-            ud_setdefault('kivyx_droppable', self)
-            ud_setdefault('kivyx_droppable_index', self.children.index(spacer))
+            if 'kivyx_droppable' not in touch_ud:
+                touch_ud['kivyx_droppable'] = self
+                touch_ud['kivyx_droppable_index'] = self.children.index(spacer)
         finally:
             self.remove_widget(spacer)
             self._inactive_spacers.append(spacer)
