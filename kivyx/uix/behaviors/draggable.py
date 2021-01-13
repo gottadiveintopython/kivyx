@@ -32,7 +32,7 @@ Main differences from drag_n_drop
 __all__ = (
     'KXDraggableBehavior', 'KXDroppableBehavior', 'KXReorderableBehavior',
 )
-from typing import Tuple, Optional
+from typing import Tuple, Union
 from contextlib import contextmanager
 from inspect import isawaitable
 from dataclasses import dataclass
@@ -80,18 +80,21 @@ def temp_grab_current(touch):
 class DragContext:
     original_pos_win: tuple = None
     '''The position of the draggable when drag has started
-    (in window coordinates).
+    (window coordinates).
     '''
 
-    drag_from: dict = None
+    original_location: dict = None
     '''Where the draggable came from. Can be passed to
     `kivyx.utils.restore_widget_location()`.
     '''
 
-    drag_to: Optional[Widget] = None
-    '''Where the draggable dropped to.'''
+    draggable: 'KXDraggableBehavior' = None
+    '''The widget that being/got dragged.'''
 
-    drag_to_index: Optional[int] = None
+    droppable: Union[None, 'KXDroppableBehavior', 'KXReorderableBehavior'] = None
+    '''The widget where the draggable dropped to.'''
+
+    droppable_index: Union[None, int] = None
     '''The new child-index of the draggable.'''
 
 
@@ -173,10 +176,11 @@ class KXDraggableBehavior:
             window = self.get_parent_window()
             touch_ud = touch.ud
             original_pos_win = self.to_window(*self.pos)
-            drag_from = save_widget_location(self)
+            original_location = save_widget_location(self)
             ctx = DragContext(
                 original_pos_win=original_pos_win,
-                drag_from=drag_from,
+                original_location=original_location,
+                draggable=self.proxy_ref,
             )
 
             if do_transform:
@@ -199,9 +203,9 @@ class KXDraggableBehavior:
 
             # mark the touch so that the other widgets can react to the drag
             touch_ud['kivyx_drag_cls'] = self.drag_cls
-            touch_ud['kivyx_drag_from'] = drag_from
+            touch_ud['kivyx_drag_from'] = original_location
 
-            self.dispatch('on_drag_start', ctx)
+            self.dispatch('on_drag_start', touch, ctx)
             async for __ in ak.rest_of_touch_moves(self, touch):
                 self.x = touch.x - offset_x
                 self.y = touch.y - offset_y
@@ -209,16 +213,18 @@ class KXDraggableBehavior:
             # we need to give the other widgets the time to react to 'on_touch_up'
             await ak.sleep(-1)
 
-            ctx.drag_to = drag_to = touch_ud.get('kivyx_drag_to', None)
-            touch_ud['kivyx_drag_to'] = None
-            if drag_to is None or not drag_to.will_accept_drag(self, ctx):
-                if isawaitable(r := self.dispatch('on_drag_fail', ctx)):
+            ctx.droppable = droppable = touch_ud.get('kivyx_droppable', None)
+            touch_ud['kivyx_droppable'] = None
+            if droppable is None or not droppable.will_accept_drag(touch, ctx):
+                r = self.dispatch('on_drag_fail', touch, ctx)
+                if isawaitable(r):
                     await r
                 await ak.sleep(-1)
             else:
-                ctx.drag_to_index = touch_ud.get('kivyx_drag_to_index', 0)
-                drag_to.accept_drag(self, ctx)
-                if isawaitable(r := self.dispatch('on_drag_success', ctx)):
+                ctx.droppable_index = touch_ud.get('kivyx_droppable_index', 0)
+                droppable.accept_drag(touch, ctx)
+                r = self.dispatch('on_drag_success', touch, ctx)
+                if isawaitable(r):
                     await r
         finally:
             self.is_being_dragged = False
@@ -261,19 +267,19 @@ class KXDraggableBehavior:
         touch.grab_current = None
         return
 
-    def on_drag_start(self, ctx: DragContext):
+    def on_drag_start(self, touch, ctx: DragContext):
         pass
 
-    def on_drag_success(self, ctx: DragContext):
+    def on_drag_success(self, touch, ctx: DragContext):
         pass
 
-    async def on_drag_fail(self, ctx: DragContext):
+    async def on_drag_fail(self, touch, ctx: DragContext):
         await ak.animate(
             self, d=.1,
             x=ctx.original_pos_win[0],
             y=ctx.original_pos_win[1],
         )
-        restore_widget_location(self, ctx.drag_from)
+        restore_widget_location(self, ctx.original_location)
 
 
 class KXDroppableBehavior:
@@ -285,19 +291,20 @@ class KXDroppableBehavior:
         touch_ud = touch.ud
         if touch_ud.get('kivyx_drag_cls', None) in self.drag_classes:
             if self.collide_point(*touch.pos):
-                touch_ud.setdefault('kivyx_drag_to', self)
+                touch_ud.setdefault('kivyx_droppable', self)
         return r
 
-    def will_accept_drag(self, draggable, ctx) -> bool:
+    def will_accept_drag(self, touch, ctx) -> bool:
         return True
 
-    def accept_drag(self, draggable, ctx):
-        drag_from = ctx.drag_from
+    def accept_drag(self, touch, ctx):
+        draggable = ctx.draggable
+        original_location = ctx.original_location
         draggable.parent.remove_widget(draggable)
-        draggable.size_hint_x = drag_from['size_hint_x']
-        draggable.size_hint_y = drag_from['size_hint_y']
-        draggable.pos_hint = drag_from['pos_hint']
-        self.add_widget(draggable, index=ctx.drag_to_index)
+        draggable.size_hint_x = original_location['size_hint_x']
+        draggable.size_hint_y = original_location['size_hint_y']
+        draggable.pos_hint = original_location['pos_hint']
+        self.add_widget(draggable, index=ctx.droppable_index)
 
 
 class KXReorderableBehavior:
@@ -382,9 +389,10 @@ class KXReorderableBehavior:
         return super().on_touch_move(touch)
 
     async def _watch_touch(self, touch):
-        # assigning to a local variable might improve performance
         spacer = self._inactive_spacers.pop()
         self._active_spacers.append(spacer)
+
+        # assigning to a local variable might improve performance
         collide_point = self.collide_point
         get_drop_insertion_index_move = self.get_drop_insertion_index_move
         remove_widget = self.remove_widget
@@ -406,8 +414,8 @@ class KXReorderableBehavior:
                     del touch.ud[self.__ud_key]
                     return
             ud_setdefault = touch.ud.setdefault
-            ud_setdefault('kivyx_drag_to', self)
-            ud_setdefault('kivyx_drag_to_index', self.children.index(spacer))
+            ud_setdefault('kivyx_droppable', self)
+            ud_setdefault('kivyx_droppable_index', self.children.index(spacer))
         finally:
             self.remove_widget(spacer)
             self._inactive_spacers.append(spacer)

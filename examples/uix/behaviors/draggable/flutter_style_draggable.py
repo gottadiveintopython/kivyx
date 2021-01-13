@@ -61,31 +61,32 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
     def __on_is_being_dragged(self, value):
         self.current = 'feedback' if value else 'child'
 
-    def on_drag_start(self, ctx):
+    def on_drag_start(self, touch, ctx):
         from kivyx.utils import restore_widget_location
         if self.has_screen('childWhenDragging'):
             restore_widget_location(
                 self.get_screen('childWhenDragging'),
-                ctx.drag_from,
+                ctx.original_location,
             )
+        return super().on_drag_start(touch, ctx)
 
-    def on_drag_fail(self, ctx):
+    def on_drag_fail(self, touch, ctx):
         if self.has_screen('childWhenDragging'):
             w = self.get_screen('childWhenDragging')
             if w.parent is not None:
                 w.parent.remove_widget(w)
-        return super().on_drag_fail(ctx)
+        return super().on_drag_fail(touch, ctx)
 
-    def on_drag_success(self, ctx):
+    def on_drag_success(self, touch, ctx):
         if self.has_screen('childWhenDragging'):
             w = self.get_screen('childWhenDragging')
             if w.parent is not None:
                 w.parent.remove_widget(w)
-        return super().on_drag_success(ctx)
+        return super().on_drag_success(touch, ctx)
 
 
 class Cell(KXDroppableBehavior, Factory.FloatLayout):
-    def will_accept_drag(self, draggable, ctx):
+    def will_accept_drag(self, touch, ctx):
         return not self.children
 
     def add_widget(self, widget, *args, **kwargs):

@@ -59,15 +59,14 @@ KXBoxLayout:
 class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
-    def on_drag_fail(self, ctx):
-        r = super().on_drag_fail(ctx)
-        if ctx.drag_to is not None:
-            print(f"Incorrect! {self.text} is not {ctx.drag_to.color_cls}")
-        return r
+    def on_drag_fail(self, touch, ctx):
+        if ctx.droppable is not None:
+            print(f"Incorrect! {self.text} is not {ctx.droppable.color_cls}")
+        return super().on_drag_fail(touch, ctx)
 
-    async def on_drag_success(self, ctx):
+    async def on_drag_success(self, touch, ctx):
         print("Correct")
-        self.center = self.to_window(*ctx.drag_to.center)
+        self.center = self.to_window(*ctx.droppable.center)
         await ak.animate(self, opacity=0, d=.5)
         self.parent.remove_widget(self)
         
@@ -76,10 +75,10 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     line_color = ColorProperty()
     color_cls = StringProperty()
 
-    def will_accept_drag(self, draggable, ctx):
-        return draggable.color_cls == self.color_cls
+    def will_accept_drag(self, touch, ctx):
+        return ctx.draggable.color_cls == self.color_cls
 
-    def accept_drag(self, draggable, ctx):
+    def accept_drag(self, touch, ctx):
         pass
 
 
