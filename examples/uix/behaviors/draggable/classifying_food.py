@@ -5,9 +5,7 @@ from kivy.factory import Factory
 import asynckivy as ak
 
 from kivyx.uix.boxlayout import KXBoxLayout
-from kivyx.uix.behaviors.draggable import (
-    KXDroppableBehavior, KXDraggableBehavior,
-)
+from kivyx.uix.behaviors.draggable import KXDroppableBehavior, KXDraggableBehavior
 
 
 KV_CODE = '''
