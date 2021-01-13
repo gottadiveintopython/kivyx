@@ -94,9 +94,6 @@ class DragContext:
     droppable: Union[None, 'KXDroppableBehavior', 'KXReorderableBehavior'] = None
     '''The widget where the draggable dropped to.'''
 
-    droppable_index: Union[None, int] = None
-    '''The new child-index of the draggable.'''
-
 
 class KXDraggableBehavior:
     __events__ = ('on_drag_start', 'on_drag_success', 'on_drag_fail', )
@@ -221,7 +218,6 @@ class KXDraggableBehavior:
                     await r
                 await ak.sleep(-1)
             else:
-                ctx.droppable_index = touch_ud.get('kivyx_droppable_index', 0)
                 droppable.accept_drag(touch, ctx)
                 r = self.dispatch('on_drag_success', touch, ctx)
                 if isawaitable(r):
@@ -304,7 +300,7 @@ class KXDroppableBehavior:
         draggable.size_hint_x = original_location['size_hint_x']
         draggable.size_hint_y = original_location['size_hint_y']
         draggable.pos_hint = original_location['pos_hint']
-        self.add_widget(draggable, index=ctx.droppable_index)
+        self.add_widget(draggable, index=touch.ud.get('kivyx_droppable_index', 0))
 
 
 class KXReorderableBehavior:
