@@ -31,7 +31,6 @@ Main differences from drag_n_drop
 
 __all__ = (
     'KXDraggableBehavior', 'KXDroppableBehavior', 'KXReorderableBehavior',
-    'KXBaseDraggableBehavior',
 )
 from typing import Tuple, Optional
 from contextlib import contextmanager
@@ -96,7 +95,7 @@ class DragContext:
     '''The new child-index of the draggable.'''
 
 
-class KXBaseDraggableBehavior:
+class KXDraggableBehavior:
     __events__ = ('on_drag_start', 'on_drag_success', 'on_drag_fail', )
 
     drag_cls = StringProperty()
@@ -268,76 +267,13 @@ class KXBaseDraggableBehavior:
     def on_drag_success(self, ctx: DragContext):
         pass
 
-    def on_drag_fail(self, ctx: DragContext):
-        pass
-
-
-class PredefinedActions:
-    def _predefined_actions():
-        async def goback_anim(draggable, ctx):
-            await ak.animate(
-                draggable, d=.1,
-                x=ctx.original_pos_win[0],
-                y=ctx.original_pos_win[1],
-            )
-            restore_widget_location(draggable, ctx.drag_from)
-
-        def goback(draggable, ctx):
-            restore_widget_location(draggable, ctx.drag_from)
-
-        async def disappear_anim(draggable, ctx):
-            original_opacity = draggable.opacity
-            try:
-                await ak.animate(draggable, d=1, opacity=0)
-            finally:
-                draggable.opacity = original_opacity
-            draggable.parent.remove_widget(draggable)
-
-        def disappear(draggable, ctx):
-            draggable.parent.remove_widget(draggable)
-
-        def none(draggable, ctx):
-            pass
-
-        return {
-            'goback_anim': goback_anim,
-            'goback': goback,
-            'disappear_anim': disappear_anim,
-            'disappear': disappear,
-            'none': none,
-        }
-    _predefined_actions = _predefined_actions()
-
-    action_on_drag_fail = \
-        OptionProperty('goback_anim', options=_predefined_actions.keys())
-    '''Determines which action will be triggered when 'on_drag_fail' is fired.
-
-    * goback .. The draggable goes back to where it came from.
-    * goback_anim .. The draggable goes back to where it came from with an animation.
-    * disappear .. The draggable disappears.
-    * disappear_anim .. The draggable disappears with an animation.
-    * none .. Does nothing.
-
-    Defaults to 'goback_anim'.
-    '''
-
-    action_on_drag_success = \
-        OptionProperty('none', options=_predefined_actions.keys())
-    '''Determines which action will be triggered when 'on_drag_success' is
-    fired. See ``action_on_drag_fail``'s doc.
-
-    Defaults to 'none'.
-    '''
-
-    def on_drag_success(self, ctx):
-        return self._predefined_actions[self.action_on_drag_success](self, ctx)
-
-    def on_drag_fail(self, ctx):
-        return self._predefined_actions[self.action_on_drag_fail](self, ctx)
-
-
-class KXDraggableBehavior(PredefinedActions, KXBaseDraggableBehavior):
-    pass
+    async def on_drag_fail(self, ctx: DragContext):
+        await ak.animate(
+            self, d=.1,
+            x=ctx.original_pos_win[0],
+            y=ctx.original_pos_win[1],
+        )
+        restore_widget_location(self, ctx.drag_from)
 
 
 class KXDroppableBehavior:
@@ -479,7 +415,6 @@ class KXReorderableBehavior:
 
 
 r = Factory.register
-r('KXBaseDraggableBehavior', cls=KXBaseDraggableBehavior)
 r('KXDraggableBehavior', cls=KXDraggableBehavior)
 r('KXDroppableBehavior', cls=KXDroppableBehavior)
 r('KXReorderableBehavior', cls=KXReorderableBehavior)
