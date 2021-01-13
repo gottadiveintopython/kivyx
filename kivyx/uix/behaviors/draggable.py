@@ -200,7 +200,7 @@ class KXDraggableBehavior:
 
             # mark the touch so that the other widgets can react to the drag
             touch_ud['kivyx_drag_cls'] = self.drag_cls
-            touch_ud['kivyx_drag_from'] = original_location
+            touch_ud['kivyx_drag_ctx'] = ctx
 
             self.dispatch('on_drag_start', touch, ctx)
             async for __ in ak.rest_of_touch_moves(self, touch):
@@ -397,7 +397,7 @@ class KXReorderableBehavior:
 
         try:
             restore_widget_location(
-                spacer, touch_ud['kivyx_drag_from'],
+                spacer, touch_ud['kivyx_drag_ctx'].original_location,
                 ignore_parent=True)
             add_widget(spacer)
             async for __ in ak.rest_of_touch_moves(self, touch):
