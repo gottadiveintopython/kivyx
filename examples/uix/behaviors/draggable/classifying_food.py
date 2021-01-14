@@ -57,33 +57,27 @@ KXBoxLayout:
 class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
-    def on_drag_fail(self, droppable):
-        if droppable is None:
-            return
-        print(f"Incorrect! {self.text} is not {droppable.color_cls}")
+    def on_drag_fail(self, touch, ctx):
+        if ctx.droppable is not None:
+            print(f"Incorrect! {self.text} is not {ctx.droppable.color_cls}")
+        return super().on_drag_fail(touch, ctx)
 
-    def on_drag_complete(self, droppable):
+    async def on_drag_success(self, touch, ctx):
         print("Correct")
-
+        self.center = self.to_window(*ctx.droppable.center)
+        await ak.animate(self, opacity=0, d=.5)
+        self.parent.remove_widget(self)
+        
 
 class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     line_color = ColorProperty()
     color_cls = StringProperty()
 
-    def will_accept_drag(self, draggable):
-        return draggable.color_cls == self.color_cls
+    def will_accept_drag(self, touch, ctx):
+        return ctx.draggable.color_cls == self.color_cls
 
-    def accept_drag(self, draggable, **kwargs):
-        draggable.parent.remove_widget(draggable)
-        draggable.pos_hint = {'x': 0, 'y': 0, }
-        draggable.size_hint = (1, 1, )
-        draggable.drag_enabled = False
-        self.add_widget(draggable)
-        ak.start(self._dispose_item(draggable))
-
-    async def _dispose_item(self, draggable):
-        await ak.animate(draggable, opacity=0, d=.5)
-        self.remove_widget(draggable)
+    def accept_drag(self, touch, ctx):
+        pass
 
 
 class SampleApp(App):
