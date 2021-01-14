@@ -177,7 +177,7 @@ class KXDraggableBehavior:
             ctx = DragContext(
                 original_pos_win=original_pos_win,
                 original_location=original_location,
-                draggable=self.proxy_ref,
+                draggable=self,
             )
 
             if do_transform:
