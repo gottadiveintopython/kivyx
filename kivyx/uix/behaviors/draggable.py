@@ -212,16 +212,13 @@ class KXDraggableBehavior:
 
             ctx.droppable = droppable = touch_ud.get('kivyx_droppable', None)
             touch_ud['kivyx_droppable'] = None
-            if droppable is None or not droppable.will_accept_drag(touch, ctx):
-                r = self.dispatch('on_drag_fail', touch, ctx)
-                if isawaitable(r):
-                    await r
-                await ak.sleep(-1)
-            else:
-                droppable.accept_drag(touch, ctx)
-                r = self.dispatch('on_drag_success', touch, ctx)
-                if isawaitable(r):
-                    await r
+            failed = droppable is None or \
+                not droppable.will_accept_drag(touch, ctx)
+            r = self.dispatch(
+                'on_drag_fail' if failed else 'on_drag_success', touch, ctx)
+            if isawaitable(r):
+                await r
+            await ak.sleep(-1)
         finally:
             self.is_being_dragged = False
 
@@ -267,7 +264,12 @@ class KXDraggableBehavior:
         pass
 
     def on_drag_success(self, touch, ctx: DragContext):
-        pass
+        original_location = ctx.original_location
+        self.parent.remove_widget(self)
+        self.size_hint_x = original_location['size_hint_x']
+        self.size_hint_y = original_location['size_hint_y']
+        self.pos_hint = original_location['pos_hint']
+        ctx.droppable.add_widget(self, index=touch.ud.get('kivyx_droppable_index', 0))
 
     async def on_drag_fail(self, touch, ctx: DragContext):
         await ak.animate(
@@ -292,15 +294,6 @@ class KXDroppableBehavior:
 
     def will_accept_drag(self, touch, ctx: DragContext) -> bool:
         return True
-
-    def accept_drag(self, touch, ctx: DragContext):
-        draggable = ctx.draggable
-        original_location = ctx.original_location
-        draggable.parent.remove_widget(draggable)
-        draggable.size_hint_x = original_location['size_hint_x']
-        draggable.size_hint_y = original_location['size_hint_y']
-        draggable.pos_hint = original_location['pos_hint']
-        self.add_widget(draggable, index=touch.ud.get('kivyx_droppable_index', 0))
 
 
 class KXReorderableBehavior:
@@ -340,7 +333,6 @@ class KXReorderableBehavior:
         self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
 
     will_accept_drag = KXDroppableBehavior.will_accept_drag
-    accept_drag = KXDroppableBehavior.accept_drag
 
     def _init_spacers(self, dt):
         if self._inactive_spacers is None:

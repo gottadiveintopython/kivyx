@@ -76,9 +76,6 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     def will_accept_drag(self, touch, ctx):
         return ctx.draggable.color_cls == self.color_cls
 
-    def accept_drag(self, touch, ctx):
-        pass
-
 
 class SampleApp(App):
     def build(self):
