@@ -60,7 +60,7 @@ KXBoxLayout:
 
 
 class Draggable(KXDraggableBehavior, Label):
-    def on_drag_success(self, touch, ctx):
+    def on_drag_success(self, touch):
         self.parent.remove_widget(self)
 
 
