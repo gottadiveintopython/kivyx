@@ -213,7 +213,7 @@ class KXDraggableBehavior:
             ctx.droppable = droppable = touch_ud.get('kivyx_droppable', None)
             touch_ud['kivyx_droppable'] = None
             failed = droppable is None or \
-                not droppable.will_accept_drag(touch, ctx)
+                not droppable.accepts_drag(touch, ctx)
             r = self.dispatch(
                 'on_drag_fail' if failed else 'on_drag_success', touch, ctx)
             if isawaitable(r):
@@ -292,7 +292,7 @@ class KXDroppableBehavior:
                 touch_ud.setdefault('kivyx_droppable', self)
         return r
 
-    def will_accept_drag(self, touch, ctx: DragContext) -> bool:
+    def accepts_drag(self, touch, ctx: DragContext) -> bool:
         return True
 
 
@@ -332,7 +332,7 @@ class KXReorderableBehavior:
         super().__init__(**kwargs)
         self.__ud_key = 'KXReorderableBehavior.' + str(self.uid)
 
-    will_accept_drag = KXDroppableBehavior.will_accept_drag
+    accepts_drag = KXDroppableBehavior.accepts_drag
 
     def _init_spacers(self, dt):
         if self._inactive_spacers is None:

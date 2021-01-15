@@ -73,7 +73,7 @@ class DroppableArea(KXDroppableBehavior, Factory.FloatLayout):
     line_color = ColorProperty()
     color_cls = StringProperty()
 
-    def will_accept_drag(self, touch, ctx):
+    def accepts_drag(self, touch, ctx):
         return ctx.draggable.color_cls == self.color_cls
 
 

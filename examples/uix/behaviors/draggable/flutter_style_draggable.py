@@ -86,7 +86,7 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
 
 
 class Cell(KXDroppableBehavior, Factory.FloatLayout):
-    def will_accept_drag(self, touch, ctx):
+    def accepts_drag(self, touch, ctx):
         return not self.children
 
     def add_widget(self, widget, *args, **kwargs):
