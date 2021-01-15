@@ -91,9 +91,14 @@ class DragContext:
     droppable: Union[None, 'KXDroppableBehavior', 'KXReorderableBehavior'] = None
     '''(read-only) The widget where the draggable dropped to.'''
 
+    cancelled: bool = False
+    '''(read-only) Indicates whether the drag was cancelled or not.'''
+
 
 class KXDraggableBehavior:
-    __events__ = ('on_drag_start', 'on_drag_success', 'on_drag_fail', )
+    __events__ = (
+        'on_drag_start', 'on_drag_end', 'on_drag_success', 'on_drag_fail',
+    )
 
     drag_cls = StringProperty()
     '''Same as drag_n_drop's '''
@@ -238,7 +243,11 @@ class KXDraggableBehavior:
             if isawaitable(r):
                 await r
             await ak.sleep(-1)
+        except GeneratorExit:
+            ctx.cancelled = True
+            raise
         finally:
+            self.dispatch('on_drag_end', touch)
             self.is_being_dragged = False
             self._drag_ctx = None
             del touch_ud['kivyx_drag_cls']
@@ -283,6 +292,9 @@ class KXDraggableBehavior:
         return
 
     def on_drag_start(self, touch):
+        pass
+
+    def on_drag_end(self, touch):
         pass
 
     def on_drag_success(self, touch):
