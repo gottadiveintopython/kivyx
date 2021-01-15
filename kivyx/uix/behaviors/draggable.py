@@ -107,9 +107,25 @@ class KXDraggableBehavior:
     is_being_dragged = BooleanProperty(False)
     '''(read-only)'''
 
+    # default value of the instance attributes
+    _drag_coro = ak.sleep_forever()
+
+    @staticmethod
+    def ongoing_drags(*, window=None):
+        if window is None:
+            from kivy.core.window import Window
+            window = Window
+        return (
+            c for c in window.children
+            if isinstance(c, KXDraggableBehavior) and c.is_being_dragged
+        )
+
     @property
     def drag_ctx(self) -> Union[None, DragContext]:
         return self._drag_ctx
+
+    def cancel_drag(self):
+        self._drag_coro.close()
 
     def __init__(self, **kwargs):
         self._drag_ctx = None
@@ -127,10 +143,11 @@ class KXDraggableBehavior:
     def on_touch_down(self, touch):
         if self._is_a_touch_potentially_a_drag(touch):
             touch.ud[self.__ud_key] = None
-            ak.start(
-                self._see_if_a_touch_can_be_treated_as_a_drag(touch)
-                if self.drag_timeout else self._treat_a_touch_as_a_drag(touch)
-            )
+            if self.drag_timeout:
+                ak.start(self._see_if_a_touch_can_be_treated_as_a_drag(touch))
+            else:
+                self._drag_coro.close()
+                self._drag_coro = ak.start(self._treat_a_touch_as_a_drag(touch))
             return True
         else:
             touch.ud[self.__ud_key] = None
@@ -148,8 +165,9 @@ class KXDraggableBehavior:
                 ak.start(self._simulate_a_normal_touch(
                     touch, do_transform=True))
             else:
-                ak.start(self._treat_a_touch_as_a_drag(
-                    touch, do_transform=True))
+                self._drag_coro.close()
+                self._drag_coro = ak.start(
+                    self._treat_a_touch_as_a_drag(touch, do_transform=True))
         else:
             # The given touch is not a drag gesture.
             tasks[0].cancel()
@@ -201,7 +219,7 @@ class KXDraggableBehavior:
 
             # mark the touch so that the other widgets can react to the drag
             touch_ud['kivyx_drag_cls'] = self.drag_cls
-            touch_ud['kivyx_drag_ctx'] = ctx
+            touch_ud['kivyx_draggable'] = self
 
             self.dispatch('on_drag_start', touch)
             async for __ in ak.rest_of_touch_moves(self, touch):
@@ -223,6 +241,8 @@ class KXDraggableBehavior:
         finally:
             self.is_being_dragged = False
             self._drag_ctx = None
+            del touch_ud['kivyx_drag_cls']
+            del touch_ud['kivyx_draggable']
 
     async def _simulate_a_normal_touch(
             self, touch, *, do_transform=False, do_touch_up=False):
@@ -382,6 +402,16 @@ class KXReorderableBehavior:
         return super().on_touch_move(touch)
 
     async def _watch_touch(self, touch):
+        tasks = await ak.or_(
+            self._watch_touch_movement(touch),
+            ak.event(touch.ud['kivyx_draggable'], 'is_being_dragged'),
+        )
+        if tasks[0].done:
+            tasks[1].cancel()
+        else:
+            tasks[0].cancel()
+
+    async def _watch_touch_movement(self, touch):
         spacer = self._inactive_spacers.pop()
         self._active_spacers.append(spacer)
 
@@ -394,7 +424,7 @@ class KXReorderableBehavior:
 
         try:
             restore_widget_location(
-                spacer, touch_ud['kivyx_drag_ctx'].original_location,
+                spacer, touch_ud['kivyx_draggable'].drag_ctx.original_location,
                 ignore_parent=True)
             add_widget(spacer)
             async for __ in ak.rest_of_touch_moves(self, touch):
