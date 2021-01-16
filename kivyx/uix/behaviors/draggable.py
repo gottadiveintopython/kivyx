@@ -42,8 +42,7 @@ from dataclasses import dataclass
 
 from kivy.config import Config
 from kivy.properties import (
-    BooleanProperty, ListProperty, StringProperty, ColorProperty,
-    NumericProperty, OptionProperty,
+    BooleanProperty, ListProperty, StringProperty, NumericProperty,
 )
 from kivy.clock import Clock
 from kivy.factory import Factory
@@ -164,7 +163,7 @@ class KXDraggableBehavior:
     async def _see_if_a_touch_can_be_treated_as_a_drag(self, touch):
         tasks = await ak.or_(
             ak.sleep(self.drag_timeout / 1000.),
-            self._will_a_touch_move_too_much_or_end(touch),
+            self._true_when_a_touch_ended_false_when_it_moved_too_much(touch),
         )
         if tasks[0].done:
             # The given touch is a dragging gesture.
@@ -182,7 +181,7 @@ class KXDraggableBehavior:
             ak.start(self._simulate_a_normal_touch(
                 touch, do_touch_up=tasks[1].result))
 
-    async def _will_a_touch_move_too_much_or_end(self, touch):
+    async def _true_when_a_touch_ended_false_when_it_moved_too_much(self, touch):
         drag_distance = self.drag_distance
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(self, touch):
@@ -236,7 +235,6 @@ class KXDraggableBehavior:
             await ak.sleep(-1)
 
             ctx.droppable = droppable = touch_ud.get('kivyx_droppable', None)
-            touch_ud['kivyx_droppable'] = None
             failed = droppable is None or \
                 not droppable.accepts_drag(touch, self)
             r = self.dispatch(
@@ -253,6 +251,7 @@ class KXDraggableBehavior:
             self.dispatch('on_drag_end', touch)
             self.is_being_dragged = False
             self._drag_ctx = None
+            touch_ud['kivyx_droppable'] = None
             del touch_ud['kivyx_drag_cls']
             del touch_ud['kivyx_draggable']
 
@@ -411,7 +410,7 @@ class KXReorderableBehavior:
                 and self.collide_point(*touch.pos):
             drag_cls = touch_ud.get('kivyx_drag_cls', None)
             if drag_cls is not None:
-                touch_ud[ud_key] = True
+                touch_ud[ud_key] = None
                 if drag_cls in self.drag_classes:
                     ak.start(self._watch_touch(touch))
         return super().on_touch_move(touch)
