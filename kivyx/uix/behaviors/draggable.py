@@ -25,8 +25,8 @@ Main differences from drag_n_drop
   ``drag_distance`` pixels, it will be treated as a dragging gesture.
 * :class:`KXReorderableBehavior` can handle multiple drags simultaneously.
 * Drag can be cancelled by calling ``KXDraggableBehavior.cancel_drag()``.
-* ``KXReorderableBehavior`` cannot be put inside another one if their
-  ``drag_classes``s is overlapping each other.
+* Nested ``KXReorderableBehavior`` is not officially supported. It may or may
+  not work depending on how ``drag_classes`` and ``drag_cls`` are set.
 
 .. _drag_n_drop (Kivy Garden): https://github.com/kivy-garden/drag_n_drop
 .. _Flutter: https://api.flutter.dev/flutter/widgets/Draggable-class.html
