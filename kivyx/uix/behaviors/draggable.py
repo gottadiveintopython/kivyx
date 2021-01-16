@@ -5,7 +5,7 @@ Drag & Drop
 Inspired by:
 
 * `drag_n_drop (Kivy Garden)`_
-* `DragTarget (Flutter)`_
+* Flutter_
 
 This adds a drag and drop functionality to layouts and widgets. There are 3
 components used to have drag and drop:
@@ -20,13 +20,17 @@ components used to have drag and drop:
 Main differences from drag_n_drop
 ---------------------------------
 
-* Drag is triggered by long-press. More precisely, when a finger of the user
+* Drag is triggered by long-press. More precisely, when a pressed mouse button
   stays for ``drag_timeout`` milli seconds without traveling more than
-  ``drag_distance`` pixels, that touch will be treated as a dragging gesture.
+  ``drag_distance`` pixels, it will be treated as a dragging gesture.
 * :class:`KXReorderableBehavior` can handle multiple drags simultaneously.
+* Drag can be cancelled by calling ``KXDraggableBehavior.cancel_drag()`` or
+  ``KXDraggableBehavior.cancel_drag_safely()``.
+* ``KXReorderableBehavior`` cannot be put inside another one if their
+  ``drag_classes``s is overlapping each other.
 
 .. _drag_n_drop (Kivy Garden): https://github.com/kivy-garden/drag_n_drop
-.. _DragTarget (Flutter): https://api.flutter.dev/flutter/widgets/Draggable-class.html
+.. _Flutter: https://api.flutter.dev/flutter/widgets/Draggable-class.html
 '''
 
 __all__ = (
@@ -79,8 +83,8 @@ def temp_grab_current(touch):
 @dataclass
 class DragContext:
     original_pos_win: tuple = None
-    '''(read-only) The position of the draggable when drag has started
-    (window coordinates).
+    '''(read-only) The position of the draggable at the time the drag has
+    started. (window coordinates).
     '''
 
     original_location: dict = None
@@ -92,7 +96,7 @@ class DragContext:
     '''(read-only) The widget where the draggable dropped to.'''
 
     cancelled: bool = False
-    '''(read-only) Indicates whether the drag was cancelled or not.'''
+    '''(read-only) Whether the drag was cancelled or not.'''
 
 
 class KXDraggableBehavior:
@@ -164,7 +168,7 @@ class KXDraggableBehavior:
             self._will_a_touch_move_too_much_or_end(touch),
         )
         if tasks[0].done:
-            # The given touch is a drag gesture.
+            # The given touch is a dragging gesture.
             tasks[1].cancel()
             if self.is_being_dragged or (not self.drag_enabled):
                 ak.start(self._simulate_a_normal_touch(
@@ -174,14 +178,12 @@ class KXDraggableBehavior:
                 self._drag_coro = ak.start(
                     self._treat_a_touch_as_a_drag(touch, do_transform=True))
         else:
-            # The given touch is not a drag gesture.
+            # The given touch is not a dragging gesture.
             tasks[0].cancel()
             ak.start(self._simulate_a_normal_touch(
                 touch, do_touch_up=tasks[1].result))
 
     async def _will_a_touch_move_too_much_or_end(self, touch):
-        '''Returns True if the given touch ended, False if it moved too much.
-        '''
         drag_distance = self.drag_distance
         ox, oy = touch.opos
         async for __ in ak.rest_of_touch_moves(self, touch):
@@ -242,6 +244,8 @@ class KXDraggableBehavior:
                 'on_drag_fail' if failed else 'on_drag_success', touch)
             if isawaitable(r):
                 await r
+            # I cannot remember why this 'ak.sleep()' exists.
+            # It might be unnecessary.
             await ak.sleep(-1)
         except GeneratorExit:
             ctx.cancelled = True
@@ -338,7 +342,7 @@ class KXReorderableBehavior:
 
     spacer_widgets = ListProperty([])
     '''A list of spacer widgets. The number of them will be the
-    maximum number of simultaneous drags KXReorderableBehavior can handle.
+    maximum number of simultaneous drags ``KXReorderableBehavior`` can handle.
 
     This property can be changed only when there is no ongoing drag.
     '''
