@@ -21,7 +21,7 @@ KV_CODE = '''
             pos: self.pos
             size: self.size
 
-<Draggable@KXDraggableBehavior+Label>:
+<Draggable>:
     drag_timeout: 0
     text: root.drag_cls
     font_size: 50
@@ -58,15 +58,18 @@ KXBoxLayout:
             drag_cls: 'B'
 '''
 
+
+class Draggable(KXDraggableBehavior, Label):
+    def on_drag_success(self, touch):
+        self.parent.remove_widget(self)
+
+
 class Droppable(KXDroppableBehavior, Label):
     n_ongoing_drags_inside = NumericProperty(0)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._ud_key = 'Droppable.' + str(self.uid)
-
-    def accept_drag(self, touch, ctx):
-        ctx.draggable.parent.remove_widget(ctx.draggable)
 
     def on_touch_move(self, touch):
         ud_key = self._ud_key
