@@ -66,7 +66,7 @@ class FlutterStyleDraggable(KXDraggableBehavior, Factory.ScreenManager):
         if self.has_screen('childWhenDragging'):
             restore_widget_location(
                 self.get_screen('childWhenDragging'),
-                self.drag_ctx.original_location,
+                self.drag_context.original_location,
             )
         return super().on_drag_start(touch)
 

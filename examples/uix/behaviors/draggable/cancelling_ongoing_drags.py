@@ -76,7 +76,7 @@ class SampleApp(App):
 
     def cancel_ongoing_drags(self):
         for draggable in tuple(KXDraggableBehavior.ongoing_drags()):
-            original_location = draggable.drag_ctx.original_location
+            original_location = draggable.drag_context.original_location
             draggable.cancel_drag()
             restore_widget_location(draggable, original_location)
 

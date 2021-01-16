@@ -58,14 +58,14 @@ class DraggableLabel(KXDraggableBehavior, Factory.Label):
     color_cls = StringProperty()
 
     def on_drag_fail(self, touch):
-        ctx = self.drag_ctx
+        ctx = self.drag_context
         if ctx.droppable is not None:
             print(f"Incorrect! {self.text} is not {ctx.droppable.color_cls}")
         return super().on_drag_fail(touch)
 
     async def on_drag_success(self, touch):
         print("Correct")
-        self.center = self.to_window(*self.drag_ctx.droppable.center)
+        self.center = self.to_window(*self.drag_context.droppable.center)
         await ak.animate(self, opacity=0, d=.5)
         self.parent.remove_widget(self)
         

@@ -24,8 +24,7 @@ Main differences from drag_n_drop
   stays for ``drag_timeout`` milli seconds without traveling more than
   ``drag_distance`` pixels, it will be treated as a dragging gesture.
 * :class:`KXReorderableBehavior` can handle multiple drags simultaneously.
-* Drag can be cancelled by calling ``KXDraggableBehavior.cancel_drag()`` or
-  ``KXDraggableBehavior.cancel_drag_safely()``.
+* Drag can be cancelled by calling ``KXDraggableBehavior.cancel_drag()``.
 * ``KXReorderableBehavior`` cannot be put inside another one if their
   ``drag_classes``s is overlapping each other.
 
@@ -130,7 +129,7 @@ class KXDraggableBehavior:
         )
 
     @property
-    def drag_ctx(self) -> Union[None, DragContext]:
+    def drag_context(self) -> Union[None, DragContext]:
         return self._drag_ctx
 
     def cancel_drag(self):
@@ -440,7 +439,7 @@ class KXReorderableBehavior:
 
         try:
             restore_widget_location(
-                spacer, touch_ud['kivyx_draggable'].drag_ctx.original_location,
+                spacer, touch_ud['kivyx_draggable'].drag_context.original_location,
                 ignore_parent=True)
             add_widget(spacer)
             async for __ in ak.rest_of_touch_moves(self, touch):
