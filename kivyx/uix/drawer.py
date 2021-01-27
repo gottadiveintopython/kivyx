@@ -11,7 +11,6 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.label import Label
 
 import asynckivy as ak
-from kivyx.properties import AutoCloseProperty
 
 KV_CODE = '''
 <KXDrawerTab>:
@@ -100,7 +99,8 @@ class KXDrawer(RelativeLayout):
         'm' stands for 'middle'.
     '''
 
-    _coro = AutoCloseProperty()
+    # default value of the instance attributes
+    _main_task = ak.sleep_forever()
 
     def __init__(self, **kwargs):
         self._is_moving_to_the_top = False
@@ -119,11 +119,11 @@ class KXDrawer(RelativeLayout):
         self._trigger_reset()
 
     def reset(self, *args, **kwargs):
+        self._main_task.close()
         if self.parent is None:
-            self._coro = None
             return
-        self._coro = self._main()
-        ak.start(self._coro)
+        self._main_task = ak.start(self._main())
+        self._main_task.name = 'KXDrawer'
 
     async def _main(self):
         anchor = self.anchor

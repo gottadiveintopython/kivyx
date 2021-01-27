@@ -5,8 +5,6 @@ from kivy.properties import NumericProperty, AliasProperty
 from kivy.core.audio import Sound
 import asynckivy as ak
 
-from kivyx.properties import AutoCloseProperty
-
 
 class Bgm(EventDispatcher):
     '''kivy.core.audio.Sound with some features below:
