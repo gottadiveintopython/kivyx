@@ -74,7 +74,7 @@ KV_CODE = '''
     Separator:
         size_hint_x: None
     GridLayout:
-        orientation: 'vertical'
+        orientation: 'tb-lr'
         spacing: 20
         padding: 20
         cols: 2

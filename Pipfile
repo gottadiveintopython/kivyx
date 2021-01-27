@@ -8,11 +8,11 @@ pytest = "*"
 flake8 = "*"
 pysnooper = "*"
 pyyaml = "*"
+kivy = {extras = ["base", "media"],version = "*"}
+kivyx = {editable = true,path = "."}
 
 [packages]
-kivy = {extras = ["base"],version = "*"}
-asynckivy = "*"
-kivyx = {editable = true,path = "."}
+asynckivy = ">=0.4"
 
 [requires]
 python_version = "3.8"
