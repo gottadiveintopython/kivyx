@@ -1,6 +1,15 @@
 '''
-Inspired by
-https://github.com/kivy-garden/garden.magnet
+KXMagnet
+========
+
+Inspired by https://github.com/kivy-garden/garden.magnet
+
+The differences from the Garden one
+-----------------------------------
+
+* Can animate only `pos` and `size`.
+* The animation works even if a magnet acrosses different coordinates.
+* Has a boolean property to enable/disable animation
 '''
 __all__ = ('KXMagnet', )
 
@@ -9,21 +18,17 @@ from kivy.uix.widget import Widget
 from kivy.properties import (
     NumericProperty, StringProperty, BooleanProperty,
 )
-from asynckivy import start as ak_start, animate as ak_animate
-
-from kivyx.properties import AutoCloseProperty
+import asynckivy
+from asynckivy import raw_start, animate
 
 
 class KXMagnet(Widget):
-    '''The differences from 'garden.magnet'.
-
-    - animates only 'pos' and 'size'.
-    - the animation works even if a magnet acrosses different coordinates.
-    '''
     do_anim = BooleanProperty(True)
     anim_duration = NumericProperty(1)
     anim_transition = StringProperty('out_quad')
-    _coro = AutoCloseProperty()
+
+    # default value of the instance attributes
+    _anim_coro = asynckivy.sleep_forever()
 
     def __init__(self, **kwargs):
         self._prev_parent = None
@@ -56,15 +61,24 @@ class KXMagnet(Widget):
         widget.size = self.size
         return super().add_widget(widget, *args, **kwargs)
 
+    def remove_widget(self, widget, *args, **kwargs):
+        if self.children and self.children[0] == widget:
+            self._anim_coro.close()
+        return super().remove_widget(widget, *args, **kwargs)
+
+    def clear_widgets(self, *args, **kwargs):
+        self._anim_coro.close()
+        return super().clear_widgets(*args, **kwargs)
+
     def _start_anim(self, *args):
         if self.children:
             child = self.children[0]
+            self._anim_coro.close()
             if not self.do_anim:
-                self._coro = None
                 child.pos = self.pos
                 child.size = self.size
                 return
-            self._coro = ak_start(ak_animate(
+            self._anim_coro = raw_start(animate(
                 child,
                 d=self.anim_duration,
                 t=self.anim_transition,
