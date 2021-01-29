@@ -13,12 +13,11 @@ from kivy.properties import (
     ColorProperty, NumericProperty, ObjectProperty, OptionProperty,
     BooleanProperty, AliasProperty,
 )
-from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 
 
 class KXTabsBehavior:
     is_horizontal = AliasProperty(
-        lambda self: self.orientation in {'horizontal', 'lr', 'rl'},
+        lambda self: self.orientation in ('horizontal', 'lr', 'rl'),
         bind=('orientation', ), cache=True,
     )
 
