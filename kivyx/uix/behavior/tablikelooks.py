@@ -57,7 +57,7 @@ class KXTablikeLooksBehavior:
         f('padding', trigger_update_points)
         f('orientation', trigger_rebind)
         f('style', trigger_rebind)
-        f('line_stays_inside', trigger_rebind)
+        f('line_stays_inside', trigger_update_points)
         f('_next_highlight', trigger_rebind)
         trigger_rebind()
 
