@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.factory import Factory
 
 import kivyx.uix.boxlayout
-import kivyx.uix.behavior.tabs
+import kivyx.uix.behavior.tablikelooks
 
 KV_CODE = '''
 <Separator@Widget>:
@@ -16,7 +16,7 @@ KV_CODE = '''
             size: self.size
 
 <MyTab@ToggleButtonBehavior+Label>:
-<MyTabs@KXTabsBehavior+KXBoxLayout>:
+<MyTabs@KXTablikeLooksBehavior+KXBoxLayout>:
 
 KXBoxLayout:
     KXBoxLayout:

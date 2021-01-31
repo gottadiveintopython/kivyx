@@ -1,11 +1,11 @@
 '''
-KXTabsBehavior
+KXTablikeLooksBehavior
 ==============
 
 A mix-in class that adds tab-like graphical representation to BoxLayout.
 '''
 
-__all__ = ('KXTabsBehavior', )
+__all__ = ('KXTablikeLooksBehavior', )
 
 from kivy.clock import Clock
 from kivy.factory import Factory
@@ -15,7 +15,7 @@ from kivy.properties import (
 )
 
 
-class KXTabsBehavior:
+class KXTablikeLooksBehavior:
     is_horizontal = AliasProperty(
         lambda self: self.orientation in ('horizontal', 'lr', 'rl'),
         bind=('orientation', ), cache=True,
@@ -187,4 +187,4 @@ class KXTabsBehavior:
             )
 
 
-Factory.register('KXTabsBehavior', KXTabsBehavior)
+Factory.register('KXTablikeLooksBehavior', cls=KXTablikeLooksBehavior)
