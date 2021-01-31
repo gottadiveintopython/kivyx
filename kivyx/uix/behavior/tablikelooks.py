@@ -37,7 +37,7 @@ class KXTablikeLooksBehavior:
     def __init__(self, **kwargs):
         from kivy.graphics import InstructionGroup, Color, Line
         self._inst_color = Color()
-        self._inst_line = Line(joint='bevel', cap='square')
+        self._inst_line = Line(joint='bevel', cap='square', width=2)
         self._current_highlight = None
         self._actual_update_points = self._update_points_ver_inside
         super().__init__(**kwargs)
