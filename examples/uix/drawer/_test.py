@@ -10,6 +10,7 @@ from kivyx.uix.drawer import KXDrawer
 
 class Numpad(GridLayout):
     def on_kv_post(self, *args, **kwargs):
+        super().on_kv_post(*args, **kwargs)
         for text in '7 8 9 * 4 5 6 / 1 2 3 del 0 + - ent'.split():
             self.add_widget(Button(
                 text=text,
@@ -70,24 +71,21 @@ BoxLayout:
             KXDrawer:
                 id: drawer
                 anchor: 'tr'
-                top_when_opened: True
+                brings_to_front: True
                 size_hint: None, None
                 size: numpad.size
-                background_color: "#002200"
                 Numpad:
                     id: numpad
             KXDrawer:
                 anchor: 'rt'
-                top_when_opened: True
+                brings_to_front: True
                 size_hint: None, None
                 size: 100, 100
-                background_color: "#002200"
                 Button:
             KXDrawer:
                 anchor: 'bm'
                 size_hint: None, None
                 size: 2, 10
-                background_color: "#002200"
                 
     Separator:
         size_hint_x: None

@@ -1,3 +1,10 @@
+'''
+KXDrawer
+========
+
+This widget needs to be a child of ``FloatLayout`` (or subclass thereof).
+'''
+
 __all__ = ('KXDrawer', )
 
 from kivy.properties import (
@@ -8,23 +15,27 @@ from kivy.clock import Clock
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.behaviors import ButtonBehavior
-from kivy.uix.label import Label
+from kivy.uix.widget import Widget
 
 import asynckivy as ak
 
 KV_CODE = '''
 <KXDrawerTab>:
-    canvas.before:
+    canvas:
         Color:
             rgba: self.background_color
         Rectangle:
             pos: self.pos
             size: self.size
         PushMatrix:
+        Translate:
+            xy: self.center
         Rotate:
-            origin: self.center
             angle: self.icon_angle
-    canvas.after:
+        Color:
+            rgba: self.foreground_color
+        Triangle:
+            points: (s := (min(*self.size) * 0.2), ) and [-s, -s, -s, s, s, 0]
         PopMatrix:
 
 <KXDrawer>:
@@ -37,23 +48,15 @@ KV_CODE = '''
     KXDrawerTab:
         id: tab
         background_color: root.background_color
+        foreground_color: root.foreground_color
 '''
 Builder.load_string(KV_CODE)
 
 
-class KXDrawerTab(ButtonBehavior, Label):
+class KXDrawerTab(ButtonBehavior, Widget):
     background_color = ColorProperty()
+    foreground_color = ColorProperty()
     icon_angle = NumericProperty(0)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        try:
-            import kivymd.font_definitions
-            from kivymd.icon_definitions import md_icons
-            self.font_name = 'Icons'
-            self.text = md_icons['menu-right']
-        except ImportError:
-            self.text = '>'
 
     __ = {
         'l': {'x': 1, 'center_y': .5, },
@@ -73,20 +76,16 @@ class KXDrawerTab(ButtonBehavior, Label):
 
 
 class KXDrawer(RelativeLayout):
-    '''A nifty drawer.
-
-        This widget needs to be a child of `FloatLayout`.
-        (including its subclasses e.g. `RelativeLayout`, `Screen`)
-    '''
     __events__ = ('on_pre_open', 'on_open', 'on_pre_close', 'on_close', )
 
-    top_when_opened = BooleanProperty(False)
+    brings_to_front = BooleanProperty(False)
     '''If True, moves myself on top of the other siblings when opened.'''
 
     duration = NumericProperty(.3)
     '''Duration of the opening/closing animations.'''
 
     background_color = ColorProperty("#222222")
+    foreground_color = ColorProperty("#AAAAAA")
 
     anchor = OptionProperty(
         'lm', options=r'lt lm lb rt rm rb bl bm br tl tm tr'.split())
@@ -105,8 +104,8 @@ class KXDrawer(RelativeLayout):
     def __init__(self, **kwargs):
         self._is_moving_to_the_top = False
         self._trigger_reset = trigger = Clock.create_trigger(self.reset, 0)
-        self._being_asked_to_open = ak.Event()
-        self._being_asked_to_close = ak.Event()
+        self._open_event = ak.Event()
+        self._close_event = ak.Event()
         super().__init__(**kwargs)
         self.fbind('anchor', trigger)
         trigger()
@@ -146,15 +145,12 @@ class KXDrawer(RelativeLayout):
         tab.icon_angle = icon_angle_c
         ph[pos_key_c] = ph_value
 
-        being_asked_to_close = self._being_asked_to_close
-        being_asked_to_open = self._being_asked_to_open
+        close_event = self._close_event
+        open_event = self._open_event
         while True:
-            await ak.or_(
-                ak.event(tab, 'on_press'),
-                being_asked_to_open.wait(),
-            )
+            await ak.or_(ak.event(tab, 'on_press'), open_event.wait())
             self.dispatch('on_pre_open')
-            if self.top_when_opened:
+            if self.brings_to_front:
                 self._is_moving_to_the_top = True
                 parent.remove_widget(self)
                 parent.add_widget(self)
@@ -163,45 +159,42 @@ class KXDrawer(RelativeLayout):
             await ak.animate(
                 self, d=self.duration,
                 **{pos_key_o: _get_pos_value_in_local_coordinates()})
-            being_asked_to_close.clear()
+            close_event.clear()
             await ak.animate(tab, d=self.duration, icon_angle=icon_angle_o)
             ph[pos_key_o] = ph_value
             self.dispatch('on_open')
-            await ak.or_(
-                ak.event(tab, 'on_press'),
-                being_asked_to_close.wait(),
-            )
+            await ak.or_(ak.event(tab, 'on_press'), close_event.wait())
             self.dispatch('on_pre_close')
             del ph[pos_key_o]
             await ak.animate(
                 self, d=self.duration,
                 **{pos_key_c: _get_pos_value_in_local_coordinates()})
-            being_asked_to_open.clear()
+            open_event.clear()
             await ak.animate(tab, d=self.duration, icon_angle=icon_angle_c)
             ph[pos_key_c] = ph_value
             self.dispatch('on_close')
 
     def open(self, *args, **kwargs):
         '''Opens the drawer. This method can take any number of arguments
-        but doesn't use those at all, so you can bind the method to any event
-        without putting an additional function.
+        but doesn't use them at all, so you can bind the method to any event
+        directly.
 
             drawer = KXDrawer()
             button = Button()
             button.bind(on_press=drawer.open)
         '''
-        self._being_asked_to_open.set()
+        self._open_event.set()
 
     def close(self, *args, **kwargs):
         '''Closes the drawer. This method can take any number of arguments
-        but doesn't use those at all, so you can bind the method to any event
-        without putting an additional function.
+        but doesn't use them at all, so you can bind the method to any event
+        directly.
 
             drawer = KXDrawer()
             button = Button()
             button.bind(on_press=drawer.close)
         '''
-        self._being_asked_to_close.set()
+        self._close_event.set()
 
     def on_pre_open(self):
         pass
