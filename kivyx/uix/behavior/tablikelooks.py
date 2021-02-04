@@ -11,16 +11,11 @@ from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.properties import (
     ColorProperty, NumericProperty, ObjectProperty, OptionProperty,
-    BooleanProperty, AliasProperty,
+    BooleanProperty,
 )
 
 
 class KXTablikeLooksBehavior:
-    is_horizontal = AliasProperty(
-        lambda self: self.orientation in ('horizontal', 'lr', 'rl'),
-        bind=('orientation', ), cache=True,
-    )
-
     style = OptionProperty('top', options=('top', 'bottom', 'left', 'right'))
     '''
     If ``top`` or ``bottom``, the ``orientation`` must be ``horizontal``,
@@ -33,6 +28,10 @@ class KXTablikeLooksBehavior:
     line_color = ColorProperty("#FFFFFF")
     line_width = NumericProperty(2)
     _next_highlight = ObjectProperty(None, allownone=True)
+
+    @property
+    def _is_horizontal(self):
+        return self.orientation in ('horizontal', 'lr', 'rl')
 
     def __init__(self, **kwargs):
         from kivy.graphics import InstructionGroup, Color, Line
@@ -87,7 +86,7 @@ class KXTablikeLooksBehavior:
         self._next_highlight = child if state == 'down' else None
 
     def _rebind(self, *args):
-        assert self.is_horizontal is (self.style[0] in 'tb')
+        assert self._is_horizontal is (self.style[0] in 'tb')
         trigger = self._trigger_update_points
         current = self._current_highlight
         next = self._next_highlight
@@ -106,7 +105,7 @@ class KXTablikeLooksBehavior:
         spacing = self.spacing
         cur = self._current_highlight
         inst_line = self._inst_line
-        is_horizontal = self.is_horizontal
+        is_horizontal = self._is_horizontal
         y1 = self_y = self.y
         y2 = self_top = self.top
         x1 = self_x = self.x
@@ -146,7 +145,7 @@ class KXTablikeLooksBehavior:
         spacing = self.spacing
         cur = self._current_highlight
         inst_line = self._inst_line
-        is_horizontal = self.is_horizontal
+        is_horizontal = self._is_horizontal
         lw = self.line_width
         self_y = self.y + lw
         self_top = self.top - lw
