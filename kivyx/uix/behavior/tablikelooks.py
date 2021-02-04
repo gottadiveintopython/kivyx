@@ -1,6 +1,6 @@
 '''
 KXTablikeLooksBehavior
-==============
+======================
 
 A mix-in class that adds tab-like graphical representation to BoxLayout.
 '''
@@ -13,6 +13,7 @@ from kivy.properties import (
     ColorProperty, NumericProperty, ObjectProperty, OptionProperty,
     BooleanProperty,
 )
+from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 
 
 class KXTablikeLooksBehavior:
@@ -71,14 +72,14 @@ class KXTablikeLooksBehavior:
         self._inst_line.width = width
 
     def add_widget(self, widget, *args, **kwargs):
-        if widget.property('state', quiet=True):
+        if isinstance(widget, ToggleButtonBehavior):
             widget.bind(state=self._on_child_state)
         return super().add_widget(widget, *args, **kwargs)
 
     def remove_widget(self, widget, *args, **kwargs):
         if widget.__self__ is self._current_highlight:
             self._next_highlight = None
-        if widget.property('state', quiet=True):
+        if isinstance(widget, ToggleButtonBehavior):
             widget.unbind(state=self._on_child_state)
         return super().remove_widget(widget, *args, **kwargs)
 
