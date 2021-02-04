@@ -21,12 +21,13 @@ import asynckivy as ak
 
 KV_CODE = '''
 <KXDrawerTab>:
-    canvas:
+    canvas.before:
         Color:
             rgba: self.background_color
         Rectangle:
             pos: self.pos
             size: self.size
+    canvas:
         PushMatrix:
         Translate:
             xy: self.center
