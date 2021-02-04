@@ -70,20 +70,20 @@ class KXTablikeLooksBehavior:
     def on_line_width(self, __, width):
         self._inst_line.width = width
 
-    def add_widget(self, child, *args, **kwargs):
-        if child.property('state', quiet=True):
-            child.bind(state=self._on_child_state)
-        return super().add_widget(child, *args, **kwargs)
+    def add_widget(self, widget, *args, **kwargs):
+        if widget.property('state', quiet=True):
+            widget.bind(state=self._on_child_state)
+        return super().add_widget(widget, *args, **kwargs)
 
-    def remove_widget(self, child, *args, **kwargs):
-        if child.__self__ is self._current_highlight:
+    def remove_widget(self, widget, *args, **kwargs):
+        if widget.__self__ is self._current_highlight:
             self._next_highlight = None
-        if child.property('state', quiet=True):
-            child.unbind(state=self._on_child_state)
-        return super().remove_widget(child, *args, **kwargs)
+        if widget.property('state', quiet=True):
+            widget.unbind(state=self._on_child_state)
+        return super().remove_widget(widget, *args, **kwargs)
 
-    def _on_child_state(self, child, state):
-        self._next_highlight = child if state == 'down' else None
+    def _on_child_state(self, widget, state):
+        self._next_highlight = widget if state == 'down' else None
 
     def _rebind(self, *args):
         assert self._is_horizontal is (self.style[0] in 'tb')
