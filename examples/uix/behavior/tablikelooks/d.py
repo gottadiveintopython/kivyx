@@ -16,6 +16,7 @@ KV_CODE = '''
             size: self.size
 
 <MyTab@ToggleButtonBehavior+Label>:
+    group: 'test'
 <MyTabs@KXTablikeLooksBehavior+KXBoxLayout>:
 
 KXBoxLayout:
@@ -118,13 +119,10 @@ KXBoxLayout:
             line_stays_inside: line_stays_inside.active
             MyTab:
                 text: 'A'
-                group: 'test'
             MyTab:
                 text: 'B'
-                group: 'test'
             MyTab:
                 text: 'C'
-                group: 'test'
         Widget:
             size_hint: 8, 8
 '''
