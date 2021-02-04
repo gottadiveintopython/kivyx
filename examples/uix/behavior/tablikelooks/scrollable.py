@@ -1,12 +1,11 @@
 from kivy.app import runTouchApp
 from kivy.factory import Factory
 from kivy.lang import Builder
-from kivyx.uix.boxlayout import KXBoxLayout
-from kivyx.uix.tabs import KXTabs
+
+import kivyx.uix.behavior.tablikelooks
+import kivyx.uix.boxlayout
 
 KV_CODE = '''
-#:set LINE_WIDTH 2
-
 <Spacer@Widget>:
     size_hint_x: None
     width: 20
@@ -16,23 +15,23 @@ KV_CODE = '''
         Rectangle:
             pos: self.pos
             size: self.size
-
 <LabelTab@ToggleButtonBehavior+Label>:
     font_size: 30
     size_hint_min_x: self.texture_size[0]
+    group: 'test'
 <ImageTab@ToggleButtonBehavior+Image>:
     size_hint_min_x: self.texture.size[0] if self.texture else 1
+    group: 'test'
+<MyTabs@KXTablikeLooksBehavior+BoxLayout>:
 
 KXBoxLayout:
     orientation: 'tb'
     ScrollView:
         size_hint_y: None
         height: 80
-        KXTabs:
+        MyTabs:
             id: tabs
-            orientation: 'lr'
             style: 'top'
-            line_width: 2
             line_color: '#AAAAFF'
             padding: 20, 0
             spacing: 20
