@@ -16,58 +16,44 @@ KV_CODE = '''
     line_width: LINE_WIDTH
     spacing: 20
     padding: 20
+    size_hint_min: self.minimum_size
 
 GridLayout:
     cols: 3
     rows: 3
     padding: LINE_WIDTH
     Widget:
-        size_hint: None, None
-        size: 1, 1
     MyTabs:
         orientation: 'lr'
         style: 'top'
-        size_hint_y: None
-        height: self.minimum_height
         MyTab:
         MyTab:
         MyTab:
         MyTab:
     Widget:
-        size_hint: None, None
-        size: 1, 1
     MyTabs:
         orientation: 'tb'
         style: 'left'
-        size_hint_x: None
-        width: self.minimum_width
         MyTab:
         MyTab:
         MyTab:
     Widget:
+        size_hint: 1000, 1000
     MyTabs:
         orientation: 'bt'
         style: 'right'
-        size_hint_x: None
-        width: self.minimum_width
         MyTab:
         MyTab:
     Widget:
-        size_hint: None, None
-        size: 1, 1
     MyTabs:
         orientation: 'lr'
         style: 'bottom'
-        size_hint_y: None
-        height: self.minimum_height
         MyTab:
         MyTab:
         MyTab:
         MyTab:
         MyTab:
     Widget:
-        size_hint: None, None
-        size: 1, 1
 '''
 
 root = Builder.load_string(KV_CODE)
