@@ -1,11 +1,9 @@
-# from kivy.config import Config
-# Config.set('modules', 'showborder', '')
-# Config.set('modules', 'inspector', '')
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.factory import Factory
 
-from kivyx.uix.tabs import KXTabs
+import kivyx.uix.boxlayout
+import kivyx.uix.behavior.tablikelooks
 
 KV_CODE = '''
 <Separator@Widget>:
@@ -17,7 +15,9 @@ KV_CODE = '''
             pos: self.pos
             size: self.size
 
-<Tab@ToggleButtonBehavior+Label>:
+<MyTab@ToggleButtonBehavior+Label>:
+    group: 'test'
+<MyTabs@KXTablikeLooksBehavior+KXBoxLayout>:
 
 KXBoxLayout:
     KXBoxLayout:
@@ -108,7 +108,7 @@ KXBoxLayout:
         size_hint_x: None
     KXBoxLayout:
         id: tabs_parent
-        KXTabs:
+        MyTabs:
             id: tabs
             spacing: spacing.value
             padding: (padding.value, 0) if self.is_horizontal else (0, padding.value)
@@ -117,11 +117,11 @@ KXBoxLayout:
             line_color: "#8888FF"
             line_width: max(line_width.value, 1)
             line_stays_inside: line_stays_inside.active
-            Tab:
+            MyTab:
                 text: 'A'
-            Tab:
+            MyTab:
                 text: 'B'
-            Tab:
+            MyTab:
                 text: 'C'
         Widget:
             size_hint: 8, 8

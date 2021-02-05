@@ -1,33 +1,43 @@
-__all__ = ('KXTabs', )
+'''
+KXTablikeLooksBehavior
+======================
+
+A mix-in class that adds tab-like graphical representation to BoxLayout.
+'''
+
+__all__ = ('KXTablikeLooksBehavior', )
 
 from kivy.clock import Clock
+from kivy.factory import Factory
 from kivy.properties import (
     ColorProperty, NumericProperty, ObjectProperty, OptionProperty,
     BooleanProperty,
 )
 from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
-from kivyx.uix.boxlayout import KXBoxLayout
 
 
-class KXTabs(KXBoxLayout):
-    '''Basically KXBoxLayout + some graphical representation.
-    When the 'state' of a child becomes 'down', highlights it.
-
-    'style' must be compatible with 'orientation'.
-    If 'style' is 'top' or 'bottom', 'orientation' must be 'lr' or 'rl'.
-    If 'style' is 'left' or 'right', 'orientation' must be 'bt' or 'tb'.
-    '''
-    group = ObjectProperty("KXTabs")
+class KXTablikeLooksBehavior:
     style = OptionProperty('top', options=('top', 'bottom', 'left', 'right'))
+    '''
+    If ``top`` or ``bottom``, the ``orientation`` must be ``horizontal``,
+    ``lr`` or 'rl'.
+    If ``left`` or ``right``, the ``orientation`` must be ``vertical``,
+    ``bt`` or 'tb'.
+    '''
+
     line_stays_inside = BooleanProperty(True)
     line_color = ColorProperty("#FFFFFF")
-    line_width = NumericProperty(1)
+    line_width = NumericProperty(2)
     _next_highlight = ObjectProperty(None, allownone=True)
+
+    @property
+    def _is_horizontal(self):
+        return self.orientation in ('horizontal', 'lr', 'rl')
 
     def __init__(self, **kwargs):
         from kivy.graphics import InstructionGroup, Color, Line
         self._inst_color = Color()
-        self._inst_line = Line(joint='bevel', cap='square')
+        self._inst_line = Line(joint='bevel', cap='square', width=2)
         self._current_highlight = None
         self._actual_update_points = self._update_points_ver_inside
         super().__init__(**kwargs)
@@ -47,7 +57,7 @@ class KXTabs(KXBoxLayout):
         f('padding', trigger_update_points)
         f('orientation', trigger_rebind)
         f('style', trigger_rebind)
-        f('line_stays_inside', trigger_rebind)
+        f('line_stays_inside', trigger_update_points)
         f('_next_highlight', trigger_rebind)
         trigger_rebind()
 
@@ -61,29 +71,23 @@ class KXTabs(KXBoxLayout):
     def on_line_width(self, __, width):
         self._inst_line.width = width
 
-    def on_group(self, __, group):
-        for c in self.children:
-            if isinstance(c, ToggleButtonBehavior):
-                c.group = group
+    def add_widget(self, widget, *args, **kwargs):
+        if isinstance(widget, ToggleButtonBehavior):
+            widget.bind(state=self._on_child_state)
+        return super().add_widget(widget, *args, **kwargs)
 
-    def add_widget(self, child, *args, **kwargs):
-        if isinstance(child, ToggleButtonBehavior):
-            child.group = self.group
-            child.bind(state=self._on_child_state)
-        return super().add_widget(child, *args, **kwargs)
-
-    def remove_widget(self, child, *args, **kwargs):
-        if child.__self__ is self._current_highlight:
+    def remove_widget(self, widget, *args, **kwargs):
+        if widget.__self__ is self._current_highlight:
             self._next_highlight = None
-        if isinstance(child, ToggleButtonBehavior):
-            child.unbind(state=self._on_child_state)
-        return super().remove_widget(child, *args, **kwargs)
+        if isinstance(widget, ToggleButtonBehavior):
+            widget.unbind(state=self._on_child_state)
+        return super().remove_widget(widget, *args, **kwargs)
 
-    def _on_child_state(self, child, state):
-        self._next_highlight = child if state == 'down' else None
+    def _on_child_state(self, widget, state):
+        self._next_highlight = widget if state == 'down' else None
 
     def _rebind(self, *args):
-        assert self.is_horizontal is (self.style[0] in 'tb')
+        assert self._is_horizontal is (self.style[0] in 'tb')
         trigger = self._trigger_update_points
         current = self._current_highlight
         next = self._next_highlight
@@ -102,7 +106,7 @@ class KXTabs(KXBoxLayout):
         spacing = self.spacing
         cur = self._current_highlight
         inst_line = self._inst_line
-        is_horizontal = self.is_horizontal
+        is_horizontal = self._is_horizontal
         y1 = self_y = self.y
         y2 = self_top = self.top
         x1 = self_x = self.x
@@ -142,7 +146,7 @@ class KXTabs(KXBoxLayout):
         spacing = self.spacing
         cur = self._current_highlight
         inst_line = self._inst_line
-        is_horizontal = self.is_horizontal
+        is_horizontal = self._is_horizontal
         lw = self.line_width
         self_y = self.y + lw
         self_top = self.top - lw
@@ -181,3 +185,6 @@ class KXTabs(KXBoxLayout):
                 x1, min(cur_top + spacing, y2),
                 x1, self_top,
             )
+
+
+Factory.register('KXTablikeLooksBehavior', cls=KXTablikeLooksBehavior)
