@@ -79,7 +79,7 @@ class KXDrawerTab(ButtonBehavior, Widget):
 class KXDrawer(RelativeLayout):
     __events__ = ('on_pre_open', 'on_open', 'on_pre_close', 'on_close', )
 
-    brings_to_front = BooleanProperty(False)
+    auto_bring_to_front = BooleanProperty(False)
     '''If True, moves myself on top of the other siblings when opened.'''
 
     duration = NumericProperty(.3)
@@ -151,7 +151,7 @@ class KXDrawer(RelativeLayout):
         while True:
             await ak.or_(ak.event(tab, 'on_press'), open_event.wait())
             self.dispatch('on_pre_open')
-            if self.brings_to_front:
+            if self.auto_bring_to_front:
                 self._is_moving_to_the_top = True
                 parent.remove_widget(self)
                 parent.add_widget(self)
