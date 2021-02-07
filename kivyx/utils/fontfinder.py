@@ -58,7 +58,7 @@ def find_fonts_from_text(text, *, suffixes=SUFFIXES) -> Iterator[Path]:
     if len(text) < 2:
         raise ValueError(f"'text' must contain more than one character")
     label = Label(font_size=15)
-    for path in get_fonts():
+    for path in get_fonts(suffixes=suffixes):
         label.font_name = str(path)
         pixels_set = set()
         for c in text:
