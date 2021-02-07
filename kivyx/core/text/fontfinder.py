@@ -61,9 +61,11 @@ def find_fonts_from_text(text, *, suffixes=SUFFIXES) -> Iterator[Path]:
     for path in get_fonts(suffixes=suffixes):
         label.font_name = str(path)
         pixels_set = set()
-        for c in text:
+        for i, c in enumerate(text, start=1):
             label.text = c
             label.texture_update()
             pixels_set.add(label.texture.pixels)
-        if len(pixels_set) == len(text):
+            if len(pixels_set) != i:
+                break
+        else:
             yield path
