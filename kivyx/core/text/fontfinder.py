@@ -23,12 +23,12 @@ SUFFIXES = ('.ttf', '.otf', '.ttc', )
 
 
 def find_fonts(*, suffixes=SUFFIXES) -> Iterator[Path]:
-    '''Returns an iterator that enumerates pre-installed fonts. If you call
-    this function multiple times, consider calling ``get_fonts()`` instead
-    because of a performance reason.
+    '''Enumerates pre-installed fonts. If you call this function multiple
+    times, consider calling ``get_fonts()`` instead because of a performance
+    reason.
 
-    OSに元から入っているfontを挙げるiteratorを返す。もしこの関数を何度も呼び出す予定な
-    のなら結果を保存しておいてくれる``get_fonts()``を代わりに使うべきである。
+    OSに元から入っているfontを挙げる。もしこの関数を何度も呼び出す予定なのなら結果を保存し
+    ておいてくれる``get_fonts()``を代わりに使うべきである。
     '''
     for dir in LabelBase.get_system_fonts_dir():
         for child in Path(dir).iterdir():
@@ -48,12 +48,12 @@ def get_fonts(*, suffixes=SUFFIXES) -> Sequence[Path]:
 
 
 def find_fonts_from_text(text, *, suffixes=SUFFIXES) -> Iterator[Path]:
-    '''Returns an iterator that enumerates pre-installed fonts that are
-    capable of rendering the given ``text``. The ``text`` must contain more
-    than one character with no-duplication.
+    '''Enumerates pre-installed fonts that are capable of rendering the given
+    ``text``. The ``text`` must contain more than one character with
+    no-duplication.
 
-    OSに元から入っているfontの中で``text``を描ける物を挙げるiteratorを返す。
-    ``text``内の文字に被りがあってはならず、また二文字以上含まなければならない。
+    OSに元から入っているfontの中で``text``を描ける物を挙げる。``text``内の文字に被りがあ
+    ってはならず、また二文字以上含まなければならない。
     '''
     if len(text) < 2:
         raise ValueError(f"'text' must contain more than one character")
