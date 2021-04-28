@@ -2,6 +2,7 @@
 
 The entire repository is experimental state. The API changes without notice.
 
+[Youtube](https://www.youtube.com/playlist?list=PLNdhqAjzeEGhUakLcGYJpxTh1DpgmIKjd)
 ## Dependencies
 
 ```
