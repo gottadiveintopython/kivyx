@@ -1,21 +1,36 @@
-# Kivyx : An experiment of Kivy widgets
+# Kivyx: Experiment of Kivy Components
 
-The entire repository is experimental state. The API changes without notice.
+This is the front page of Kivyx project.
+As the title says, all the components are experimental state, and **may change its API without notice**.
+So if you want to use them, pin the commit-hash or just copy the files.
 
-[Youtube](https://www.youtube.com/playlist?list=PLNdhqAjzeEGhUakLcGYJpxTh1DpgmIKjd)
-## Dependencies
+# List of Components
 
-```
-pip install asynckivy
-```
+### [AspectRatio](https://github.com/gottadiveintopython/kivyx.uix.aspectratio)
 
-## LICENSE
+Inspired by Flutter's [AspectRatio](https://www.youtube.com/watch?v=XcnP3_mO_Ms).
 
-Everything in the repository can be used under MIT license except the stuffs inside `assets_just_for_tests_and_examples` directory. They are not mine.
+### [BgmPlayer](https://github.com/gottadiveintopython/kivyx.utils.bgmplayer)
 
-## TODO(api break)
+Fades in/out the volume.
+Resumes from the last position.
 
-## TODO
+### [BoxLayout](https://github.com/gottadiveintopython/kivyx.uix.boxlayout)
 
-- flagを用いてtouchを二重に処理してしまわないようにする
-- KXDrawerの実装から`ak.or_()`を除く
+Has more orientations than the officail one.
+
+### [Drawer](https://github.com/gottadiveintopython/kivyx.uix.drawer)
+
+Wants to have multiple drawers?
+
+### [FontsizeAdjustmentBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.fontsizeadjustment)
+
+Automatically adjusts `font_size` of Label.
+
+### [Magnet](https://github.com/gottadiveintopython/kivyx.uix.magnet)
+
+Inspired by [garden.magnet](https://github.com/kivy-garden/garden.magnet).
+
+### [TablikeLooksBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.tablikelooks)
+
+Bored of `kivy.uix.tabbedpanel`'s design?
