@@ -1,9 +1,0 @@
-__pycache__/
-bin/
-*.pyc
-*.pyo
-.venv/
-.pytest_cache/
-/temp
-/Pipfile.lock
-*.egg-info

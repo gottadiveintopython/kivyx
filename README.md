@@ -4,7 +4,7 @@ This is the front page of Kivyx project.
 As the title says, all the components are experimental state, and **may change its API without notice**.
 So if you want to use them, pin the commit-hash or just copy the files.
 
-# List of Components
+## List of Components
 
 ### [AspectRatio](https://github.com/gottadiveintopython/kivyx.uix.aspectratio)
 
@@ -22,6 +22,10 @@ Has more orientations than the officail one.
 ### [Drawer](https://github.com/gottadiveintopython/kivyx.uix.drawer)
 
 Wants to have multiple drawers?
+
+### [FontFinder](https://github.com/gottadiveintopython/kivyx.utils.fontfinder)
+
+Why you need to pack a font-file into to your apk when you can just use the pre-installed ones?
 
 ### [FontsizeAdjustmentBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.fontsizeadjustment)
 
