@@ -1,7 +1,7 @@
 # Kivyx: Experiment of Kivy-related modules
 
 This is the front page of Kivyx project.
-As the title says, all the modules are in an experimental state, and **may change its API without notice**.
+As the title says, all modules are in an experimental state, and **may change its API without notice**.
 So if you want to use them, pin the commit-hash or just copy the files.
 
 ## List of Components
@@ -17,15 +17,15 @@ Resumes from the last position.
 
 ### [BoxLayout](https://github.com/gottadiveintopython/kivyx.uix.boxlayout)
 
-Has more orientations than the officail one.
+Has more orientations than the official one.
 
 ### [Drawer](https://github.com/gottadiveintopython/kivyx.uix.drawer)
 
-Want to have multiple drawers on the screen?
+Multiple drawers on the screen.
 
-### [FontFinder](https://github.com/gottadiveintopython/kivyx.utils.fontfinder)
+### ~~[FontFinder](https://github.com/gottadiveintopython/kivyx.utils.fontfinder)~~
 
-You don't want to put font files into your app?
+This repository was archived in favor of https://github.com/gottadiveintopython/i18n
 
 ### [FontsizeAdjustmentBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.fontsizeadjustment)
 
@@ -37,4 +37,4 @@ Inspired by [garden.magnet](https://github.com/kivy-garden/garden.magnet).
 
 ### [TablikeLooksBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.tablikelooks)
 
-Bored of `kivy.uix.tabbedpanel`'s design?
+Bored with `kivy.uix.tabbedpanel`'s design?
