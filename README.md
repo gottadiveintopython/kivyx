@@ -35,6 +35,10 @@ Automatically adjusts `font_size` of Label.
 
 Inspired by [garden.magnet](https://github.com/kivy-garden/garden.magnet).
 
+### [SpinnerLikeBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.spinner)
+
+Flexibler than the official Spinner.
+
 ### [TablikeLooksBehavior](https://github.com/gottadiveintopython/kivyx.uix.behavior.tablikelooks)
 
 Bored with `kivy.uix.tabbedpanel`'s design?
