@@ -6,6 +6,10 @@ So if you want to use them, pin the commit-hash or just copy the files.
 
 ## List of Components
 
+### [AnalogClock](https://github.com/gottadiveintopython/kivyx.uix.analogclock)
+
+A lightweight analog clock made with one widget.
+
 ### [AspectRatio](https://github.com/gottadiveintopython/kivyx.uix.aspectratio)
 
 Inspired by Flutter's [AspectRatio](https://www.youtube.com/watch?v=XcnP3_mO_Ms).
