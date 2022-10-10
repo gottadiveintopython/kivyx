@@ -6,3 +6,5 @@ bin/
 /.pytest_cache/
 /poetry.lock
 /dist
+/docs
+/doc/_build
