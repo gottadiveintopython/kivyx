@@ -5,12 +5,33 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pytest",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "justMyCode": true,
+            "args": ["${file}"]
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "(rec) Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "KCFG_GRAPHICS_WIDTH": "400",
+                "KCFG_GRAPHICS_HEIGHT": "400",
+                "KCFG_MODULES_KEYBINDING": "",
+            }
         }
     ]
 }
