@@ -34,6 +34,7 @@ html_theme = 'alabaster'
 html_static_path = ['_static']
 html_theme_options = {
     'page_width': '1200px',
+    'sidebar_width': '400px',
 }
 
 # -- Options for todo extension ----------------------------------------------
@@ -54,6 +55,6 @@ intersphinx_mapping = {
 
 autodoc_mock_imports = ['kivy', ]
 autodoc_default_options = {
-    'exclude-members': 'to_local, to_parent',
+    'exclude-members': 'to_local, to_parent, on_kv_post',
 }
 autodoc_typehints = 'description'
