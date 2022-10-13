@@ -20,7 +20,7 @@ def create_texture_from_text(**label_kwargs):
            color=(1, 0, 0, 1),
        )
 
-    keyword引数は :class:`kivy.uix.label.Label` のpropertyに準じている。
+    keyword引数は :external:kivy:doc:`api-kivy.uix.label` のpropertyに準ずる。
     '''
     core = CoreMarkupLabel if label_kwargs.pop('markup', False) else CoreLabel
     label = core(**label_kwargs)
@@ -43,7 +43,7 @@ class suppress_event:
 
     .. note::
 
-       これをpropertyに対して用いる事はできない。理由はpropertyに結び付けられた関数の一つが真を返しても後続の関数の呼び出しは止められないから。
+       これをpropertyに対して用いる事はできない。
     '''
     __slots__ = ('_ed', '_e_name', '_bind_uid', )
 
