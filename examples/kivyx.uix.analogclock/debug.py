@@ -72,7 +72,7 @@ BoxLayout:
 '''
 
 
-class SampleApp(App):
+class DebugApp(App):
     current_time = NumericProperty(0)
     clock_speed = NumericProperty(1)
 
@@ -89,4 +89,4 @@ class SampleApp(App):
 
 
 if __name__ == '__main__':
-    SampleApp().run()
+    DebugApp().run()

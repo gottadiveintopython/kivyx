@@ -142,7 +142,7 @@ BoxLayout:
 '''
 
 
-class SampleApp(App):
+class DebugApp(App):
     def build(self):
         return Builder.load_string(KV_CODE)
 
@@ -154,4 +154,4 @@ class SampleApp(App):
 
 
 if __name__ == '__main__':
-    SampleApp().run()
+    DebugApp().run()
