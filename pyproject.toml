@@ -36,3 +36,7 @@ Sphinx = "^5.2.2"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+markers = ["slow"]
