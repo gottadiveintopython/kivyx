@@ -1,4 +1,5 @@
 import pytest
+from kivy.tests.fixtures import kivy_clock
 
 
 @pytest.fixture(scope='session')
