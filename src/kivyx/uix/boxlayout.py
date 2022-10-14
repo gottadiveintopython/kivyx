@@ -2,7 +2,7 @@
 *(Tested on CPython3.9.7 + Kivy2.1.0)*
 
 公式の :external:kivy:doc:`api-kivy.uix.boxlayout` よりも子の並べ方が豊富な ``BoxLayout``。
-公式の物は 左から右 上から下 の二種類の並べ方しかないが、これはそれに加えて 右から左 下から上 にも対応している。
+公式の物は 左から右 上から下 の二種類の並べ方しかないが、これはそれに加えて 右から左 下から上 にも対応する。
 '''
 
 __all__ = ('KXBoxLayout', )
