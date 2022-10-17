@@ -5,7 +5,7 @@ KV_CODE = '''
 #:import random random
 #:import Button kivy.uix.button.Button
 
-#:import __ kivyx.uix.behavior.fontsizeadjustment
+#:import __ kivyx.uix.behaviors.fontsizeadjustment
 
 <Separator@Widget>:
     size: 1, 1

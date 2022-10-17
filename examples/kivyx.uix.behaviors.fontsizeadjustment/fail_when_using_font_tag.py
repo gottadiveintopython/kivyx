@@ -3,7 +3,7 @@ from kivy.lang import Builder
 
 KV_CODE = '''
 #:import md_icons kivymd.icon_definitions.md_icons
-#:import __ kivyx.uix.behavior.fontsizeadjustment
+#:import __ kivyx.uix.behaviors.fontsizeadjustment
 
 <MyLabel@KXFontsizeAdjustmentBehavior+Label>:
 

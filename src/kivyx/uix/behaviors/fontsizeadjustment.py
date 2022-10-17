@@ -13,21 +13,21 @@
    MyLabel:
        text: 'Hello Kivy'
 
-.. image:: /images/kivyx.uix.behavior.fontsizeadjustment/normal.png
+.. image:: /images/kivyx.uix.behaviors.fontsizeadjustment/normal.png
 
 .. code-block:: yaml
 
    MyLabel:
        text: ('Hello Kivy ' * 5)[:-1]
 
-.. image:: /images/kivyx.uix.behavior.fontsizeadjustment/long.png
+.. image:: /images/kivyx.uix.behaviors.fontsizeadjustment/long.png
 
 .. code-block:: yaml
 
    MyLabel:
        text: ('Hello Kivy\\\\n' * 5)[:-1]
 
-.. image:: /images/kivyx.uix.behavior.fontsizeadjustment/multilines.png
+.. image:: /images/kivyx.uix.behaviors.fontsizeadjustment/multilines.png
 
 font_sizeの取り扱い
 -------------------
@@ -47,7 +47,7 @@ font_sizeの取り扱い
        markup: True
        text: 'ABCDE[size=40]abcde[/size]'
 
-.. image:: /images/kivyx.uix.behavior.fontsizeadjustment/failure.png
+.. image:: /images/kivyx.uix.behaviors.fontsizeadjustment/failure.png
 '''
 
 __all__ = ('KXFontsizeAdjustmentBehavior', )

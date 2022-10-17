@@ -27,7 +27,7 @@ def screenshot_dir(text_provider):
 def label_cls():
     from kivy.factory import Factory
     from kivy.uix.label import Label
-    from kivyx.uix.behavior.fontsizeadjustment import KXFontsizeAdjustmentBehavior
+    from kivyx.uix.behaviors.fontsizeadjustment import KXFontsizeAdjustmentBehavior
     class HogeHogeLabel(KXFontsizeAdjustmentBehavior, Label):
         pass
     yield HogeHogeLabel
@@ -164,5 +164,5 @@ def take_a_screenshot(*, label, filepath):
     ("A[1\n2]B", "AB", ),
 ))
 def test_remove_markup_tags(input, expect):
-    from kivyx.uix.behavior.fontsizeadjustment import _remove_markup_tags
+    from kivyx.uix.behaviors.fontsizeadjustment import _remove_markup_tags
     assert _remove_markup_tags(input) == expect
