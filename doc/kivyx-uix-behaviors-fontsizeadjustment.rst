@@ -1,5 +1,5 @@
-font_sizeの自動調節
-===================
+文字サイズの自動調節
+====================
 
 .. automodule:: kivyx.uix.behaviors.fontsizeadjustment
    :members:

@@ -74,7 +74,7 @@ Canvasの座標系
 --------------
 
 ``KXAnalogClock`` はrelative系のwidgetであり座標の原点を自身の中央に持ってくるのでcanvasの扱いには注意。
-例えば背景全体を塗り潰したいなら以下のようにしないといけません。
+例えば背景全体を塗り潰したいなら以下のようにしないといけない。
 
 .. code-block:: yaml
 
@@ -97,8 +97,8 @@ Canvasの座標系
 針の動かし方
 ------------
 
-時計の針をどのように動かすかは完全にあなたに委ねられています。
-例えば常に現在時刻を指し続けさせたいならこうすれば良いですし
+時計の針をどのように動かすかは完全にあなたに委ねられている。
+常に現在時刻を指し続けさせたいなら次のようにすれば良いし
 
 .. code-block::
 
@@ -115,14 +115,14 @@ Canvasの座標系
 
    Clock.schedule_interval(update_clock, 0)
 
-二倍の速さで針を進めたいならこのようにします。
+二倍の速さで針を進めたいなら次のようにする。
 
 .. code-block::
 
    def update_clock(dt, clock=clock):
        clock.time += dt * 2.
 
-また針を逆に進めても良いわけです。
+はたまた針を逆に進めても良い。
 
 .. code-block::
 
@@ -186,7 +186,7 @@ class KXAnalogClock(Widget):
     '''秒針の色。'''
 
     seconds_hand_width = NumericProperty('1dp')
-    '''秒針の太さ。単位はpixel。'''
+    '''秒針の太さ。'''
 
     seconds_hand_length = NumericProperty(0.45)
     '''秒針の長さ。``min(self.size)`` に対する割合で指定する。'''
@@ -195,7 +195,7 @@ class KXAnalogClock(Widget):
     '''分針の色。'''
 
     minutes_hand_width = NumericProperty('2dp')
-    '''分針の太さ。単位はpixel。'''
+    '''分針の太さ。'''
 
     minutes_hand_length = NumericProperty(0.45)
     '''分針の長さ。``min(self.size)`` に対する割合で指定する。'''
@@ -204,7 +204,7 @@ class KXAnalogClock(Widget):
     '''時針の色。'''
 
     hours_hand_width = NumericProperty('4dp')
-    '''時針の太さ。単位はpixel。'''
+    '''時針の太さ。'''
 
     hours_hand_length = NumericProperty(0.31)
     '''時針の長さ。``min(self.size)`` に対する割合で指定する。'''
@@ -279,7 +279,6 @@ class KXAnalogClock(Widget):
             )
 
     def to_parent(self, x, y, **kwargs):
-        ''':'''
         return (x + self.center_x, y + self.center_y)
 
     def to_local(self, x, y, **kwargs):

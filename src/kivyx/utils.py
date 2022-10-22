@@ -30,8 +30,8 @@ def create_texture_from_text(**label_kwargs):
 
 class suppress_event:
     '''
-    :class:`kivy.event.EventDispatcher` のeventに結び付けられた関数を一時的に呼ばれないようにする context manager。
-    以下のコードでは ``on_press`` イベントが発生してはいるものの ``suppress_event`` で囲っているため ``押されました`` とは出力されない。
+    eventに結び付けられた関数を一時的に呼ばれないようにする context manager。
+    以下のコードでは ``on_press`` eventが発生してはいるものの ``suppress_event`` で囲っているため ``押されました`` とは出力されない。
 
     .. code-block::
 

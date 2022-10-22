@@ -1,4 +1,4 @@
-Analog Clock
+アナログ時計
 ============
 
 .. automodule:: kivyx.uix.analogclock

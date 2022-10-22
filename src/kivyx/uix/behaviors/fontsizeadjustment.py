@@ -32,14 +32,14 @@
 font_sizeの取り扱い
 -------------------
 
-``font_size`` の調節する役目はこのclassが担うので普通に ``font_size`` へ書き込んでも実際の大きさには影響を与えられません。
-もしこのclassを使いながらも特定の値へ固定したいなら ``font_size_min`` と　``font_size_max`` にその値を書き込んでください。
-尚 ``bind()`` や ``fbind()`` を用いて ``font_size`` の変化を監視することはできます。
+``font_size`` の調節する役目はこのclassが担うので普通に ``font_size`` へ書き込んでも実際の大きさには影響を与えられない。
+もしこのclassを使いながらも特定の値へ固定したいなら ``font_size_min`` と　``font_size_max`` にその値を書き込む必要がある。
+尚 ``bind()`` や ``fbind()`` を用いて ``font_size`` の変化を監視することはできる。
 
-一部のmarkup-tagは調節を妨げる
+一部のmarkup tagは調節を妨げる
 ------------------------------
 
-``[size][/size]`` や ``[font][/font]`` のような ``font_size`` への影響の大きいtagを用いると調節に失敗しやすくなります。
+``[size][/size]`` や ``[font][/font]`` のような ``font_size`` への影響の大きいtagを用いると調節に失敗しやすくなる。
 
 .. code-block:: yaml
 
@@ -61,10 +61,10 @@ from kivy.factory import Factory
 class KXFontsizeAdjustmentBehavior:
 
     font_size_max = NumericProperty(9999)
-    '''文字の大きさの上限'''
+    '''文字の大きさの上限。'''
 
     font_size_min = NumericProperty(1)
-    '''文字の大きさの下限'''
+    '''文字の大きさの下限。'''
 
     delay_on_texture_update = NumericProperty(.2)
     '''
