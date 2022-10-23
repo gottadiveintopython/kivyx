@@ -206,6 +206,7 @@ class KXDrawer(RelativeLayout):
     def on_close(self):
         '''引き出しが閉じた直後に起こるevent'''
 
+
 def _get_parent_pos_in_local_coordinates(parent, pos_key, vertical: bool):
     return getattr(parent, pos_key) + parent.to_local(0, 0)[vertical]
 

@@ -22,7 +22,7 @@ packages = [{include = "kivyx", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-asynckivy = { version = "^0.5.4", allow-prereleases = true}
+asynckivy = "^0.5.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.1"
