@@ -5,9 +5,7 @@
 *(Tested on CPython3.9.7 + Kivy2.1.0)*
 
 このclassをBoxLayoutと組み合わせる事で選択中の :external:kivy:doc:`api-kivy.uix.behaviors.togglebutton` をタブのような見た目で飾る事ができる。
-例えば次のコードを実行してBボタンを押すと
-
-.. c literalinclude:: ../examples/kivyx.uix.behaviors.tablikelooks/simple_h.py
+例えば次のコードを実行して *B* を押すと
 
 .. code-block:: yaml
 

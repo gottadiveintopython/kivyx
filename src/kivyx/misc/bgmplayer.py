@@ -6,12 +6,12 @@ BGM再生を手助けするmodule
 これが要った理由
 ----------------
 
-このような物が要った理由は :class:`kivy.core.audio.Sound` がそのままでは扱い難かったからだ。
+このような物が要った理由は :class:`kivy.core.audio.Sound` がそのままでは扱い難かったからです。
 例えば :meth:`kivy.core.audio.Sound.seek` の説明には
 
   Most sound providers cannot seek when the audio is stopped. Play then seek.
 
-とあるが単純に
+とありますが単純に
 
 .. code-block::
 
@@ -19,7 +19,7 @@ BGM再生を手助けするmodule
    sound.play()
    sound.seek(...)
 
-として良いかというとそうではなく、実際には ``.play()`` の後に少し間を置かなければならない。
+として良いかというとそうではなく、実際には ``.play()`` の後に少し間を置かないと期待通りに動きませんでした。
 
 .. code-block::
 
@@ -28,12 +28,12 @@ BGM再生を手助けするmodule
    await async_library.sleep(...)
    sound.seek(...)
 
-そしてどうやらこれは ``.seek()`` だけに限った話ではなく、
-``.play()`` や ``.stop()`` を呼んだ後は続く ``sound`` に対する操作が何であるかに拘らず少し待った方が良いようなのである。
-これは悪夢である。仕様にすら書かれていないのに必要な *間* でコードが汚されてしまうのだから。
+そしてどうやらこれは ``.seek()`` に限った話ではなく、
+``.play()`` や ``.stop()`` を呼んだ後は少し間を置いてから ``sound`` に触らないと安定しないようです。
+つまり :class:`kivy.core.audio.Sound` を直接触るコードは仕様にすら書かれていないのに必要な *間* でコードが汚されてしまう事になります。
 
-そこでこのmoduleの出番となる。
-このmoduleは *間* を完全に覆い隠すのに加えBGM再生に必要になると思われる次の機能を提供する。
+そこでこのmoduleの出番です。
+このmoduleは *間* を完全に覆い隠すのに加えBGM再生に必要になると思われる次の機能を提供します。
 
 * 音を鳴らす時には前回停めた位置から再開。
 * 音を停める時には徐々に音量を下げる。
@@ -42,7 +42,7 @@ BGM再生を手助けするmodule
 使い方
 ------
 
-もしアプリが一種類のBGMしか鳴らさないのであれば :class:`Bgm` だけで十分である。
+もしアプリが一種類のBGMしか鳴らさないのであれば :class:`Bgm` だけで十分です。
 
 .. code-block::
 
@@ -59,7 +59,7 @@ BGM再生を手助けするmodule
    # 停めたくなったら
    bgm.stop()
 
-そして複数のBGMがある場合は :class:`BgmPlayer` が使える。
+そして複数のBGMがある場合は :class:`BgmPlayer` が使えます。
 
 .. code-block::
 
@@ -71,9 +71,9 @@ BGM再生を手助けするmodule
    bgmplayer.play(r"path/to/bgm1.ogg")  # bgm2.oggが停まりbgm1.oggが前回停まった位置から鳴る
    bgmplayer.stop()                     # bgm1.oggが停まる
 
-:class:`BgmPlayer` は既定では一度読み込んだBGMはずっと持ち続けるので次回以降の再生が早くなる。
-言うまでもなくこれはメモリを惜しみなく使っている事による。
-もしこの振る舞いを良しとせずメモリの使用量を抑えたいのであれば :class:`MemoryEfficientLoader` が使える。
+:class:`BgmPlayer` は既定では一度読み込んだBGMはずっと持ち続けるので次回以降の再生が早くなります。
+言うまでもなくこれはメモリを惜しみなく使っている事によります。
+もしこの振る舞いを良しとせずメモリの使用量を抑えたいのであれば :class:`MemoryEfficientLoader` が使えます。
 
 .. code-block::
 
@@ -81,13 +81,13 @@ BGM再生を手助けするmodule
 
    bgmplayer = BgmPlayer(loader=MemoryEfficientLoader())
 
-:class:`MemoryEfficientLoader` はBGMが別の物に切り替えられ次第すぐに以前の物を棄てるのでメモリの使用量が抑えられる...はずである [#hazudearu]_ 。
-反面切り替えられる度に :class:`kivy.core.audio.Sound` を作り直すので二回目以降であってもあまり再生は早くならない [#os_cache]_ 。
+:class:`MemoryEfficientLoader` はBGMが別の物に切り替えられ次第すぐに以前の物を棄てるのでメモリの使用量が抑えられる...はずです [#hazudearu]_ 。
+反面切り替えられる度に :class:`kivy.core.audio.Sound` を作り直すので二回目以降であってもあまり再生は早くならないです [#os_cache]_ 。
 
 Loaderの自作
 ~~~~~~~~~~~~
 
-Loaderは自作することもできる。例えば以下のように予めBGMを一括で読み込んでおけば再生開始時の遅延を限りなく抑えられる。
+Loaderは自作することもできます。例えば以下のように予めBGMを一括で読み込んでおけば再生開始時の遅延を限りなく抑えられるでしょう。
 
 .. code-block::
 
@@ -98,10 +98,10 @@ Loaderは自作することもできる。例えば以下のように予めBGM�
    bgmplayer = BgmPlayer(loader=loader)
 
 loaderは ``loader[key]`` という式で :class:`Bgm` のinstanceを取り出せるようになっている物なら何でも良く、
-うまく使えば独自のキャッシュ戦略や読み込み戦略を採れるかもしれない。
+うまく使えば独自のキャッシュ戦略や読み込み戦略を採れるかもしれません。
 
 .. [#hazudearu] 実際に測ったわけでは無いため
-.. [#os_cache] OSのキャッシュが利けばその分は少しだけ早くなりうる
+.. [#os_cache] OSのキャッシュが働けばその分は少しだけ早くなりうる
 '''
 
 __all__ = ('Bgm', 'BgmPlayer', 'CachedLoader', 'MemoryEfficientLoader', )
