@@ -189,12 +189,12 @@ class Bgm(EventDispatcher):
                 await sleep(self.internal_delay)
                 sound.seek(0 if self._reset_pos else self._pos)
                 self._is_being_played = True
-                await animate(sound, volume=self.volume, d=self.fade_in_duration)
+                await animate(sound, volume=self.volume, duration=self.fade_in_duration)
                 sound.volume = self.volume
                 self._is_at_max_volume = True
                 await needs_to_stop.wait()
                 self._is_at_max_volume = False
-                await animate(sound, volume=0., d=self.fade_out_duration)
+                await animate(sound, volume=0., duration=self.fade_out_duration)
                 self._pos = sound.get_pos()
                 self._is_being_played = False
                 sound.stop()
@@ -254,7 +254,6 @@ class BgmPlayer(EventDispatcher):
         self._main_task = ak.start(self._main(loader))
 
     async def _main(self, loader):
-        from asynckivy import sleep, animate
         needs_to_switch = self._needs_to_switch
 
         cur_key = None

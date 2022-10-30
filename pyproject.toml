@@ -3,7 +3,7 @@ name = "kivyx"
 version = "0.1.0"
 description = "Experiment of Kivy-related modules"
 authors = ["Nattōsai Mitō <flow4re2c@gmail.com>"]
-readme = "README.md"
+readme = "README.rst"
 repository = 'https://github.com/gottadiveintopython/kivyx'
 homepage = 'https://github.com/gottadiveintopython/kivyx'
 keywords = ['kivy']
@@ -22,7 +22,7 @@ packages = [{include = "kivyx", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-asynckivy = "^0.5.4"
+asynckivy = {version = "^0.5.4", allow-prereleases = true}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.1"

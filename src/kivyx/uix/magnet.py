@@ -104,15 +104,15 @@ class KXMagnet(Widget):
         if len(children) == 1:
             self._anim_coro = raw_start(animate(
                 children[0],
-                d=self.anim_duration,
-                t=self._anim_transition,
+                duration=self.anim_duration,
+                transition=self._anim_transition,
                 x=self.x, y=self.y, width=self.width, height=self.height,
             ))
         elif children:
             self._anim_coro = raw_start(animate(
                 BatchSetter(children),
-                d=self.anim_duration,
-                t=self._anim_transition,
+                duration=self.anim_duration,
+                transition=self._anim_transition,
                 x=self.x, y=self.y, width=self.width, height=self.height,
             ))
 
