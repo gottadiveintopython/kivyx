@@ -1,0 +1,372 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kivyx.uix.behaviors.tablikelooks &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for kivyx.uix.behaviors.tablikelooks</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">:external:kivy:doc:`api-kivy.uix.boxlayout` にタブのような見た目を加えるmix-in class。</span>
+<span class="sd">公式の :external:kivy:doc:`api-kivy.uix.tabbedpanel` の見た目が気に入らない人におすすめ。</span>
+
+<span class="sd">*(Tested on CPython3.9.7 + Kivy2.1.0)*</span>
+
+<span class="sd">このclassをBoxLayoutと組み合わせる事で選択中の :external:kivy:doc:`api-kivy.uix.behaviors.togglebutton` をタブのような見た目で飾る事ができる。</span>
+<span class="sd">例えば次のコードを実行して *B* を押すと</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   &lt;Tab@ToggleButtonBehavior+Label&gt;:</span>
+<span class="sd">       size_hint_min: self.texture_size</span>
+<span class="sd">       font_size: 24</span>
+<span class="sd">       group: &#39;test&#39;</span>
+<span class="sd">   </span>
+<span class="sd">   &lt;TabContainer@KXTablikeLooksBehavior+BoxLayout&gt;:</span>
+<span class="sd">       tab_line_color: &#39;#AAAAFF&#39;</span>
+<span class="sd">       spacing: 20</span>
+<span class="sd">       padding: 20</span>
+<span class="sd">   </span>
+<span class="sd">   BoxLayout:</span>
+<span class="sd">       orientation: &#39;vertical&#39;</span>
+<span class="sd">       TabContainer:</span>
+<span class="sd">           size_hint_y: None</span>
+<span class="sd">           height: self.minimum_height</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;A&#39;</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;B&#39;</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;C&#39;</span>
+<span class="sd">       Widget:</span>
+<span class="sd">           id: content</span>
+
+<span class="sd">次のようになる。</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.behaviors.tablikelooks/simple_h.png</span>
+
+
+<span class="sd">また縦向きの ``BoxLayout`` にも対応している。</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   BoxLayout:</span>
+<span class="sd">       TabContainer:</span>
+<span class="sd">           orientation: &#39;vertical&#39;</span>
+<span class="sd">           size_hint_x: None</span>
+<span class="sd">           width: self.minimum_width</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;A&#39;</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;B&#39;</span>
+<span class="sd">           Tab:</span>
+<span class="sd">               text: &#39;C&#39;</span>
+<span class="sd">       Widget:</span>
+<span class="sd">           id: content</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.behaviors.tablikelooks/simple_v.png</span>
+
+<span class="sd">また次のように複数の方向のタブ達を組み合わせる事もできる。</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.behaviors.tablikelooks/all_sides.png</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;KXTablikeLooksBehavior&#39;</span><span class="p">,</span> <span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">kivy.clock</span> <span class="kn">import</span> <span class="n">Clock</span>
+<span class="kn">from</span> <span class="nn">kivy.factory</span> <span class="kn">import</span> <span class="n">Factory</span>
+<span class="kn">from</span> <span class="nn">kivy.graphics</span> <span class="kn">import</span> <span class="n">InstructionGroup</span><span class="p">,</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Line</span>
+<span class="kn">from</span> <span class="nn">kivy.properties</span> <span class="kn">import</span> <span class="n">ColorProperty</span><span class="p">,</span> <span class="n">NumericProperty</span><span class="p">,</span> <span class="n">ObjectProperty</span><span class="p">,</span> <span class="n">OptionProperty</span><span class="p">,</span> <span class="n">BooleanProperty</span>
+<span class="kn">from</span> <span class="nn">kivy.uix.behaviors.togglebutton</span> <span class="kn">import</span> <span class="n">ToggleButtonBehavior</span>
+
+<span class="k">def</span> <span class="nf">is_horizontal</span><span class="p">(</span><span class="n">boxlayout</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">boxlayout</span><span class="o">.</span><span class="n">orientation</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;horizontal&#39;</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="s1">&#39;rl&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="KXTablikeLooksBehavior"><a class="viewcode-back" href="../../../../kivyx-uix-behaviors-tablikelooks.html#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior">[docs]</a><span class="k">class</span> <span class="nc">KXTablikeLooksBehavior</span><span class="p">:</span>
+    <span class="n">tab_style_h</span> <span class="o">=</span> <span class="n">OptionProperty</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="p">))</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    :external:kivy:doc:`api-kivy.uix.boxlayout` が横向きの時のタブの見た目。</span>
+<span class="sd">    選択中のタブがある時 ``top`` だと上に、 ``bottom`` だと下に線が凸る。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">tab_style_v</span> <span class="o">=</span> <span class="n">OptionProperty</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">))</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    :external:kivy:doc:`api-kivy.uix.boxlayout` が縦向きの時のタブの見た目。</span>
+<span class="sd">    選択中のタブがある時 ``left`` だと左に、 ``right`` だと右に線が凸る。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">tab_line_stays_inside</span> <span class="o">=</span> <span class="n">BooleanProperty</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    線をwidgetの領域内に収まるようにするか否か。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">tab_line_color</span> <span class="o">=</span> <span class="n">ColorProperty</span><span class="p">(</span><span class="s2">&quot;#FFFFFF&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    線の色。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">tab_line_width</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    線の太さ。Kivyの仕様によりこの値の二倍が実際の線の太さとなる。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">_tab_next_highlight</span> <span class="o">=</span> <span class="n">ObjectProperty</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_color</span> <span class="o">=</span> <span class="n">Color</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_line</span> <span class="o">=</span> <span class="n">Line</span><span class="p">(</span><span class="n">joint</span><span class="o">=</span><span class="s1">&#39;bevel&#39;</span><span class="p">,</span> <span class="n">cap</span><span class="o">=</span><span class="s1">&#39;square&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">inst_group</span> <span class="o">=</span> <span class="n">InstructionGroup</span><span class="p">()</span>
+        <span class="n">inst_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_color</span><span class="p">)</span>
+        <span class="n">inst_group</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_line</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">after</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">inst_group</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_trigger_update_canvas</span> <span class="o">=</span> <span class="n">trigger_update_canvas</span> <span class="o">=</span> \
+            <span class="n">Clock</span><span class="o">.</span><span class="n">create_trigger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_update_canvas_ver_inside</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_trigger_rebind</span> <span class="o">=</span> <span class="n">trigger_rebind</span> <span class="o">=</span> \
+            <span class="n">Clock</span><span class="o">.</span><span class="n">create_trigger</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_rebind</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbind</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="n">trigger_update_canvas</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="n">trigger_update_canvas</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;tab_line_width&#39;</span><span class="p">,</span> <span class="n">trigger_update_canvas</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;spacing&#39;</span><span class="p">,</span> <span class="n">trigger_update_canvas</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;padding&#39;</span><span class="p">,</span> <span class="n">trigger_update_canvas</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;orientation&#39;</span><span class="p">,</span> <span class="n">trigger_rebind</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;tab_style_h&#39;</span><span class="p">,</span> <span class="n">trigger_rebind</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;tab_style_v&#39;</span><span class="p">,</span> <span class="n">trigger_rebind</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;_tab_next_highlight&#39;</span><span class="p">,</span> <span class="n">trigger_rebind</span><span class="p">)</span>
+        <span class="n">trigger_rebind</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_tab_line_stays_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">inside</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_trigger_update_canvas</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_update_canvas_ver_inside</span> <span class="k">if</span> <span class="n">inside</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_update_canvas_ver_normal</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+        <span class="n">t</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">on_tab_line_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_color</span><span class="o">.</span><span class="n">rgba</span> <span class="o">=</span> <span class="n">color</span>
+
+    <span class="k">def</span> <span class="nf">on_tab_line_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_line</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">width</span>
+
+    <span class="k">def</span> <span class="nf">add_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">ToggleButtonBehavior</span><span class="p">):</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_tab_child_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">remove_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">widget</span><span class="o">.</span><span class="vm">__self__</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tab_next_highlight</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">ToggleButtonBehavior</span><span class="p">):</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_tab_child_state</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove_widget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_tab_child_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_next_highlight</span> <span class="o">=</span> <span class="n">widget</span> <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;down&#39;</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_tab_rebind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">trigger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_trigger_update_canvas</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span>
+        <span class="nb">next</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_next_highlight</span>
+        <span class="n">trigger</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">current</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current</span><span class="o">.</span><span class="n">unbind</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">trigger</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span> <span class="o">=</span> <span class="nb">next</span>
+        <span class="k">if</span> <span class="nb">next</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">next</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="n">trigger</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">trigger</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_tab_update_canvas_ver_normal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">is_horizontal</span><span class="o">=</span><span class="n">is_horizontal</span><span class="p">):</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span>
+        <span class="n">inst_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_line</span>
+        <span class="n">is_horizontal</span> <span class="o">=</span> <span class="n">is_horizontal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">self_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">self_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">self_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">self_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span>
+        <span class="k">if</span> <span class="n">is_horizontal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab_style_h</span> <span class="o">==</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span>
+                <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab_style_v</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span>
+        <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span><span class="n">self_x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">self_right</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="p">)</span> <span class="k">if</span> \
+                <span class="n">is_horizontal</span> <span class="k">else</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">self_y</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">self_top</span><span class="p">,</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_horizontal</span><span class="p">:</span>
+            <span class="n">cur_x</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">cur_right</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">right</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">self_x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="nb">max</span><span class="p">(</span><span class="n">cur_x</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">self_x</span><span class="p">),</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="n">cur_x</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span>
+                <span class="n">cur_right</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span>
+                <span class="nb">min</span><span class="p">(</span><span class="n">cur_right</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">self_right</span><span class="p">),</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="n">self_right</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cur_y</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">cur_top</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">top</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">self_y</span><span class="p">,</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">self_y</span><span class="p">),</span>
+                <span class="n">x2</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span>
+                <span class="n">x2</span><span class="p">,</span> <span class="n">cur_top</span><span class="p">,</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">cur_top</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">self_top</span><span class="p">),</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">self_top</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_tab_update_canvas_ver_inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">is_horizontal</span><span class="o">=</span><span class="n">is_horizontal</span><span class="p">):</span>
+        <span class="n">spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_current_highlight</span>
+        <span class="n">inst_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_inst_line</span>
+        <span class="n">is_horizontal</span> <span class="o">=</span> <span class="n">is_horizontal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">lw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab_line_width</span>
+        <span class="n">self_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">lw</span>
+        <span class="n">self_top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top</span> <span class="o">-</span> <span class="n">lw</span>
+        <span class="n">self_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">lw</span>
+        <span class="n">self_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">lw</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="n">self_y</span>
+        <span class="n">y2</span> <span class="o">=</span> <span class="n">self_top</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">self_x</span>
+        <span class="n">x2</span> <span class="o">=</span> <span class="n">self_right</span>
+        <span class="k">if</span> <span class="n">is_horizontal</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab_style_h</span> <span class="o">==</span> <span class="s1">&#39;bottom&#39;</span><span class="p">:</span>
+                <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tab_style_v</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span>
+        <span class="k">if</span> <span class="n">cur</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span><span class="n">self_x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">self_right</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="p">)</span> <span class="k">if</span> \
+                <span class="n">is_horizontal</span> <span class="k">else</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">self_y</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">self_top</span><span class="p">,</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">is_horizontal</span><span class="p">:</span>
+            <span class="n">cur_x</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">lw</span>
+            <span class="n">cur_right</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">right</span> <span class="o">-</span> <span class="n">lw</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">self_x</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="nb">max</span><span class="p">(</span><span class="n">cur_x</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="n">cur_x</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span>
+                <span class="n">cur_right</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span>
+                <span class="nb">min</span><span class="p">(</span><span class="n">cur_right</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">x2</span><span class="p">),</span> <span class="n">y1</span><span class="p">,</span>
+                <span class="n">self_right</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cur_y</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">lw</span>
+            <span class="n">cur_top</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">top</span> <span class="o">-</span> <span class="n">lw</span>
+            <span class="n">inst_line</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">self_y</span><span class="p">,</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">cur_y</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span>
+                <span class="n">x2</span><span class="p">,</span> <span class="n">cur_y</span><span class="p">,</span>
+                <span class="n">x2</span><span class="p">,</span> <span class="n">cur_top</span><span class="p">,</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">cur_top</span> <span class="o">+</span> <span class="n">spacing</span><span class="p">,</span> <span class="n">y2</span><span class="p">),</span>
+                <span class="n">x1</span><span class="p">,</span> <span class="n">self_top</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<span class="n">Factory</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="s1">&#39;KXTablikeLooksBehavior&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">KXTablikeLooksBehavior</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

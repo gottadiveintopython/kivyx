@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Magnet &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="utils" href="kivyx-utils.html" />
+    <link rel="prev" title="引き出し" href="kivyx-uix-drawer.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-kivyx.uix.magnet">
+<span id="magnet"></span><h1>Magnet<a class="headerlink" href="#module-kivyx.uix.magnet" title="Permalink to this heading">¶</a></h1>
+<p><em>(Tested on CPython3.9.7 + Kivy2.1.0)</em></p>
+<p><a class="reference external" href="https://github.com/kivy-garden/garden.magnet">garden.magnet</a> を自分用に改変した物。
+相違点は以下</p>
+<ul class="simple">
+<li><p>アニメーションされるのは大きさと位置だけ。</p></li>
+<li><p>アニメーションの有効無効を切り替えられる。</p></li>
+<li><p>複数の子を持てる。</p></li>
+</ul>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivyx.uix.magnet.KXMagnet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kivyx.uix.magnet.</span></span><span class="sig-name descname"><span class="pre">KXMagnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kivyx/uix/magnet.html#KXMagnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kivyx.uix.magnet.KXMagnet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.2.0.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Widget</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.magnet.KXMagnet.anim_duration">
+<span class="sig-name descname"><span class="pre">anim_duration</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#kivyx.uix.magnet.KXMagnet.anim_duration" title="Permalink to this definition">¶</a></dt>
+<dd><p>アニメーションの時間。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.magnet.KXMagnet.anim_enabled">
+<span class="sig-name descname"><span class="pre">anim_enabled</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#kivyx.uix.magnet.KXMagnet.anim_enabled" title="Permalink to this definition">¶</a></dt>
+<dd><p>アニメーションを実際に行うか否か。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.magnet.KXMagnet.anim_transition">
+<span class="sig-name descname"><span class="pre">anim_transition</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'out_quad'</span></em><a class="headerlink" href="#kivyx.uix.magnet.KXMagnet.anim_transition" title="Permalink to this definition">¶</a></dt>
+<dd><p>アニメーションの進み方。 有効な値の一覧は <a class="reference external" href="https://kivy.org/doc/master/api-kivy.animation.html#kivy.animation.AnimationTransition" title="(in Kivy v2.2.0.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">kivy.animation.AnimationTransition</span></code></a> を。</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Magnet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#kivyx.uix.magnet.KXMagnet"><code class="docutils literal notranslate"><span class="pre">KXMagnet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="kivyx-uix-drawer.html" title="previous chapter">引き出し</a></li>
+      <li>Next: <a href="kivyx-utils.html" title="next chapter">utils</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/kivyx-uix-magnet.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

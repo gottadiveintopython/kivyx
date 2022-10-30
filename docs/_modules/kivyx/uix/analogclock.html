@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kivyx.uix.analogclock &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for kivyx.uix.analogclock</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">widget一つだけでできた軽量のアナログ時計</span>
+
+<span class="sd">*(Tested on CPython3.9.7 + Kivy2.1.0)*</span>
+
+<span class="sd">使用例</span>
+<span class="sd">------</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAnalogClock:</span>
+<span class="sd">       labels:</span>
+<span class="sd">           (</span>
+<span class="sd">           {&#39;text&#39;: text, &#39;font_size&#39;: 30, }</span>
+<span class="sd">           for text in &quot;12 1 2 3 4 5 6 7 8 9 10 11&quot;.split()</span>
+<span class="sd">           )</span>
+
+<span class="sd">.. image:: images/kivyx.uix.analogclock/simple_12.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAnalogClock:</span>
+<span class="sd">       labels:</span>
+<span class="sd">           (</span>
+<span class="sd">           {&#39;text&#39;: text, &#39;font_size&#39;: 30, }</span>
+<span class="sd">           for text in &quot;12 3 6 9&quot;.split()</span>
+<span class="sd">           )</span>
+
+<span class="sd">.. image:: images/kivyx.uix.analogclock/simple_4.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAnalogClock:</span>
+<span class="sd">       hours_hand_color: rgba(&quot;#FFFFFF44&quot;)</span>
+<span class="sd">       minutes_hand_color: rgba(&quot;#FFFFFF44&quot;)</span>
+<span class="sd">       seconds_hand_color: rgba(&quot;#FFFFFF44&quot;)</span>
+<span class="sd">       labels: |  # &#39;|&#39;は実際に書いてはいけない</span>
+<span class="sd">           (</span>
+<span class="sd">           {&#39;text&#39;: &#39;12&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#FF00FF&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;3&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#00FF00&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;6&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#FF4400&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;9&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#777777&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           {&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span>
+<span class="sd">           )</span>
+
+<span class="sd">.. image:: images/kivyx.uix.analogclock/fancy.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   #:import Atlas kivy.atlas.Atlas</span>
+
+<span class="sd">   KXAnalogClock:</span>
+<span class="sd">       hours_hand_color: rgba(&quot;#22222255&quot;)</span>
+<span class="sd">       minutes_hand_color: rgba(&quot;#22222255&quot;)</span>
+<span class="sd">       seconds_hand_color: rgba(&quot;#22222255&quot;)</span>
+<span class="sd">       textures: Atlas(&quot;bird.atlas&quot;).textures.values()  # 5つの画像が詰め込まれたatlas</span>
+<span class="sd">       canvas.before:</span>
+<span class="sd">           Color:</span>
+<span class="sd">               rgba: rgba(&quot;#DDDDDD&quot;)</span>
+<span class="sd">           Ellipse:</span>
+<span class="sd">               pos: (-min(self.size) / 2.1, ) * 2</span>
+<span class="sd">               size: (min(self.size) / 2.1 * 2., ) * 2</span>
+
+<span class="sd">.. image:: images/kivyx.uix.analogclock/custom_images.png</span>
+
+<span class="sd">Canvasの座標系</span>
+<span class="sd">--------------</span>
+
+<span class="sd">``KXAnalogClock`` はrelative系のwidgetであり座標の原点を自身の中央に持ってくるのでcanvasの扱いには注意。</span>
+<span class="sd">例えば背景全体を塗り潰したいなら以下のようにしないといけない。</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAnalogClock:</span>
+<span class="sd">       labels:</span>
+<span class="sd">           (</span>
+<span class="sd">           {&#39;text&#39;: text, &#39;font_size&#39;: 30, }</span>
+<span class="sd">           for text in &quot;12 1 2 3 4 5 6 7 8 9 10 11&quot;.split()</span>
+<span class="sd">           )</span>
+<span class="sd">       canvas.before:</span>
+<span class="sd">           Color:</span>
+<span class="sd">               rgb: .6, .3, .2</span>
+<span class="sd">           Rectangle:</span>
+<span class="sd">               # pos: self.pos  # &lt;- これは駄目</span>
+<span class="sd">               pos: self.width / -2., self.height / -2.</span>
+<span class="sd">               size: self.size</span>
+
+<span class="sd">.. image:: images/kivyx.uix.analogclock/background_color.png</span>
+
+<span class="sd">針の動かし方</span>
+<span class="sd">------------</span>
+
+<span class="sd">時計の針をどのように動かすかは完全にあなたに委ねられている。</span>
+<span class="sd">常に現在時刻を指し続けさせたいなら次のようにすれば良いし</span>
+
+<span class="sd">.. code-block::</span>
+
+<span class="sd">   import datetime</span>
+<span class="sd">   from kivy.clock import Clock</span>
+<span class="sd">   from kivyx.uix.analogclock import KXAnalogClock</span>
+
+<span class="sd">   t = datetime.datetime.now().time()</span>
+<span class="sd">   clock = KXAnalogClock()</span>
+<span class="sd">   clock.time = (t.hour * 60 + t.minute) * 60 + t.second</span>
+
+<span class="sd">   def update_clock(dt, clock=clock):</span>
+<span class="sd">       clock.time += dt</span>
+
+<span class="sd">   Clock.schedule_interval(update_clock, 0)</span>
+
+<span class="sd">二倍の速さで針を進めたいなら次のようにする。</span>
+
+<span class="sd">.. code-block::</span>
+
+<span class="sd">   def update_clock(dt, clock=clock):</span>
+<span class="sd">       clock.time += dt * 2.</span>
+
+<span class="sd">はたまた針を逆に進めても良い。</span>
+
+<span class="sd">.. code-block::</span>
+
+<span class="sd">   def update_clock(dt, clock=clock):</span>
+<span class="sd">       clock.time -= dt</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;KXAnalogClock&#39;</span><span class="p">,</span> <span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">lru_cache</span>
+
+<span class="kn">from</span> <span class="nn">kivy.properties</span> <span class="kn">import</span> <span class="n">ColorProperty</span><span class="p">,</span> <span class="n">NumericProperty</span><span class="p">,</span> <span class="n">ObjectProperty</span>
+<span class="kn">from</span> <span class="nn">kivy.uix.widget</span> <span class="kn">import</span> <span class="n">Widget</span>
+<span class="kn">from</span> <span class="nn">kivy.clock</span> <span class="kn">import</span> <span class="n">Clock</span>
+<span class="kn">from</span> <span class="nn">kivy.lang</span> <span class="kn">import</span> <span class="n">Builder</span>
+<span class="kn">import</span> <span class="nn">asynckivy</span> <span class="k">as</span> <span class="nn">ak</span>
+
+<span class="kn">from</span> <span class="nn">kivyx.utils</span> <span class="kn">import</span> <span class="n">create_texture_from_text</span>
+
+<span class="n">Builder</span><span class="o">.</span><span class="n">load_string</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="s1">#:import sin math.sin</span>
+<span class="s1">#:import cos math.cos</span>
+<span class="s1">#:import tau math.tau</span>
+<span class="s1">#:set tau_slash_60 tau / 60.</span>
+<span class="s1">#:set tau_slash_3600 tau / 3600.</span>
+<span class="s1">#:set tau_slash_43200 tau / 43200.</span>
+
+<span class="s1">&lt;KXAnalogClock&gt;:</span>
+<span class="s1">    canvas.before:</span>
+<span class="s1">        PushMatrix:</span>
+<span class="s1">        Translate:</span>
+<span class="s1">            xy: self.center</span>
+<span class="s1">    canvas.after:</span>
+<span class="s1">        Color:</span>
+<span class="s1">            rgba: self.seconds_hand_color</span>
+<span class="s1">        Line:</span>
+<span class="s1">            width: self.seconds_hand_width</span>
+<span class="s1">            points: (s := min(self.size) * self.seconds_hand_length, r := self.time * tau_slash_60, ) and (0, 0, sin(r) * s, cos(r) * s)</span>
+<span class="s1">            cap: &#39;none&#39;</span>
+<span class="s1">        Color:</span>
+<span class="s1">            rgba: self.minutes_hand_color</span>
+<span class="s1">        Line:</span>
+<span class="s1">            width: self.minutes_hand_width</span>
+<span class="s1">            points: (s := min(self.size) * self.minutes_hand_length, r := self.time * tau_slash_3600, ) and (0, 0, sin(r) * s, cos(r) * s)</span>
+<span class="s1">            cap: &#39;none&#39;</span>
+<span class="s1">        Color:</span>
+<span class="s1">            rgba: self.hours_hand_color</span>
+<span class="s1">        Line:</span>
+<span class="s1">            width: self.hours_hand_width</span>
+<span class="s1">            points: (s := min(self.size) * self.hours_hand_length, r := self.time * tau_slash_43200, ) and (0, 0, sin(r) * s, cos(r) * s)</span>
+<span class="s1">            cap: &#39;none&#39;</span>
+<span class="s1">        PopMatrix:</span>
+<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="KXAnalogClock"><a class="viewcode-back" href="../../../kivyx-uix-analogclock.html#kivyx.uix.analogclock.KXAnalogClock">[docs]</a><span class="k">class</span> <span class="nc">KXAnalogClock</span><span class="p">(</span><span class="n">Widget</span><span class="p">):</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">()</span>
+    <span class="sd">&#39;&#39;&#39;時計が指す時刻。単位は秒。例えば03:20を指させたいなら ``3600 * 3 + 60 * 20`` を入れる。&#39;&#39;&#39;</span>
+
+    <span class="n">seconds_hand_color</span> <span class="o">=</span> <span class="n">ColorProperty</span><span class="p">(</span><span class="s2">&quot;#FFFFFFFF&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;秒針の色。&#39;&#39;&#39;</span>
+
+    <span class="n">seconds_hand_width</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="s1">&#39;1dp&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;秒針の太さ。&#39;&#39;&#39;</span>
+
+    <span class="n">seconds_hand_length</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="mf">0.45</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;秒針の長さ。``min(self.size)`` に対する割合で指定する。&#39;&#39;&#39;</span>
+
+    <span class="n">minutes_hand_color</span> <span class="o">=</span> <span class="n">ColorProperty</span><span class="p">(</span><span class="s2">&quot;#FFFFFFFF&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;分針の色。&#39;&#39;&#39;</span>
+
+    <span class="n">minutes_hand_width</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="s1">&#39;2dp&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;分針の太さ。&#39;&#39;&#39;</span>
+
+    <span class="n">minutes_hand_length</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="mf">0.45</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;分針の長さ。``min(self.size)`` に対する割合で指定する。&#39;&#39;&#39;</span>
+
+    <span class="n">hours_hand_color</span> <span class="o">=</span> <span class="n">ColorProperty</span><span class="p">(</span><span class="s2">&quot;#FFFFFFFF&quot;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;時針の色。&#39;&#39;&#39;</span>
+
+    <span class="n">hours_hand_width</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="s1">&#39;4dp&#39;</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;時針の太さ。&#39;&#39;&#39;</span>
+
+    <span class="n">hours_hand_length</span> <span class="o">=</span> <span class="n">NumericProperty</span><span class="p">(</span><span class="mf">0.31</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;時針の長さ。``min(self.size)`` に対する割合で指定する。&#39;&#39;&#39;</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">ObjectProperty</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;時計に描かれる文字達。辞書のiterable。 この値がNoneではない時 :attr:`textures` はNoneでなければならない。&#39;&#39;&#39;</span>
+
+    <span class="n">textures</span> <span class="o">=</span> <span class="n">ObjectProperty</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">allownone</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;時計に描かれる画像達。 :external:kivy:doc:`api-kivy.graphics.texture` のiterable。この値がNoneではない時 :attr:`labels` はNoneでなければならない。&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">kivy.graphics</span> <span class="kn">import</span> <span class="n">InstructionGroup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels_task</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">dummy_task</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_labels_ig</span> <span class="o">=</span> <span class="n">InstructionGroup</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbind</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Clock</span><span class="o">.</span><span class="n">schedule_once</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reset_labels</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;labels&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="n">f</span><span class="p">(</span><span class="s1">&#39;textures&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reset_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels_task</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_labels_task</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_main</span><span class="p">())</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">_labels_main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+        <span class="kn">from</span> <span class="nn">kivy.graphics</span> <span class="kn">import</span> <span class="n">Color</span><span class="p">,</span> <span class="n">Rectangle</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">textures</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">textures</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">create_texture_from_text</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">textures</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textures</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;You cannot set both &#39;textures&#39; and &#39;labels&#39;.&quot;</span><span class="p">)</span>
+
+        <span class="n">sizes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">textures</span><span class="p">)</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">((</span><span class="n">w</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">h</span><span class="o">/</span><span class="mf">2.</span><span class="p">,)</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">)</span>
+        <span class="n">radius_adjustment</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">sizes</span><span class="p">))</span> <span class="o">/</span> <span class="mf">1.7</span>
+        <span class="n">rects</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Rectangle</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">texture</span><span class="o">=</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">textures</span><span class="p">,</span> <span class="n">sizes</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">textures</span><span class="p">,</span> <span class="n">sizes</span>
+
+        <span class="n">ig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_labels_ig</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ig</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Color</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">rect</span> <span class="ow">in</span> <span class="n">rects</span><span class="p">:</span>
+                <span class="n">ig</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+            <span class="n">layout_labels</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+                <span class="n">KXAnalogClock</span><span class="o">.</span><span class="n">_layout_labels</span><span class="p">,</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">offsets</span><span class="p">,</span>
+                <span class="n">rects</span><span class="p">,</span>
+                <span class="n">radius_adjustment</span><span class="p">,</span>
+                <span class="n">_calc_circular_layout</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rects</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="n">bind_uid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbind</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="n">Clock</span><span class="o">.</span><span class="n">schedule_once</span><span class="p">(</span><span class="n">layout_labels</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">await</span> <span class="n">ak</span><span class="o">.</span><span class="n">sleep_forever</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unbind_uid</span><span class="p">(</span><span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="n">bind_uid</span><span class="p">)</span>
+            <span class="n">ig</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_layout_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsets</span><span class="p">,</span> <span class="n">rects</span><span class="p">,</span> <span class="n">radius_adjustment</span><span class="p">,</span> <span class="n">base_pos_s</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">-</span> <span class="n">radius_adjustment</span>
+        <span class="k">for</span> <span class="n">rect</span><span class="p">,</span> <span class="p">(</span><span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">),</span> <span class="p">(</span><span class="n">base_x</span><span class="p">,</span> <span class="n">base_y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rects</span><span class="p">,</span> <span class="n">offsets</span><span class="p">,</span> <span class="n">base_pos_s</span><span class="p">):</span>
+            <span class="n">rect</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">base_x</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">-</span> <span class="n">offset_x</span><span class="p">,</span>
+                <span class="n">base_y</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">-</span> <span class="n">offset_y</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_y</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">to_local</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_y</span><span class="p">)</span></div>
+
+
+<span class="nd">@lru_cache</span>
+<span class="k">def</span> <span class="nf">_calc_circular_layout</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;単位円の円周上にn個の点を等間隔に置いた時の各点の座標を求める。点は座標(0, 1)から時計回りに置き始める。</span>
+
+<span class="sd">    assert _calc_circular_layout(4) == ((0, 1), (1, 0), (0, -1), (-1, 0), )  # 概算</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">tau</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">tau</span> <span class="o">/</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">r</span> <span class="o">:=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">step</span><span class="p">,</span> <span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">sin</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="n">cos</span><span class="p">(</span><span class="n">r</span><span class="p">),</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

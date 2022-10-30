@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kivyx.uix.aspectratio &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for kivyx.uix.aspectratio</h1><div class="highlight"><pre>
+<span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">子の縦横比を固定するwidget。</span>
+<span class="sd">`FlutterのAspectRatio &lt;https://www.youtube.com/watch?v=XcnP3_mO_Ms&gt;`__ が基。</span>
+
+<span class="sd">*(Tested on CPython3.9.7 + Kivy2.1.0)*</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAspectRatio:</span>
+<span class="sd">       Button:</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.aspectratio/1to1.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAspectRatio:</span>
+<span class="sd">       aspect_ratio: 2 / 3</span>
+<span class="sd">       Button:</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.aspectratio/2to3.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAspectRatio:</span>
+<span class="sd">       aspect_ratio: 2 / 3</span>
+<span class="sd">       halign: &#39;left&#39;</span>
+<span class="sd">       Button:</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.aspectratio/2to3_left.png</span>
+
+<span class="sd">.. code-block:: yaml</span>
+
+<span class="sd">   KXAspectRatio:</span>
+<span class="sd">       aspect_ratio: 2</span>
+<span class="sd">       valign: &#39;bottom&#39;</span>
+<span class="sd">       Button:</span>
+
+<span class="sd">.. figure:: /images/kivyx.uix.aspectratio/2to1_bottom.png</span>
+
+<span class="sd">.. warning::</span>
+
+<span class="sd">   一般的に縦横比の為だけにwidgetを一つ増やすというのは負荷の割に見合わないらしいので大規模なアプリではこのwidgetを作りすぎないよう注意。</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;KXAspectRatio&#39;</span><span class="p">,</span> <span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">kivy.uix.layout</span> <span class="kn">import</span> <span class="n">Layout</span>
+<span class="kn">from</span> <span class="nn">kivy.properties</span> <span class="kn">import</span> <span class="n">BoundedNumericProperty</span><span class="p">,</span> <span class="n">OptionProperty</span>
+
+<span class="n">halign2attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;middle&#39;</span><span class="p">:</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;left&#39;</span><span class="p">:</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;right&#39;</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">valign2attr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="s1">&#39;center_y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;middle&#39;</span><span class="p">:</span> <span class="s1">&#39;center_y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bottom&#39;</span><span class="p">:</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;top&#39;</span><span class="p">:</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="KXAspectRatio"><a class="viewcode-back" href="../../../kivyx-uix-aspectratio.html#kivyx.uix.aspectratio.KXAspectRatio">[docs]</a><span class="k">class</span> <span class="nc">KXAspectRatio</span><span class="p">(</span><span class="n">Layout</span><span class="p">):</span>
+    <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">BoundedNumericProperty</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="sd">&#39;&#39;&#39;子の縦横比。１で正方形、１より大きいと横長、１より小さいと縦長になる。&#39;&#39;&#39;</span>
+
+    <span class="n">halign</span> <span class="o">=</span> <span class="n">OptionProperty</span><span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="p">))</span>
+    <span class="sd">&#39;&#39;&#39;横にゆとりがある時に子をどこに寄せるか。 ``center`` と ``middle`` は中央、 ``left`` は左、 ``right`` は右に寄せる。&#39;&#39;&#39;</span>
+
+    <span class="n">valign</span> <span class="o">=</span> <span class="n">OptionProperty</span><span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="p">))</span>
+    <span class="sd">&#39;&#39;&#39;縦にゆとりがある時に子をどこに寄せるか。 ``center`` と ``middle`` は中央、 ``bottom`` は下、 ``top`` は上に寄せる。&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">fbind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbind</span>
+        <span class="n">trigger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trigger_layout</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;parent&#39;</span><span class="p">,</span> <span class="s1">&#39;children&#39;</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">,</span> <span class="s1">&#39;pos&#39;</span><span class="p">,</span> <span class="s1">&#39;aspect_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;halign&#39;</span><span class="p">,</span> <span class="s1">&#39;valign&#39;</span><span class="p">,</span> <span class="p">):</span>
+            <span class="n">fbind</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">trigger</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">do_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">setattr_</span> <span class="o">=</span> <span class="nb">setattr</span>
+        <span class="n">getattr_</span> <span class="o">=</span> <span class="nb">getattr</span>
+        <span class="n">c_aspect_ratio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aspect_ratio</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span>
+        <span class="n">x_attr</span> <span class="o">=</span> <span class="n">halign2attr</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">halign</span><span class="p">]</span>
+        <span class="n">y_attr</span> <span class="o">=</span> <span class="n">valign2attr</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">valign</span><span class="p">]</span>
+        <span class="n">x_value</span> <span class="o">=</span> <span class="n">getattr_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_attr</span><span class="p">)</span>
+        <span class="n">y_value</span> <span class="o">=</span> <span class="n">getattr_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y_attr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">c_aspect_ratio</span><span class="p">)</span> <span class="ow">or</span> <span class="n">w</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">h</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">setattr_</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x_attr</span><span class="p">,</span> <span class="n">x_value</span><span class="p">)</span>
+                <span class="n">setattr_</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">y_attr</span><span class="p">,</span> <span class="n">y_value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">c_aspect_ratio</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">w</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">c_aspect_ratio</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+                <span class="n">setattr_</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">y_attr</span><span class="p">,</span> <span class="n">y_value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">h</span> <span class="o">*</span> <span class="n">c_aspect_ratio</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">h</span>
+                <span class="n">setattr_</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">x_attr</span><span class="p">,</span> <span class="n">x_value</span><span class="p">)</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

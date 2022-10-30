@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>TabbedPanelに飽きた人へ &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="柔軟なBoxLayout" href="kivyx-uix-boxlayout.html" />
+    <link rel="prev" title="Spinnerの自作" href="kivyx-uix-behaviors-spinner.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-kivyx.uix.behaviors.tablikelooks">
+<span id="tabbedpanel"></span><h1>TabbedPanelに飽きた人へ<a class="headerlink" href="#module-kivyx.uix.behaviors.tablikelooks" title="Permalink to this heading">¶</a></h1>
+<p><a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.boxlayout.html" title="(in Kivy v2.2.0.dev0)"><span>Box Layout</span></a> にタブのような見た目を加えるmix-in class。
+公式の <a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.tabbedpanel.html" title="(in Kivy v2.2.0.dev0)"><span>TabbedPanel</span></a> の見た目が気に入らない人におすすめ。</p>
+<p><em>(Tested on CPython3.9.7 + Kivy2.1.0)</em></p>
+<p>このclassをBoxLayoutと組み合わせる事で選択中の <a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.behaviors.togglebutton.html" title="(in Kivy v2.2.0.dev0)"><span>ToggleButton Behavior</span></a> をタブのような見た目で飾る事ができる。
+例えば次のコードを実行して <em>B</em> を押すと</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;Tab@ToggleButtonBehavior+Label&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">size_hint_min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">self.texture_size</span><span class="w"></span>
+<span class="w">    </span><span class="nt">font_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">24</span><span class="w"></span>
+<span class="w">    </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;test&#39;</span><span class="w"></span>
+
+<span class="nt">&lt;TabContainer@KXTablikeLooksBehavior+BoxLayout&gt;</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">tab_line_color</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#AAAAFF&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">spacing</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="w">    </span><span class="nt">padding</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+
+<span class="nt">BoxLayout</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">orientation</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;vertical&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">TabContainer</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">size_hint_y</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="w">        </span><span class="nt">height</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">self.minimum_height</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;A&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;B&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;C&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Widget</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content</span><span class="w"></span>
+</pre></div>
+</div>
+<p>次のようになる。</p>
+<figure class="align-default">
+<img alt="_images/simple_h.png" src="_images/simple_h.png" />
+</figure>
+<p>また縦向きの <code class="docutils literal notranslate"><span class="pre">BoxLayout</span></code> にも対応している。</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">BoxLayout</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">TabContainer</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">orientation</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;vertical&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">size_hint_x</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">None</span><span class="w"></span>
+<span class="w">        </span><span class="nt">width</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">self.minimum_width</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;A&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;B&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Tab</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;C&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">Widget</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">content</span><span class="w"></span>
+</pre></div>
+</div>
+<figure class="align-default">
+<img alt="_images/simple_v.png" src="_images/simple_v.png" />
+</figure>
+<p>また次のように複数の方向のタブ達を組み合わせる事もできる。</p>
+<figure class="align-default">
+<img alt="_images/all_sides.png" src="_images/all_sides.png" />
+</figure>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kivyx.uix.behaviors.tablikelooks.</span></span><span class="sig-name descname"><span class="pre">KXTablikeLooksBehavior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kivyx/uix/behaviors/tablikelooks.html#KXTablikeLooksBehavior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_color">
+<span class="sig-name descname"><span class="pre">tab_line_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#FFFFFF'</span></em><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>線の色。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_stays_inside">
+<span class="sig-name descname"><span class="pre">tab_line_stays_inside</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_stays_inside" title="Permalink to this definition">¶</a></dt>
+<dd><p>線をwidgetの領域内に収まるようにするか否か。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_width">
+<span class="sig-name descname"><span class="pre">tab_line_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_line_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>線の太さ。Kivyの仕様によりこの値の二倍が実際の線の太さとなる。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_style_h">
+<span class="sig-name descname"><span class="pre">tab_style_h</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'top'</span></em><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_style_h" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.boxlayout.html" title="(in Kivy v2.2.0.dev0)"><span>Box Layout</span></a> が横向きの時のタブの見た目。
+選択中のタブがある時 <code class="docutils literal notranslate"><span class="pre">top</span></code> だと上に、 <code class="docutils literal notranslate"><span class="pre">bottom</span></code> だと下に線が凸る。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_style_v">
+<span class="sig-name descname"><span class="pre">tab_style_v</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'left'</span></em><a class="headerlink" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior.tab_style_v" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.boxlayout.html" title="(in Kivy v2.2.0.dev0)"><span>Box Layout</span></a> が縦向きの時のタブの見た目。
+選択中のタブがある時 <code class="docutils literal notranslate"><span class="pre">left</span></code> だと左に、 <code class="docutils literal notranslate"><span class="pre">right</span></code> だと右に線が凸る。</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TabbedPanelに飽きた人へ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#kivyx.uix.behaviors.tablikelooks.KXTablikeLooksBehavior"><code class="docutils literal notranslate"><span class="pre">KXTablikeLooksBehavior</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="kivyx-uix-behaviors-spinner.html" title="previous chapter">Spinnerの自作</a></li>
+      <li>Next: <a href="kivyx-uix-boxlayout.html" title="next chapter">柔軟なBoxLayout</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/kivyx-uix-behaviors-tablikelooks.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

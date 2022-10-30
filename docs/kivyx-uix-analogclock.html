@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>アナログ時計 &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="縦横比の固定" href="kivyx-uix-aspectratio.html" />
+    <link rel="prev" title="背景音楽" href="kivyx-misc-bgmplayer.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-kivyx.uix.analogclock">
+<span id="id1"></span><h1>アナログ時計<a class="headerlink" href="#module-kivyx.uix.analogclock" title="Permalink to this heading">¶</a></h1>
+<p>widget一つだけでできた軽量のアナログ時計</p>
+<p><em>(Tested on CPython3.9.7 + Kivy2.1.0)</em></p>
+<section id="id2">
+<h2>使用例<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">KXAnalogClock</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">(</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">{&#39;text&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text, &#39;font_size&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30, }</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">for text in &quot;12 1 2 3 4 5 6 7 8 9 10 11&quot;.split()</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">)</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/simple_12.png" src="_images/simple_12.png" />
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">KXAnalogClock</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">(</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">{&#39;text&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text, &#39;font_size&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30, }</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">for text in &quot;12 3 6 9&quot;.split()</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">)</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/simple_4.png" src="_images/simple_4.png" />
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">KXAnalogClock</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">hours_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#FFFFFF44&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">minutes_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#FFFFFF44&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">seconds_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#FFFFFF44&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">  </span><span class="c1"># &#39;|&#39;は実際に書いてはいけない</span><span class="w"></span>
+<span class="w">        </span><span class="no">(</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;12&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#FF00FF&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;3&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#00FF00&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;6&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#FF4400&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;9&#39;, &#39;font_size&#39;: 60, &#39;outline_color&#39;: rgba(&quot;#777777&quot;), &#39;outline_width&#39;: 2, &#39;color&#39;: rgba(&quot;#000000&quot;), },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">{&#39;text&#39;: &#39;-&#39;, &#39;font_size&#39;: 70, },</span><span class="w"></span>
+<span class="w">        </span><span class="no">)</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/fancy.png" src="_images/fancy.png" />
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#:import Atlas kivy.atlas.Atlas</span><span class="w"></span>
+
+<span class="nt">KXAnalogClock</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">hours_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#22222255&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">minutes_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#22222255&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">seconds_hand_color</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#22222255&quot;)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">textures</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Atlas(&quot;bird.atlas&quot;).textures.values()</span><span class="w">  </span><span class="c1"># 5つの画像が詰め込まれたatlas</span><span class="w"></span>
+<span class="w">    </span><span class="nt">canvas.before</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Color</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">rgba</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rgba(&quot;#DDDDDD&quot;)</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Ellipse</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">pos</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(-min(self.size) / 2.1, ) * 2</span><span class="w"></span>
+<span class="w">            </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(min(self.size) / 2.1 * 2., ) * 2</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/custom_images.png" src="_images/custom_images.png" />
+</section>
+<section id="canvas">
+<h2>Canvasの座標系<a class="headerlink" href="#canvas" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">KXAnalogClock</span></code> はrelative系のwidgetであり座標の原点を自身の中央に持ってくるのでcanvasの扱いには注意。
+例えば背景全体を塗り潰したいなら以下のようにしないといけない。</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">KXAnalogClock</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">labels</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">(</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">{&#39;text&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text, &#39;font_size&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30, }</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">for text in &quot;12 1 2 3 4 5 6 7 8 9 10 11&quot;.split()</span><span class="w"></span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">)</span><span class="w"></span>
+<span class="w">    </span><span class="nt">canvas.before</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Color</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="nt">rgb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.6, .3, .2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">Rectangle</span><span class="p">:</span><span class="w"></span>
+<span class="w">            </span><span class="c1"># pos: self.pos  # &lt;- これは駄目</span><span class="w"></span>
+<span class="w">            </span><span class="nt">pos</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">self.width / -2., self.height / -2.</span><span class="w"></span>
+<span class="w">            </span><span class="nt">size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">self.size</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/background_color.png" src="_images/background_color.png" />
+</section>
+<section id="id3">
+<h2>針の動かし方<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h2>
+<p>時計の針をどのように動かすかは完全にあなたに委ねられている。
+常に現在時刻を指し続けさせたいなら次のようにすれば良いし</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">kivy.clock</span> <span class="kn">import</span> <span class="n">Clock</span>
+<span class="kn">from</span> <span class="nn">kivyx.uix.analogclock</span> <span class="kn">import</span> <span class="n">KXAnalogClock</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">clock</span> <span class="o">=</span> <span class="n">KXAnalogClock</span><span class="p">()</span>
+<span class="n">clock</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">minute</span><span class="p">)</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">second</span>
+
+<span class="k">def</span> <span class="nf">update_clock</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">clock</span><span class="o">=</span><span class="n">clock</span><span class="p">):</span>
+    <span class="n">clock</span><span class="o">.</span><span class="n">time</span> <span class="o">+=</span> <span class="n">dt</span>
+
+<span class="n">Clock</span><span class="o">.</span><span class="n">schedule_interval</span><span class="p">(</span><span class="n">update_clock</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>二倍の速さで針を進めたいなら次のようにする。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_clock</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">clock</span><span class="o">=</span><span class="n">clock</span><span class="p">):</span>
+    <span class="n">clock</span><span class="o">.</span><span class="n">time</span> <span class="o">+=</span> <span class="n">dt</span> <span class="o">*</span> <span class="mf">2.</span>
+</pre></div>
+</div>
+<p>はたまた針を逆に進めても良い。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update_clock</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">clock</span><span class="o">=</span><span class="n">clock</span><span class="p">):</span>
+    <span class="n">clock</span><span class="o">.</span><span class="n">time</span> <span class="o">-=</span> <span class="n">dt</span>
+</pre></div>
+</div>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kivyx.uix.analogclock.</span></span><span class="sig-name descname"><span class="pre">KXAnalogClock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kivyx/uix/analogclock.html#KXAnalogClock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.widget.html#kivy.uix.widget.Widget" title="(in Kivy v2.2.0.dev0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Widget</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.hours_hand_color">
+<span class="sig-name descname"><span class="pre">hours_hand_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#FFFFFFFF'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.hours_hand_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>時針の色。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.hours_hand_length">
+<span class="sig-name descname"><span class="pre">hours_hand_length</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.31</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.hours_hand_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>時針の長さ。<code class="docutils literal notranslate"><span class="pre">min(self.size)</span></code> に対する割合で指定する。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.hours_hand_width">
+<span class="sig-name descname"><span class="pre">hours_hand_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'4dp'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.hours_hand_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>時針の太さ。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.labels">
+<span class="sig-name descname"><span class="pre">labels</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>時計に描かれる文字達。辞書のiterable。 この値がNoneではない時 <a class="reference internal" href="#kivyx.uix.analogclock.KXAnalogClock.textures" title="kivyx.uix.analogclock.KXAnalogClock.textures"><code class="xref py py-attr docutils literal notranslate"><span class="pre">textures</span></code></a> はNoneでなければならない。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.minutes_hand_color">
+<span class="sig-name descname"><span class="pre">minutes_hand_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#FFFFFFFF'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.minutes_hand_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>分針の色。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.minutes_hand_length">
+<span class="sig-name descname"><span class="pre">minutes_hand_length</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.45</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.minutes_hand_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>分針の長さ。<code class="docutils literal notranslate"><span class="pre">min(self.size)</span></code> に対する割合で指定する。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.minutes_hand_width">
+<span class="sig-name descname"><span class="pre">minutes_hand_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'2dp'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.minutes_hand_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>分針の太さ。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.seconds_hand_color">
+<span class="sig-name descname"><span class="pre">seconds_hand_color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'#FFFFFFFF'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.seconds_hand_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>秒針の色。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.seconds_hand_length">
+<span class="sig-name descname"><span class="pre">seconds_hand_length</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.45</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.seconds_hand_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>秒針の長さ。<code class="docutils literal notranslate"><span class="pre">min(self.size)</span></code> に対する割合で指定する。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.seconds_hand_width">
+<span class="sig-name descname"><span class="pre">seconds_hand_width</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'1dp'</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.seconds_hand_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>秒針の太さ。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.textures">
+<span class="sig-name descname"><span class="pre">textures</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.textures" title="Permalink to this definition">¶</a></dt>
+<dd><p>時計に描かれる画像達。 <a class="reference external" href="https://kivy.org/doc/master/api-kivy.graphics.texture.html" title="(in Kivy v2.2.0.dev0)"><span>Texture</span></a> のiterable。この値がNoneではない時 <a class="reference internal" href="#kivyx.uix.analogclock.KXAnalogClock.labels" title="kivyx.uix.analogclock.KXAnalogClock.labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">labels</span></code></a> はNoneでなければならない。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.analogclock.KXAnalogClock.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#kivyx.uix.analogclock.KXAnalogClock.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>時計が指す時刻。単位は秒。例えば03:20を指させたいなら <code class="docutils literal notranslate"><span class="pre">3600</span> <span class="pre">*</span> <span class="pre">3</span> <span class="pre">+</span> <span class="pre">60</span> <span class="pre">*</span> <span class="pre">20</span></code> を入れる。</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">アナログ時計</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">使用例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#canvas">Canvasの座標系</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">針の動かし方</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kivyx.uix.analogclock.KXAnalogClock"><code class="docutils literal notranslate"><span class="pre">KXAnalogClock</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-fontsizeadjustment.html">文字サイズの自動調節</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="kivyx-misc-bgmplayer.html" title="previous chapter">背景音楽</a></li>
+      <li>Next: <a href="kivyx-uix-aspectratio.html" title="next chapter">縦横比の固定</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/kivyx-uix-analogclock.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

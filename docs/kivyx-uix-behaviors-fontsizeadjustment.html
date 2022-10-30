@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>文字サイズの自動調節 &#8212; kivyx 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Spinnerの自作" href="kivyx-uix-behaviors-spinner.html" />
+    <link rel="prev" title="縦横比の固定" href="kivyx-uix-aspectratio.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-kivyx.uix.behaviors.fontsizeadjustment">
+<span id="id1"></span><h1>文字サイズの自動調節<a class="headerlink" href="#module-kivyx.uix.behaviors.fontsizeadjustment" title="Permalink to this heading">¶</a></h1>
+<p><a class="reference external" href="https://kivy.org/doc/master/api-kivy.uix.label.html" title="(in Kivy v2.2.0.dev0)"><span>Label</span></a> の <code class="docutils literal notranslate"><span class="pre">font_size</span></code> を自動調節するmix-in class。</p>
+<p><em>(Tested on CPython3.9.7 + Kivy2.1.0)</em></p>
+<section id="id2">
+<h2>使用例<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;MyLabel@KXFontsizeAdjustmentBehavior+Label&gt;</span><span class="p">:</span><span class="w"></span>
+
+<span class="nt">MyLabel</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Hello</span><span class="nv"> </span><span class="s">Kivy&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/normal.png" src="_images/normal.png" />
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MyLabel</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(&#39;Hello Kivy &#39; * 5)[:-1]</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/long.png" src="_images/long.png" />
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MyLabel</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">(&#39;Hello Kivy\\n&#39; * 5)[:-1]</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/multilines.png" src="_images/multilines.png" />
+</section>
+<section id="font-size">
+<h2>font_sizeの取り扱い<a class="headerlink" href="#font-size" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">font_size</span></code> の調節する役目はこのclassが担うので普通に <code class="docutils literal notranslate"><span class="pre">font_size</span></code> へ書き込んでも実際の大きさには影響を与えられない。
+もしこのclassを使いながらも特定の値へ固定したいなら <code class="docutils literal notranslate"><span class="pre">font_size_min</span></code> と　<code class="docutils literal notranslate"><span class="pre">font_size_max</span></code> にその値を書き込む必要がある。
+尚 <code class="docutils literal notranslate"><span class="pre">bind()</span></code> や <code class="docutils literal notranslate"><span class="pre">fbind()</span></code> を用いて <code class="docutils literal notranslate"><span class="pre">font_size</span></code> の変化を監視することはできる。</p>
+</section>
+<section id="markup-tag">
+<h2>一部のmarkup tagは調節を妨げる<a class="headerlink" href="#markup-tag" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">[size][/size]</span></code> や <code class="docutils literal notranslate"><span class="pre">[font][/font]</span></code> のような <code class="docutils literal notranslate"><span class="pre">font_size</span></code> への影響の大きいtagを用いると調節に失敗しやすくなる。</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">MyLabel</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">markup</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="w">    </span><span class="nt">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ABCDE[size=40]abcde[/size]&#39;</span><span class="w"></span>
+</pre></div>
+</div>
+<img alt="_images/failure.png" src="_images/failure.png" />
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kivyx.uix.behaviors.fontsizeadjustment.</span></span><span class="sig-name descname"><span class="pre">KXFontsizeAdjustmentBehavior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/kivyx/uix/behaviors/fontsizeadjustment.html#KXFontsizeAdjustmentBehavior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.delay_on_texture_update">
+<span class="sig-name descname"><span class="pre">delay_on_texture_update</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.2</span></em><a class="headerlink" href="#kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.delay_on_texture_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>widgetの大きさが変わってから文字列を再描画するまでの遅延時間。零だと遅延が無くなる。
+widgetの大きさをアニメーションする場合はこの値を減らしすぎないよう注意。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.font_size_max">
+<span class="sig-name descname"><span class="pre">font_size_max</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9999</span></em><a class="headerlink" href="#kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.font_size_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>文字の大きさの上限。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.font_size_min">
+<span class="sig-name descname"><span class="pre">font_size_min</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior.font_size_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>文字の大きさの下限。</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">kivyx</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="kivyx-misc-bgmplayer.html">背景音楽</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-analogclock.html">アナログ時計</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-aspectratio.html">縦横比の固定</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">文字サイズの自動調節</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">使用例</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#font-size">font_sizeの取り扱い</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#markup-tag">一部のmarkup tagは調節を妨げる</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kivyx.uix.behaviors.fontsizeadjustment.KXFontsizeAdjustmentBehavior"><code class="docutils literal notranslate"><span class="pre">KXFontsizeAdjustmentBehavior</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-spinner.html">Spinnerの自作</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-behaviors-tablikelooks.html">TabbedPanelに飽きた人へ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-boxlayout.html">柔軟なBoxLayout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-drawer.html">引き出し</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-uix-magnet.html">Magnet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kivyx-utils.html">utils</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">&lt;no title&gt;</a><ul>
+      <li>Previous: <a href="kivyx-uix-aspectratio.html" title="previous chapter">縦横比の固定</a></li>
+      <li>Next: <a href="kivyx-uix-behaviors-spinner.html" title="next chapter">Spinnerの自作</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Nattōsai Mitō.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/kivyx-uix-behaviors-fontsizeadjustment.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
