@@ -56,16 +56,17 @@
 
 .. code-block::
 
-   # option_clsが規定値のままの時の一例
+   # option_clsが既定値のままの時の一例
    spinner.option_data = [
        {'text': text, } for text in "ACBDEF"
    ]
 
-ユーザーがどの選択肢を選んだのかは :attr:`selection` を監視することでわかります。
+ユーザーがどの選択肢を選んだのかは :attr:`selection` でわかります。
 
 .. code-block::
 
-   spinner.bind(selection=lambda __, v: print(v.text, "が選ばれた"))
+   # option_clsが既定値のままの時の一例
+   print(spinner.selection.text, "が選ばれています")
 '''
 
 __all__ = ('KXSpinnerLikeBehavior', )
