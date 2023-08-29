@@ -7,4 +7,3 @@ bin/
 /poetry.lock
 /dist
 /docs
-/doc/_build

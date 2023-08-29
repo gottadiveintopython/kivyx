@@ -11,7 +11,7 @@ style:
 	$(FLAKE8) --count --select=E9,F63,F7,F82 --show-source --statistics ./tests ./src ./examples
 
 apidoc:
-	sphinx-apidoc --separate -o ./doc ./src/kivyx
+	sphinx-apidoc --separate -o ./sphinx ./src/kivyx
 
 html:
-	sphinx-build -M html ./doc ./doc/_build
+	sphinx-build -M html ./sphinx ./docs
