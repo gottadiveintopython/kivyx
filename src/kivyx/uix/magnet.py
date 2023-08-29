@@ -58,7 +58,7 @@ class KXMagnet(Widget):
     '''アニメーションの進み方。 有効な値の一覧は :class:`kivy.animation.AnimationTransition` を。'''
 
     def __init__(self, **kwargs):
-        self._anim_coro = ak.sleep_forever()
+        self._anim_task = ak.dummy_task
         self._anim_transition = AnimationTransition.out_quad
         self._prev_parent = None
         self._prev_pos = (0, 0, )
@@ -74,7 +74,7 @@ class KXMagnet(Widget):
 
     @staticmethod
     def on_anim_enabled(self, enabled):
-        self._anim_coro.close()
+        self._anim_task.cancel()
         t = self._trigger
         t.callback = self._animate if enabled else self._layout
         t.release()
@@ -98,18 +98,18 @@ class KXMagnet(Widget):
         w.size = self.size
         return super().add_widget(w, *args, **kwargs)
 
-    def _animate(self, dt, raw_start=ak.raw_start, animate=ak.animate, len=len, BatchSetter=BatchSetter):
-        self._anim_coro.close()
+    def _animate(self, dt, start=ak.start, animate=ak.animate, len=len, BatchSetter=BatchSetter):
+        self._anim_task.cancel()
         children = self.children
         if len(children) == 1:
-            self._anim_coro = raw_start(animate(
+            self._anim_task = start(animate(
                 children[0],
                 duration=self.anim_duration,
                 transition=self._anim_transition,
                 x=self.x, y=self.y, width=self.width, height=self.height,
             ))
         elif children:
-            self._anim_coro = raw_start(animate(
+            self._anim_task = start(animate(
                 BatchSetter(children),
                 duration=self.anim_duration,
                 transition=self._anim_transition,
