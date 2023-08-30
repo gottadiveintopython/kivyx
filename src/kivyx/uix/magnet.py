@@ -1,76 +1,77 @@
 '''
-*(Tested on CPython3.9.7 + Kivy2.1.0)*
+*(Tested on CPython3.11.4 + Kivy2.2.1)*
 
 `garden.magnet <https://github.com/kivy-garden/garden.magnet>`__ を自分用に改変した物。
 相違点は以下
 
 * アニメーションされるのは大きさと位置だけ。
+* アニメーションの時間や進み方はコード内に直書き。
 * アニメーションの有効無効を切り替えられる。
 * 複数の子を持てる。
 '''
 
 __all__ = ('KXMagnet', )
 
+from functools import partial
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from kivy.properties import NumericProperty, BooleanProperty, StringProperty
+from kivy.properties import BooleanProperty
 from kivy.animation import AnimationTransition
 import asynckivy as ak
 
 
-class BatchSetter:
-    __slots__ = ('children', 'first', )
-
-    def __init__(self, children):
-        self.children = children
-        self.first = children[0]
-
-    def _set_x(self, value):
-        for c in self.children:
-            c.x = value        
-
-    def _set_y(self, value):
-        for c in self.children:
-            c.y = value        
-
-    def _set_width(self, value):
-        for c in self.children:
-            c.width = value        
-
-    def _set_height(self, value):
-        for c in self.children:
-            c.height = value        
-
-    x = property(lambda self: self.first.x, _set_x)
-    y = property(lambda self: self.first.y, _set_y)
-    width = property(lambda self: self.first.width, _set_width)
-    height = property(lambda self: self.first.height, _set_height)
-
-
 class KXMagnet(Widget):
-    anim_enabled = BooleanProperty(True)
+    magnet_enabled = BooleanProperty(True)
     '''アニメーションを実際に行うか否か。'''
 
-    anim_duration = NumericProperty(1.0)
-    '''アニメーションの時間。'''
+    # anim_duration = NumericProperty(1.0)
+    # '''アニメーションの時間。'''
 
-    anim_transition = StringProperty('out_quad')
-    '''アニメーションの進み方。 有効な値の一覧は :class:`kivy.animation.AnimationTransition` を。'''
+    # anim_transition = StringProperty('out_quad')
+    # '''アニメーションの進み方。 有効な値の一覧は :class:`kivy.animation.AnimationTransition` を。'''
 
     def __init__(self, **kwargs):
-        self._anim_task = ak.dummy_task
-        self._anim_transition = AnimationTransition.out_quad
+        self._main_task = ak.dummy_task
+        # self._anim_transition = AnimationTransition.out_quad
         self._prev_parent = None
         self._prev_pos = (0, 0, )
-        self._trigger = t = Clock.create_trigger(self._animate, -1)
+        self._trigger_reset = t = Clock.schedule_once(self._reset, -1)
         super().__init__(**kwargs)
         f = self.fbind
-        f('pos', t)
-        f('size', t)
+        f('children', t)
+        f('magnet_enabled', t)
 
-    @staticmethod
-    def on_anim_transition(self, t):
-        self._anim_transition = getattr(AnimationTransition, t)
+    def _reset(self, dt):
+        self._main_task.cancel()
+        self._main_task = ak.start(self._main())
+
+    async def _main(self):
+        children = self.children
+        if self.parent is None or (not children):
+            return
+
+        triggers = _seq_of_triggers[self.magnet_enabled]
+        if len(children) == 1:
+            target = children[0]
+            trigger = triggers[0]
+        else:
+            target = children
+            trigger = triggers[1]
+        trigger = Clock.schedule_once(
+            partial(_layout_single_child, self, children[0])
+            if len(children) == 1 else
+            partial(_layout_multiple_children, self, children),
+            -1
+        )
+        uid_pos = self.fbind('pos', trigger)
+        uid_size = self.fbind('size', trigger)
+
+        try:
+            await ak.sleep_forever()
+        finally:
+            self.unbind_uid('pos', uid_pos)
+            self.unbind_uid('size', uid_size)
+            trigger.cancel()
 
     @staticmethod
     def on_anim_enabled(self, enabled):
@@ -90,7 +91,7 @@ class KXMagnet(Widget):
             for c in self.children:
                 c.x = x
                 c.y = y
-            self._trigger()
+            self._trigger_reset()
         self._prev_parent = new_parent
 
     def add_widget(self, w, *args, **kwargs):
@@ -116,7 +117,21 @@ class KXMagnet(Widget):
                 x=self.x, y=self.y, width=self.width, height=self.height,
             ))
 
-    def _layout(self, dt):
-        for c in self.children:
-            c.pos = self.pos
-            c.size = self.size
+
+def _layout_single_child(magnet, child, dt):
+    child.pos = magnet.pos
+    child.size = magnet.size
+
+
+def _layout_multiple_children(magnet, children, dt):
+    pos = magnet.pos
+    size = magnet.size
+    for c in children:
+        c.pos = pos
+        c.size = size
+
+
+
+def _animate_single_child(magnet, child, dt):
+    child.pos = magnet.pos
+    child.size = magnet.size
