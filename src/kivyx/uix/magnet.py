@@ -1,13 +1,14 @@
 '''
-*(Tested on CPython3.11.4 + Kivy2.2.1)*
+*(Tested on CPython3.11.4 + Kivy2.2.1 + asynckivy0.6.0)*
 
 `garden.magnet <https://github.com/kivy-garden/garden.magnet>`__ を自分用に改変した物。
 相違点は以下
 
 * アニメーションされるのは大きさと位置だけ。
-* アニメーションの時間や進み方はコード内に直書き。
+* アニメーションの時間や進み方は指定不可。
 * アニメーションの有効無効を切り替えられる。
 * 複数の子を持てる。
+* 異なる座標系にある親の元に移った時も適切にアニメーションする。
 '''
 
 __all__ = ('KXMagnet', )
@@ -15,7 +16,7 @@ __all__ = ('KXMagnet', )
 from functools import partial
 from kivy.clock import Clock
 from kivy.uix.widget import Widget
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, NumericProperty
 import asynckivy as ak
 
 
@@ -27,18 +28,19 @@ class KXMagnet(Widget):
     magnet_enabled = BooleanProperty(True)
     '''アニメーションを実際に行うか否か。'''
 
+    magnet_threshold = NumericProperty('10dp')
+    '''子との位置の差がこの値以下になった時にアニメーションが止まり、子と完全に重なる。'''
+
     def __init__(self, **kwargs):
         self._main_task = ak.dummy_task
-        # self._anim_transition = AnimationTransition.out_quad
         self._prev_parent = None
         self._prev_pos = (0, 0, )
-        self._cancel_animation = do_nothing
-        self._elapsed_time = 0.0
         self._trigger_reset = t = Clock.schedule_once(self._reset, -1)
         super().__init__(**kwargs)
         f = self.fbind
         f('children', t)
         f('magnet_enabled', t)
+        f('magnet_threshold', t)
 
     def _reset(self, dt):
         self._main_task.cancel()
@@ -105,7 +107,7 @@ def _layout_multiple_children(magnet, children, dt):
 
 
 def _start_animating_single_child(magnet, child, schedule_interval, dt):
-    clock_event = schedule_interval(
+    clock_event = schedule_interval
         partial(
             _animate_single_child,
             child, zip, setattr,
@@ -114,38 +116,45 @@ def _start_animating_single_child(magnet, child, schedule_interval, dt):
     child.size = magnet.size
 
 
-def _animate_single_child(magnet, child, zip, setattr, original_values, slopes, names, dt):
-    elapsed_time = magnet._elapsed_time + dt
+def _animate_single_child(magnet, child, threshold, getattr, setattr, property_names, dt):
+
+    for name in property_names:
+        m_value = getattr(magnet, name)
+        c_value = getattr(child, name)
+        diff = m_value - c_value
+        if diff > threshold:
+            setattr(child, name, )
+        else:
+            setattr(child, name, m_value)
+
+
     if elapsed_time >= 1.0:
         child.size = magnet.size
         child.pos = magnet.pos
         return False
     magnet._elapsed_time = elapsed_time
 
-    # out_quad
-    # https://github.com/kivy/kivy/blob/ca1b918c656f23e401707388f25f4a63d9b8ae7d/kivy/animation.py#L574-L578
-    p = -1.0 * elapsed_time * (elapsed_time - 2.0)
-
     for org_value, slope, name in zip(original_values, slopes, names):
         setattr(child, name, org_value + slope * p)
+    pass
 
 
-def _animate_multiple_children(magnet, children, zip, setattr, original_values, slopes, names, dt):
-    elapsed_time = magnet._elapsed_time + dt
-    if elapsed_time >= 1.0:
-        pos = magnet.pos
-        size = magnet.size
-        for c in children:
-            c.pos = pos
-            c.size = size
-        return False
-    magnet._elapsed_time = elapsed_time
+# def _animate_multiple_children(magnet, children, zip, setattr, original_values, slopes, names, dt):
+#     elapsed_time = magnet._elapsed_time + dt
+#     if elapsed_time >= 1.0:
+#         pos = magnet.pos
+#         size = magnet.size
+#         for c in children:
+#             c.pos = pos
+#             c.size = size
+#         return False
+#     magnet._elapsed_time = elapsed_time
 
-    # out_quad
-    # https://github.com/kivy/kivy/blob/ca1b918c656f23e401707388f25f4a63d9b8ae7d/kivy/animation.py#L574-L578
-    p = -1.0 * elapsed_time * (elapsed_time - 2.0)
+#     # out_quad
+#     # https://github.com/kivy/kivy/blob/ca1b918c656f23e401707388f25f4a63d9b8ae7d/kivy/animation.py#L574-L578
+#     p = -1.0 * elapsed_time * (elapsed_time - 2.0)
 
-    for org_value, slope, name in zip(original_values, slopes, names):
-        new_value = org_value + slope * p
-        for c in children:
-            setattr(c, name, new_value)
+#     for org_value, slope, name in zip(original_values, slopes, names):
+#         new_value = org_value + slope * p
+#         for c in children:
+#             setattr(c, name, new_value)
